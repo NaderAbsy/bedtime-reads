@@ -2,9 +2,8 @@ name: Build tonight's page
 
 on:
   schedule:
-    # Every day at 15:00 UTC = 18:00 in Amman, ready well before bedtime.
-    # GitHub can start scheduled runs up to ~30 minutes late; that's normal.
-    - cron: "0 15 * * *"
+    # Every day at 16:00 UTC (early evening in Europe / Middle East). Change to suit his bedtime.
+    - cron: "0 16 * * *"
   workflow_dispatch: {}   # adds a "Run workflow" button for a manual refresh
 
 permissions:
@@ -32,14 +31,13 @@ jobs:
       - name: Fetch feeds and build the page
         run: python build.py
 
-      # Saves tonight's page, the archive and the "already shown" history (so tomorrow
-      # leads with new stories). It also counts as repo activity, which stops GitHub
+      # Saving the page also counts as repo activity, which stops GitHub
       # from pausing this daily schedule after 60 quiet days.
       - name: Save the built page
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A site data
+          git add site
           git diff --cached --quiet || git commit -m "Tonight's reads: $(date -u +%F)"
           git push
 

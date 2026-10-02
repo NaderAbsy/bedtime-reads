@@ -9,8 +9,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Bedtime">
-<link rel="apple-touch-icon" href="icon.png">
+<link rel="apple-touch-icon" href="{{BASE}}icon.png">
 <style>
+  /* One calm reading column; picks as a row of three, everything else a simple list. */
   :root {
     --size: 20px;
     --serif: ui-serif, "New York", "Iowan Old Style", Georgia, serif;
@@ -38,10 +39,16 @@
     transition: background .3s, color .3s;
   }
   a { color: inherit; text-decoration: none; }
-  .wrap { max-width: 760px; margin: 0 auto; padding: 0 28px; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+  .wrap { max-width: 760px; margin: 0 auto; padding-inline: 28px; }
 
   /* Header */
   header { padding: 40px 0 8px; }
+  .banner {
+    font: 500 15px/1.4 var(--sans); color: var(--ink-soft); background: var(--bg-raised);
+    border: 1px solid var(--rule); border-radius: 12px; padding: 12px 16px; margin: 0 0 24px;
+  }
+  .banner a { color: var(--accent); font-weight: 600; }
   .top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
   .date { font: 600 13px/1 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin: 0 0 10px; }
   h1 { font-size: 2.1em; line-height: 1.1; font-weight: 600; margin: 0; letter-spacing: -.01em; }
@@ -52,11 +59,22 @@
     border: 1px solid var(--rule); border-radius: 22px; min-width: 44px; height: 44px; padding: 0 14px; cursor: pointer;
   }
   .controls button:active { transform: scale(.96); }
-  nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 26px 0 0; padding-bottom: 22px; border-bottom: 1px solid var(--rule); }
-  nav a {
+  .jump { display: flex; gap: 8px; flex-wrap: wrap; margin: 26px 0 0; padding-bottom: 22px; border-bottom: 1px solid var(--rule); }
+  .jump a {
     font: 500 15px/1 var(--sans); color: var(--ink-soft); padding: 11px 16px;
     border: 1px solid var(--rule); border-radius: 22px;
   }
+
+  /* Continue reading / Saved for later */
+  .shelf { padding-top: 30px; display: grid; gap: 26px; }
+  .shelf h2 { margin: 0 0 4px; }
+  .shelf ul { list-style: none; margin: 0; padding: 0; }
+  .shelf li { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .shelf li:last-child { border-bottom: 0; }
+  .shelf .row { flex: 1; min-width: 0; }
+  .shelf .row a { display: block; font-weight: 600; line-height: 1.3; }
+  .shelf .row a:visited { color: var(--visited); }
+  .shelf .row span { font: 500 13px/1.4 var(--sans); color: var(--ink-faint); }
 
   /* Picture of the day */
   .potd { margin: 30px 0 10px; }
@@ -66,7 +84,7 @@
   }
   .potd-text { padding: 18px 2px 0; }
   .eyebrow { font: 600 12px/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); }
-  .potd h2 { font-size: 1.35em; line-height: 1.25; margin: 8px 0 6px; font-weight: 600; }
+  .potd h2 { font-size: 1.35em; line-height: 1.25; margin: 8px 0 6px; font-weight: 600; text-wrap: balance; }
   .potd p { margin: 0; color: var(--ink-soft); font-size: .92em; }
 
   /* Sections */
@@ -77,37 +95,78 @@
   }
   .section-title::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
 
-  .story { border-bottom: 1px solid var(--rule); }
+  /* A story: the title link stretches over the whole card; the Save button sits above it. */
+  .story { position: relative; display: flex; gap: 20px; padding: 22px 0; align-items: flex-start; border-bottom: 1px solid var(--rule); }
   .story:last-child { border-bottom: 0; }
-  .story > a { display: flex; gap: 20px; padding: 22px 0; align-items: flex-start; }
-  .story .thumb { flex: 0 0 150px; aspect-ratio: 4 / 3; border-radius: 10px; overflow: hidden; background: var(--bg-raised); }
+  .story .thumb { flex: 0 0 150px; aspect-ratio: 4 / 3; max-width: 100%; border-radius: 10px; overflow: hidden; background: var(--bg-raised); }
   .story .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; filter: var(--img-filter); }
   .story .text { flex: 1; min-width: 0; }
-  .story h3 { font-size: 1.12em; line-height: 1.3; font-weight: 600; margin: 6px 0 6px; }
+  .story h3 { font-size: 1.12em; line-height: 1.3; font-weight: 600; margin: 6px 0 6px; text-wrap: balance; }
+  .story h3 a::after { content: ""; position: absolute; inset: 0; }
+  .story h3 a:visited { color: var(--visited); }
   .story p { margin: 0; color: var(--ink-soft); font-size: .88em; line-height: 1.55; }
-  .story a:visited h3 { color: var(--visited); }
 
-  .story.lead > a { flex-direction: column; gap: 14px; }
+  .story.lead { flex-direction: column; gap: 14px; }
   .story.lead .thumb { flex: none; width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; }
   .story.lead h3 { font-size: 1.32em; }
 
   .meta { font: 500 13px/1.3 var(--sans); color: var(--ink-faint); display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
   .meta .source { color: var(--ink-soft); font-weight: 600; }
-  .meta time:not(:empty)::before { content: "·"; margin-right: 10px; }
+  .meta time:not(:empty)::before, .meta .mins::before { content: "·"; margin-right: 10px; }
   .badge {
     font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--accent);
     border: 1px solid currentColor; border-radius: 4px; padding: 2px 6px; opacity: .85;
   }
 
-  footer { padding: 46px 0 70px; text-align: center; color: var(--ink-faint); font-size: .8em; }
-  footer .goodnight { font-style: italic; font-size: 1.25em; color: var(--ink-soft); margin: 0 0 14px; }
+  .save, .done {
+    position: relative; z-index: 1; cursor: pointer;
+    font: 600 13px/1 var(--sans); color: var(--ink-faint); background: transparent;
+    border: 1px solid var(--rule); border-radius: 18px; padding: 9px 14px; min-height: 36px;
+  }
+  .save { margin-top: 12px; }
+  .save[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); }
+  .done { flex-shrink: 0; }
+
+  /* Tonight's picks */
+  /* First pick is a wide feature card; the other two sit side by side beneath it. */
+  .pick-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; padding-top: 14px; }
+  .story.pick {
+    flex-direction: column; gap: 0; padding: 0; border: 1px solid var(--rule); border-radius: 14px;
+    background: var(--bg-raised); overflow: hidden;
+  }
+  .story.pick:last-child { border-bottom: 1px solid var(--rule); }
+  .story.pick .thumb { flex: none; width: 100%; aspect-ratio: 3 / 2; border-radius: 0; }
+  .story.pick .text { padding: 14px 16px 16px; }
+  .story.pick h3 { font-size: 1.02em; }
+  .story.pick p { font-size: .82em; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+  .story.pick:first-child { grid-column: 1 / -1; flex-direction: row; }
+  .story.pick:first-child .thumb { flex: 0 0 46%; aspect-ratio: auto; align-self: stretch; min-height: 220px; }
+  .story.pick:first-child .text { padding: 20px 22px 20px; }
+  .story.pick:first-child h3 { font-size: 1.3em; }
+  .pick-label { font: 600 11px/1.3 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+
+  footer { padding: 46px 0 70px; text-align: center; color: var(--ink-faint); font-size: .8em; display: grid; gap: 14px; justify-items: center; }
+  footer p { margin: 0; }
+  footer .goodnight { font-style: italic; font-size: 1.25em; color: var(--ink-soft); }
   footer .small { font: 13px/1.6 var(--sans); }
+  .previous { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; font: 500 14px/1 var(--sans); }
+  .previous span { width: 100%; color: var(--ink-faint); margin-bottom: 4px; }
+  .previous a { color: var(--ink-soft); padding: 10px 14px; border: 1px solid var(--rule); border-radius: 20px; }
 
   @media (max-width: 560px) {
-    .wrap { padding: 0 16px; }
+    .pick-grid { grid-template-columns: 1fr; }
+    .story.pick, .story.pick:first-child { flex-direction: column; }
+    .story.pick:first-child .thumb { flex: none; width: 100%; aspect-ratio: 16 / 9; min-height: 0; }
+  }
+  @media (max-width: 560px) {
+    .wrap { padding-inline: 16px; }
     h1 { font-size: 1.7em; }
     .story .thumb { flex-basis: 96px; }
-    .story > a { gap: 14px; }
+    .story { gap: 14px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    body { transition: none; }
   }
 </style>
 <script>
@@ -121,27 +180,40 @@
 <body>
   <div class="wrap">
     <header>
+      {{BANNER}}
       <div class="top">
         <div>
-          <p class="date" id="date">Tonight</p>
+          <p class="date">{{EDITION}}</p>
           <h1>{{TITLE}}</h1>
           <p class="greeting" id="greeting">A few good things to read before sleep.</p>
         </div>
         <div class="controls">
-          <button id="smaller" aria-label="Smaller text">A−</button>
-          <button id="bigger" aria-label="Bigger text">A+</button>
-          <button id="theme" aria-label="Switch between night and paper colours">☾</button>
+          <button id="smaller" type="button" aria-label="Smaller text">A−</button>
+          <button id="bigger" type="button" aria-label="Bigger text">A+</button>
+          <button id="theme" type="button" aria-label="Switch between night and paper colours">☾</button>
         </div>
       </div>
-      <nav>{{NAV}}</nav>
+      <nav class="jump" aria-label="Sections">{{NAV}}</nav>
     </header>
 
-    <main>{{HERO}}{{SECTIONS}}
+    <main>
+      <section class="shelf" id="shelf" hidden>
+        <div id="continue-block" hidden>
+          <h2 class="section-title">Continue reading</h2>
+          <ul id="continue-list"></ul>
+        </div>
+        <div id="saved-block" hidden>
+          <h2 class="section-title">Saved for later</h2>
+          <ul id="saved-list"></ul>
+        </div>
+      </section>
+      {{HERO}}{{PICKS}}{{SECTIONS}}
     </main>
 
     <footer>
       <p class="goodnight">That’s all for tonight. Sleep well.</p>
-      <p class="small">Fresh stories every day · <span id="built" data-built="{{BUILT}}"></span></p>
+      {{ARCHIVE}}
+      <p class="small">New stories every evening · <span id="built" data-built="{{BUILT}}"></span></p>
       <p class="small">From {{SOURCES}}</p>
     </footer>
   </div>
@@ -149,29 +221,30 @@
 <script>
 (function () {
   var root = document.documentElement;
-  var now = new Date();
+  var built = new Date(document.getElementById("built").dataset.built);
+  var ref = isNaN(built) ? new Date() : built;
 
-  document.getElementById("date").textContent =
-    now.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" });
-  var h = now.getHours();
+  var h = new Date().getHours();
   document.getElementById("greeting").textContent =
     h >= 18 || h < 4 ? "Good evening. A few good things to read before sleep."
                      : "A few good things to read before sleep.";
 
-  // "Today", "Yesterday", "3 days ago" next to each story.
-  var day = 864e5, midnight = new Date(now).setHours(0, 0, 0, 0);
+  // "Today", "Yesterday", "3 days ago", counted from when this edition was made.
+  var DAY = 864e5, refMidnight = new Date(ref).setHours(0, 0, 0, 0);
+  function daysAgo(t) { return Math.floor((refMidnight - new Date(t).setHours(0, 0, 0, 0)) / DAY); }
   document.querySelectorAll("time[datetime]").forEach(function (el) {
     var d = new Date(el.getAttribute("datetime"));
     if (isNaN(d)) return;
-    var diff = Math.floor((midnight - new Date(d).setHours(0, 0, 0, 0)) / day);
-    el.textContent = diff <= 0 ? "Today" : diff === 1 ? "Yesterday" : diff + " days ago";
+    var n = daysAgo(d);
+    el.textContent = n <= 0 ? "Today" : n === 1 ? "Yesterday" : n + " days ago";
   });
+  if (!isNaN(built)) {
+    document.getElementById("built").textContent =
+      "updated " + built.toLocaleString(undefined, { weekday: "short", hour: "numeric", minute: "2-digit" });
+  }
 
-  var b = document.getElementById("built"), bd = new Date(b.dataset.built);
-  if (!isNaN(bd)) b.textContent = "updated " + bd.toLocaleString(undefined, { weekday: "short", hour: "numeric", minute: "2-digit" });
-
-  function save(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
-
+  // ---- preferences ----
+  function put(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
   var themeBtn = document.getElementById("theme");
   function isPaper() { return root.dataset.mood === "paper"; }
   function syncThemeBtn() {
@@ -182,13 +255,100 @@
   syncThemeBtn();
   themeBtn.onclick = function () {
     if (isPaper()) delete root.dataset.mood; else root.dataset.mood = "paper";
-    save("br-theme", isPaper() ? "paper" : "night"); syncThemeBtn();
+    put("br-theme", isPaper() ? "paper" : "night"); syncThemeBtn();
   };
-
   function size() { return parseFloat(getComputedStyle(root).getPropertyValue("--size")) || 20; }
-  function setSize(px) { px = Math.max(16, Math.min(28, px)); root.style.setProperty("--size", px + "px"); save("br-size", px); }
+  function setSize(px) { px = Math.max(16, Math.min(28, px)); root.style.setProperty("--size", px + "px"); put("br-size", px); }
   document.getElementById("smaller").onclick = function () { setSize(size() - 2); };
   document.getElementById("bigger").onclick = function () { setSize(size() + 2); };
+
+  // ---- Saved for later & Continue reading (kept on this iPad, survives the daily update) ----
+  function load(k) { try { return JSON.parse(localStorage.getItem(k)) || []; } catch (e) { return []; } }
+  function store(k, v) { put(k, JSON.stringify(v)); }
+
+  function fromCard(card) {
+    var a = card.querySelector("h3 a");
+    return { k: card.dataset.k, l: a.href, t: a.textContent, s: card.querySelector(".source").textContent, at: Date.now() };
+  }
+  function shortDay(t) {
+    var n = Math.floor((new Date().setHours(0, 0, 0, 0) - new Date(t).setHours(0, 0, 0, 0)) / DAY);
+    return n <= 0 ? "today" : n === 1 ? "yesterday" : new Date(t).toLocaleDateString(undefined, { weekday: "long" });
+  }
+
+  function row(item, verb, listKey) {
+    var li = document.createElement("li");
+    var div = document.createElement("div"); div.className = "row";
+    var a = document.createElement("a");
+    a.href = item.l; a.target = "_blank"; a.rel = "noopener"; a.textContent = item.t; a.dataset.k = item.k;
+    var meta = document.createElement("span");
+    meta.textContent = item.s + " · " + verb + " " + shortDay(item.at);
+    div.appendChild(a); div.appendChild(meta);
+    var done = document.createElement("button");
+    done.type = "button"; done.className = "done"; done.textContent = "Done";
+    done.setAttribute("aria-label", "Remove “" + item.t + "”");
+    done.onclick = function () {
+      store(listKey, load(listKey).filter(function (x) { return x.k !== item.k; }));
+      if (listKey === "br-saved") syncSaveButtons();
+      renderShelf();
+    };
+    li.appendChild(div); li.appendChild(done);
+    return li;
+  }
+
+  // Re-rendering the shelf changes its height; keep the page from jumping if he's further down.
+  function renderShelf() {
+    var shelf = document.getElementById("shelf");
+    var before = shelf.offsetHeight, above = shelf.getBoundingClientRect().bottom < 0;
+
+    var saved = load("br-saved");
+    var savedKeys = saved.map(function (x) { return x.k; });
+    var weekAgo = Date.now() - 7 * DAY;
+    var opened = load("br-opened").filter(function (x) { return x.at > weekAgo && savedKeys.indexOf(x.k) < 0; }).slice(0, 3);
+
+    var cl = document.getElementById("continue-list"), sl = document.getElementById("saved-list");
+    cl.textContent = ""; sl.textContent = "";
+    opened.forEach(function (x) { cl.appendChild(row(x, "opened", "br-opened")); });
+    saved.forEach(function (x) { sl.appendChild(row(x, "saved", "br-saved")); });
+    document.getElementById("continue-block").hidden = !opened.length;
+    document.getElementById("saved-block").hidden = !saved.length;
+    shelf.hidden = !opened.length && !saved.length;
+
+    if (above) window.scrollBy(0, shelf.offsetHeight - before);
+  }
+
+  function syncSaveButtons() {
+    var keys = load("br-saved").map(function (x) { return x.k; });
+    document.querySelectorAll(".story[data-k]").forEach(function (card) {
+      var on = keys.indexOf(card.dataset.k) >= 0, btn = card.querySelector(".save");
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+      btn.textContent = on ? "Saved ✓" : "Save for later";
+    });
+  }
+
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest(".save");
+    if (btn) {
+      var card = btn.closest(".story"), saved = load("br-saved");
+      var exists = saved.some(function (x) { return x.k === card.dataset.k; });
+      saved = exists ? saved.filter(function (x) { return x.k !== card.dataset.k; })
+                     : [fromCard(card)].concat(saved).slice(0, 60);
+      store("br-saved", saved);
+      syncSaveButtons(); renderShelf();
+      return;
+    }
+    // Remember what he opens, for "Continue reading" next time.
+    var a = e.target.closest("a[href]");
+    if (!a) return;
+    var card2 = a.closest(".story[data-k]"), item = null;
+    if (card2) item = fromCard(card2);
+    else if (a.dataset.k) item = { k: a.dataset.k, l: a.href, t: a.textContent, s: a.nextSibling ? a.nextSibling.textContent.split(" · ")[0] : "", at: Date.now() };
+    if (!item) return;
+    var opened = load("br-opened").filter(function (x) { return x.k !== item.k; });
+    store("br-opened", [item].concat(opened).slice(0, 12));
+  });
+
+  syncSaveButtons();
+  renderShelf();
 })();
 </script>
 </body>

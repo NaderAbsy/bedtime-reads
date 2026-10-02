@@ -1,17 +1,13 @@
 {
   "title": "Bedtime Reads",
-  "timezone": "Asia/Amman",
   "include_new_scientist": true,
-  "archive_days": 7,
-  "history_days": 30,
 
   "picture_of_the_day": "https://www.nasa.gov/feeds/iotd-feed/",
-  "picks": ["Long Read", "From the Journals", "Space & Stars"],
 
   "sections": [
     {
       "name": "Space & Stars",
-      "count": 4,
+      "count": 6,
       "max_age_days": 4,
       "feeds": [
         { "name": "New Scientist", "url": "https://www.newscientist.com/subject/space/feed/", "subscriber": true },
@@ -19,19 +15,19 @@
         { "name": "ESA", "url": "https://www.esa.int/rssfeed/Our_Activities/Space_Science" },
         { "name": "The Conversation", "url": "https://theconversation.com/global/topics/space-1253/articles.atom" },
         { "name": "The Guardian", "url": "https://www.theguardian.com/science/space/rss" },
-        { "name": "Phys.org", "url": "https://phys.org/rss-feed/space-news/", "low_priority": true, "lead_ok": false }
+        { "name": "Phys.org", "url": "https://phys.org/rss-feed/space-news/" }
       ]
     },
     {
       "name": "Medicine",
-      "count": 4,
+      "count": 5,
       "max_age_days": 3,
       "feeds": [
         { "name": "New Scientist", "url": "https://www.newscientist.com/subject/health/feed/", "subscriber": true },
         { "name": "STAT", "url": "https://www.statnews.com/feed/" },
         { "name": "MedPage Today", "url": "https://www.medpagetoday.com/rss/headlines.xml" },
-        { "name": "The Conversation", "url": "https://theconversation.com/global/topics/medicine-616/articles.atom" },
-        { "name": "Medical Xpress", "url": "https://medicalxpress.com/rss-feed/", "low_priority": true }
+        { "name": "Medical Xpress", "url": "https://medicalxpress.com/rss-feed/" },
+        { "name": "The Conversation", "url": "https://theconversation.com/global/topics/medicine-616/articles.atom" }
       ]
     },
     {
@@ -47,19 +43,19 @@
     },
     {
       "name": "Physics",
-      "count": 3,
+      "count": 4,
       "max_age_days": 5,
       "feeds": [
         { "name": "New Scientist", "url": "https://www.newscientist.com/subject/physics/feed/", "subscriber": true },
         { "name": "Physics World", "url": "https://physicsworld.com/feed/" },
-        { "name": "APS Physics", "url": "https://feeds.aps.org/rss/recent/physics.xml", "lead_ok": false },
+        { "name": "APS Physics", "url": "https://feeds.aps.org/rss/recent/physics.xml" },
         { "name": "Quanta Magazine", "url": "https://www.quantamagazine.org/physics/feed/" },
-        { "name": "Phys.org", "url": "https://phys.org/rss-feed/physics-news/", "low_priority": true, "lead_ok": false }
+        { "name": "Phys.org", "url": "https://phys.org/rss-feed/physics-news/" }
       ]
     },
     {
       "name": "Technology",
-      "count": 3,
+      "count": 4,
       "max_age_days": 3,
       "feeds": [
         { "name": "New Scientist", "url": "https://www.newscientist.com/subject/technology/feed/", "subscriber": true },
@@ -69,32 +65,22 @@
       ]
     },
     {
-      "name": "Long Read",
-      "count": 3,
-      "max_age_days": 10,
-      "feeds": [
-        { "name": "Aeon", "url": "https://aeon.co/feed.rss" },
-        { "name": "Quanta Magazine", "url": "https://www.quantamagazine.org/feed/" },
-        { "name": "Knowable Magazine", "url": "https://knowablemagazine.org/rss" },
-        { "name": "Nautilus", "url": "https://nautil.us/feed" },
-        { "name": "Undark", "url": "https://undark.org/feed/" }
-      ]
-    },
-    {
       "name": "Across the Sciences",
-      "count": 3,
+      "count": 5,
       "max_age_days": 5,
       "feeds": [
         { "name": "Nature", "url": "https://www.nature.com/nature.rss" },
         { "name": "Science", "url": "https://www.science.org/rss/news_current.xml" },
         { "name": "New Scientist", "url": "https://www.newscientist.com/feed/home/", "subscriber": true },
-        { "name": "Ars Technica", "url": "https://feeds.arstechnica.com/arstechnica/science" },
-        { "name": "The Guardian", "url": "https://www.theguardian.com/science/rss" }
+        { "name": "Quanta Magazine", "url": "https://www.quantamagazine.org/feed/" },
+        { "name": "Knowable Magazine", "url": "https://knowablemagazine.org/rss" },
+        { "name": "Nautilus", "url": "https://nautil.us/feed" },
+        { "name": "Ars Technica", "url": "https://feeds.arstechnica.com/arstechnica/science" }
       ]
     },
     {
       "name": "Nature",
-      "count": 3,
+      "count": 4,
       "max_age_days": 5,
       "feeds": [
         { "name": "New Scientist", "url": "https://www.newscientist.com/subject/life/feed/", "subscriber": true },
@@ -107,13 +93,12 @@
     },
     {
       "name": "Tennis",
-      "count": 3,
+      "count": 4,
       "max_age_days": 2,
       "feeds": [
         { "name": "BBC Sport", "url": "https://feeds.bbci.co.uk/sport/tennis/rss.xml" },
         { "name": "The Guardian", "url": "https://www.theguardian.com/sport/tennis/rss" },
-        { "name": "Sky Sports", "url": "https://www.skysports.com/rss/12110" },
-        { "name": "Ubitennis", "url": "https://www.ubitennis.net/feed/" }
+        { "name": "ESPN", "url": "https://www.espn.com/espn/rss/tennis/news" }
       ]
     }
   ]

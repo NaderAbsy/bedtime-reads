@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bedtime Reads</title>
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#14110e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bedtime">
+<link rel="apple-touch-icon" href="icon.png">
+<style>
+  :root {
+    --size: 20px;
+    --serif: ui-serif, "New York", "Iowan Old Style", Georgia, serif;
+    --sans: -apple-system, system-ui, "Helvetica Neue", sans-serif;
+    /* Night (default): warm, low-contrast, no pure white anywhere. */
+    --bg: #14110e; --bg-raised: #1c1814; --ink: #e6dac6; --ink-soft: #a89a85;
+    --ink-faint: #74685a; --rule: #2e2721; --accent: #d9a35f; --visited: #8a7d6b;
+    --img-filter: brightness(.82) saturate(.85);
+    color-scheme: dark;
+  }
+  /* Paper: sepia for reading with a lamp on. Chosen with the in-page button only. */
+  :root[data-mood="paper"] {
+    color-scheme: light;
+    --bg: #f3ead8; --bg-raised: #ece1cb; --ink: #3a2f24; --ink-soft: #6b5c4b;
+    --ink-faint: #94846f; --rule: #dccfb6; --accent: #9a5b1e; --visited: #8f8070;
+    --img-filter: none;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: var(--size)/1.6 var(--serif);
+    padding-block: env(safe-area-inset-top, 0px) env(safe-area-inset-bottom, 0px);
+    transition: background .3s, color .3s;
+  }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 28px; }
+
+  /* Header */
+  header { padding: 40px 0 8px; }
+  .top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+  .date { font: 600 13px/1 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin: 0 0 10px; }
+  h1 { font-size: 2.1em; line-height: 1.1; font-weight: 600; margin: 0; letter-spacing: -.01em; }
+  .greeting { color: var(--ink-soft); margin: 8px 0 0; font-style: italic; }
+  .controls { display: flex; gap: 8px; flex-shrink: 0; padding-top: 2px; }
+  .controls button {
+    font: 600 15px/1 var(--sans); color: var(--ink-soft); background: var(--bg-raised);
+    border: 1px solid var(--rule); border-radius: 22px; min-width: 44px; height: 44px; padding: 0 14px; cursor: pointer;
+  }
+  .controls button:active { transform: scale(.96); }
+  nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 26px 0 0; padding-bottom: 22px; border-bottom: 1px solid var(--rule); }
+  nav a {
+    font: 500 15px/1 var(--sans); color: var(--ink-soft); padding: 11px 16px;
+    border: 1px solid var(--rule); border-radius: 22px;
+  }
+
+  /* Picture of the day */
+  .potd { margin: 30px 0 10px; }
+  .potd img {
+    display: block; width: 100%; max-height: 62vh; object-fit: cover; border-radius: 14px;
+    background: var(--bg-raised); filter: var(--img-filter);
+  }
+  .potd-text { padding: 18px 2px 0; }
+  .eyebrow { font: 600 12px/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); }
+  .potd h2 { font-size: 1.35em; line-height: 1.25; margin: 8px 0 6px; font-weight: 600; }
+  .potd p { margin: 0; color: var(--ink-soft); font-size: .92em; }
+
+  /* Sections */
+  .section { padding-top: 34px; scroll-margin-top: 12px; }
+  .section-title {
+    font: 600 13px/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--accent);
+    margin: 0 0 6px; display: flex; align-items: center; gap: 14px;
+  }
+  .section-title::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
+
+  .story { border-bottom: 1px solid var(--rule); }
+  .story:last-child { border-bottom: 0; }
+  .story > a { display: flex; gap: 20px; padding: 22px 0; align-items: flex-start; }
+  .story .thumb { flex: 0 0 150px; aspect-ratio: 4 / 3; border-radius: 10px; overflow: hidden; background: var(--bg-raised); }
+  .story .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; filter: var(--img-filter); }
+  .story .text { flex: 1; min-width: 0; }
+  .story h3 { font-size: 1.12em; line-height: 1.3; font-weight: 600; margin: 6px 0 6px; }
+  .story p { margin: 0; color: var(--ink-soft); font-size: .88em; line-height: 1.55; }
+  .story a:visited h3 { color: var(--visited); }
+
+  .story.lead > a { flex-direction: column; gap: 14px; }
+  .story.lead .thumb { flex: none; width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; }
+  .story.lead h3 { font-size: 1.32em; }
+
+  .meta { font: 500 13px/1.3 var(--sans); color: var(--ink-faint); display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+  .meta .source { color: var(--ink-soft); font-weight: 600; }
+  .meta time:not(:empty)::before { content: "·"; margin-right: 10px; }
+  .badge {
+    font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--accent);
+    border: 1px solid currentColor; border-radius: 4px; padding: 2px 6px; opacity: .85;
+  }
+
+  footer { padding: 46px 0 70px; text-align: center; color: var(--ink-faint); font-size: .8em; }
+  footer .goodnight { font-style: italic; font-size: 1.25em; color: var(--ink-soft); margin: 0 0 14px; }
+  footer .small { font: 13px/1.6 var(--sans); }
+
+  @media (max-width: 560px) {
+    .wrap { padding: 0 16px; }
+    h1 { font-size: 1.7em; }
+    .story .thumb { flex-basis: 96px; }
+    .story > a { gap: 14px; }
+  }
+</style>
+<script>
+  // Apply saved preferences before paint, so there is no bright flash at night.
+  try {
+    if (localStorage.getItem("br-theme") === "paper") document.documentElement.dataset.mood = "paper";
+    var s = localStorage.getItem("br-size"); if (s) document.documentElement.style.setProperty("--size", s + "px");
+  } catch (e) {}
+</script>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="top">
+        <div>
+          <p class="date" id="date">Tonight</p>
+          <h1>Bedtime Reads</h1>
+          <p class="greeting" id="greeting">A few good things to read before sleep.</p>
+        </div>
+        <div class="controls">
+          <button id="smaller" aria-label="Smaller text">A−</button>
+          <button id="bigger" aria-label="Bigger text">A+</button>
+          <button id="theme" aria-label="Switch between night and paper colours">☾</button>
+        </div>
+      </div>
+      <nav><a href="#space-stars">Space &amp; Stars</a><a href="#medicine">Medicine</a><a href="#from-the-journals">From the Journals</a><a href="#physics">Physics</a><a href="#technology">Technology</a><a href="#across-the-sciences">Across the Sciences</a><a href="#nature">Nature</a><a href="#tennis">Tennis</a></nav>
+    </header>
+
+    <main>
+    <section class="potd">
+      <a href="https://www.nasa.gov/image-detail/nasas-spacex-crew-13-launch-3/" target="_blank" rel="noopener">
+        <img src="https://www.nasa.gov/wp-content/uploads/2026/10/55563235995-2bae0fafbc-o.jpg?w=1600" alt="NASA’s SpaceX Crew-13 Launches" decoding="async">
+      </a>
+      <div class="potd-text">
+        <div class="eyebrow">Tonight’s picture · NASA Image of the Day</div>
+        <h2>NASA’s SpaceX Crew-13 Launches</h2>
+        <p>A SpaceX Falcon 9 rocket carrying the company&#x27;s Dragon spacecraft is launched on NASA’s SpaceX Crew-13 mission to the International Space Station with NASA astronauts Jessica Watkins and Luke Delaney, CSA (Canadian Space Agency) astronaut Joshua Kutryk, and…</p>
+      </div>
+    </section>
+    <section class="section" id="space-stars">
+      <h2 class="section-title">Space &amp; Stars</h2>
+      <div class="stories">
+      <article class="story lead">
+        <a href="https://phys.org/news/2026-10-stars-infrared-expose-gaps.html" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://scx1.b-cdn.net/csz/news/800a/2026/georgia-state-telescop.jpg" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">Phys.org</span><time datetime="2026-10-02T12:20:20-04:00"></time></div>
+            <h3>How stars shine: Infrared observations expose gaps in models of how stars distribute their light</h3>
+            <p>Astronomers using Georgia State University&#x27;s Center for High Angular Resolution Astronomy (CHARA) Array have found that nearby stars darken toward their edges more strongly at near-infrared wavelengths than predicted by several widely used models of stellar…</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://phys.org/news/2026-10-space-circadian-rhythms.html" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://scx1.b-cdn.net/csz/news/800a/2022/astronaut-2.jpg" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">Phys.org</span><time datetime="2026-10-02T12:00:11-04:00"></time></div>
+            <h3>What space travel teaches us about sleep and circadian rhythms</h3>
+            <p>On Earth, most of us rarely have to think about the signals that keep our internal clocks aligned. The sun rises, daylight changes, darkness arrives and morning comes again.</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://www.universetoday.com/articles/asteroid-bennu-has-an-identity-crisis-and-jupiter-might-be-to-blame" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://www.universetoday.com/article_images/image.imageformat.1286.dpr1.1946905548_20260930_131933.png" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">Universe Today</span><time datetime="2026-10-02T10:00:00+00:00"></time></div>
+            <h3>Asteroid Bennu Has an Identity Crisis, and Jupiter Might Be to Blame</h3>
+            <p>Asteroid sample return missions have brought well preserved samples of the early solar system (that hadn’t been roasted in a fireball) back to Earth for the first time. But those samples, like the OSIRIS-REx sample from asteroid (101955) Bennu, sometimes…</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://www.theguardian.com/science/2026/oct/01/spacex-speed-record-first-black-female-commander" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://i.guim.co.uk/img/media/30ee35475e62cb104f1583c4f61e0383013ceeaa/734_0_5308_4248/master/5308.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=8751f0142336861900367eeb10d73575" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">The Guardian</span><time datetime="2026-10-02T03:18:45+00:00"></time></div>
+            <h3>‘An amazing ride’: SpaceX flight led by first Black female commander sets US speed record</h3>
+            <p>Four astronauts pulled up at International Space Station after eight-hour express flight led by Jessica Watkins Four astronauts pulled up at the International Space Station (ISS) on Thursday after launching on an eight-hour express that set a US speed record…</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://www.newscientist.com/article/2591502-a-lack-of-rockets-is-creating-a-crisis-for-space-technology-companies/" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://www.newscientist.com/wp-content/uploads/2026/09/SEI_314693797.jpg" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">New Scientist</span><span class="badge">Subscriber</span><time datetime="2026-10-01T11:00:00+00:00"></time></div>
+            <h3>A lack of rockets is creating a crisis for space technology companies</h3>
+            <p>SpaceX’s changing priorities, the war in Ukraine and a lack of competitors are all causing a launch crisis that might last years</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://www.esa.int/Science_Exploration/Space_Science/Smile/Science_begins_for_Smile" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://www.esa.int/var/esa/storage/images/esa_multimedia/images/2026/09/smile_s_first_ultraviolet_image_shows_auroral_substorm/27545329-1-eng-GB/Smile_s_first_ultraviolet_image_shows_auroral_substorm_card_full.png" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">ESA</span><time datetime="2026-09-30T09:05:00+02:00"></time></div>
+            <h3>Science begins for Smile</h3>
+            <p>On 23 September, the European-Chinese Smile mission was declared ready to start revealing how Earth responds to the wind of charged particles from the Sun. This follows a busy in-space commissioning period since the spacecraft launched on 19 May and reached…</p>
+          </div>
+        </a>
+      </article>
+      </div>
+    </section>
+    <section class="section" id="medicine">
+      <h2 class="section-title">Medicine</h2>
+      <div class="stories">
+      <article class="story lead">
+        <a href="https://medicalxpress.com/news/2026-10-metabolite-compounds-ulcerative-colitis-drug.html" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://scx1.b-cdn.net/csz/news/800a/2026/metabolite-inspired-co.jpg" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">Medical Xpress</span><time datetime="2026-10-02T13:20:13-04:00"></time></div>
+            <h3>Metabolite-inspired compounds show promise for ulcerative colitis drug discovery</h3>
+            <p>Two structurally modified compounds derived from an anti-inflammatory metabolite demonstrated enhanced anti-inflammatory activity in experimental ulcerative colitis in mice and human tissue, offering an underexplored drug discovery opportunity for this…</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://medicalxpress.com/news/2026-10-adolescents-school-swedish.html" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://scx1.b-cdn.net/csz/news/800a/2026/adolescents-often-choo.jpg" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">Medical Xpress</span><time datetime="2026-10-02T13:20:08-04:00"></time></div>
+            <h3>Adolescents often choose to eat outside school, Swedish study finds</h3>
+            <p>Researchers at Karolinska Institutet have investigated where adolescents eat during the school day and what types of food they choose. The study was conducted by the IMPACT research group at the Department of Medicine, Huddinge, led by Ioannis Ioakeimidis.…</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://www.statnews.com/2026/10/02/nobel-prize-2026-geneticist-mary-claire-king-long-waiting-not-getting-winner-call/" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://www.statnews.com/wp-content/uploads/2026/10/GettyImages-532756516-1024x576.jpg" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">STAT</span><time datetime="2026-10-02T16:07:11+00:00"></time></div>
+            <h3>What it’s like to wait for the call from the Nobel Prize committee</h3>
+            <p>Ahead of this year&#x27;s Nobel Prize announcements, STAT chatted with Mary-Claire King, who discovered the BRCA cancer mutations and is frequently mentioned in prize predictions.</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://www.medpagetoday.com/meetingcoverage/astro/123247" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://clf1.medpagetoday.com/media/images/123xxx/123247.jpg" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">MedPage Today</span><time datetime="2026-10-02T11:12:23-04:00"></time></div>
+            <h3>More Evidence for Shorter Radiation Regimen in High-Risk Breast Cancer</h3>
+            <p>(MedPage Today) -- Hypofractionated postmastectomy radiotherapy continued to provide locoregional control for patients with high-risk breast cancer, 10-year data from a phase III trial showed. At 10 years, the cumulative locoregional recurrence...</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://www.newscientist.com/article/2591816-first-week-of-life-seems-critical-for-future-allergy-and-eczema-risk/" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://www.newscientist.com/wp-content/uploads/2026/10/SEI_314823189.jpg" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">New Scientist</span><span class="badge">Subscriber</span><time datetime="2026-10-02T12:00:00+00:00"></time></div>
+            <h3>First week of life seems crucial for future allergy and eczema risk</h3>
+            <p>The mainstream view is that there are no particularly critical phases in the development of the immune system, but a study of hundreds of infants suggests otherwise</p>
+          </div>
+        </a>
+      </article>
+      </div>
+    </section>
+    <section class="section" id="from-the-journals">
+      <h2 class="section-title">From the Journals</h2>
+      <div class="stories">
+      <article class="story">
+        <a href="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(26)01985-9/fulltext?rss=yes" target="_blank" rel="noopener">
+          
+          <div class="text">
+            <div class="meta"><span class="source">The Lancet</span><span class="badge">Journal</span><time datetime="2026-10-03T00:00:00+00:00"></time></div>
+            <h3>Peripheral arterial disease: counting what matters</h3>
+            <p>Peripheral arterial disease, caused by atherosclerotic narrowing of the arteries supplying the limbs, is widely regarded as a local disease of the legs and, particularly when asymptomatic, as relatively benign. Both impressions are inaccurate. Peripheral…</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="http://www.bmj.com/content/395/bmj-2026-101003.short?rss=1" target="_blank" rel="noopener">
+          
+          <div class="text">
+            <div class="meta"><span class="source">The BMJ</span><span class="badge">Journal</span><time datetime="2026-10-02T07:56:11-07:00"></time></div>
+            <h3>Neighbourhood health in England can learn from successful international models</h3>
+            <p>There are many models for neighbourhood health, including different approaches taken in Fleetwood, Lancashire, and international models in Singapore, Brazil, and New Zealand.12 Brazil’s Family Health Strategy and Healthy Families New Zealand were shaped by…</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://www.nature.com/articles/s41591-026-04658-2" target="_blank" rel="noopener">
+          
+          <div class="text">
+            <div class="meta"><span class="source">Nature Medicine</span><span class="badge">Journal</span><time datetime="2026-10-02T00:00:00+00:00"></time></div>
+            <h3>The missing links in agentic AI autonomy</h3>
+            <p>A new study tackles issues around operational and decisional trust of agentic artificial intelligence (AI), using locally deployed, on-premise agents and consistency-based gating to refer uncertain cases — but what happens after referral remains untested.</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://www.nejm.org/doi/full/10.1056/NEJMoa2607219?af=R&amp;rss=currentIssue" target="_blank" rel="noopener">
+          
+          <div class="text">
+            <div class="meta"><span class="source">NEJM</span><span class="badge">Journal</span><time datetime="2026-10-01T07:30:00+00:00"></time></div>
+            <h3>Survodutide Once Weekly in Adults with Obesity and Type 2 Diabetes</h3>
+            
+          </div>
+        </a>
+      </article>
+      </div>
+    </section>
+    <section class="section" id="physics">
+      <h2 class="section-title">Physics</h2>
+      <div class="stories">
+      <article class="story lead">
+        <a href="https://www.quantamagazine.org/sea-monkeys-show-scientists-how-to-rewrite-a-rule-of-turbulence-20261002/" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://www.quantamagazine.org/wp-content/uploads/2026/10/ManipulatingTurbulence-crXinyuSi_UniversityOfPittsburgh-Default.webp" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">Quanta Magazine</span><time datetime="2026-10-02T14:45:02+00:00"></time></div>
+            <h3>Sea Monkeys Show Scientists How To Rewrite a Rule of Turbulence</h3>
+            <p>Scientists assumed that energy flows in only one direction in a turbulent system. What they didn’t know, until they looked closely at brine shrimp, was that a simple factor can reverse the flow. The post Sea Monkeys Show Scientists How To Rewrite a Rule of…</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://physicsworld.com/a/quiz-of-the-week-how-are-researchers-making-weather-predictions-more-accurate/" target="_blank" rel="noopener">
+          
+          <div class="text">
+            <div class="meta"><span class="source">Physics World</span><time datetime="2026-10-02T14:30:38+00:00"></time></div>
+            <h3>Quiz of the week: how are researchers making weather predictions more accurate?</h3>
+            <p>Have you been keeping up to date with physics news? Try our short quiz to find out The post Quiz of the week: how are researchers making weather predictions more accurate? appeared first on Physics World.</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://phys.org/news/2026-10-protons-energy-pulse-lasers.html" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://scx1.b-cdn.net/csz/news/800a/2026/protons-ride-moving-wa.jpg" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">Phys.org</span><time datetime="2026-10-02T10:20:08-04:00"></time></div>
+            <h3>Protons ride moving waves to reach record energy with long-pulse lasers</h3>
+            <p>Imagine a proton catching a wave and surfing it to gain speed. While the imagery may seem wild, the premise of laser-driven ion acceleration has promise as an alternative to conventional accelerators. However, the ultrathin targets used to drive this increase…</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="http://link.aps.org/doi/10.1103/Physics.19.134" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://physics.aps.org/assets/10.1103/Physics.19.134/figure/1/thumb" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">APS Physics</span><time datetime="2026-10-01T10:00:00+00:00"></time></div>
+            <h3>Snapshot: In the Eye of the Beholder</h3>
+            <p>The shape of gold nanostructures changes depending on how they are imaged. [Physics 19, 134] Published Thu Oct 01, 2026</p>
+          </div>
+        </a>
+      </article>
+      </div>
+    </section>
+    <section class="section" id="technology">
+      <h2 class="section-title">Technology</h2>
+      <div class="stories">
+      <article class="story lead">
+        <a href="https://www.newscientist.com/article/2591449-i-am-a-top-drone-pilot-in-the-ukrainian-army-this-what-it-is-really-like/" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://www.newscientist.com/wp-content/uploads/2026/09/SEI_314719004.jpg" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">New Scientist</span><span class="badge">Subscriber</span><time datetime="2026-10-02T08:00:00+00:00"></time></div>
+            <h3>I am a top drone pilot in the Ukrainian Army – this is what it is really like</h3>
+            <p>Kratos is the call sign of one of the leading drone pilots in Ukraine. As part of the Aquila regiment, 3rd Army Corps, he has taken down almost 1000 enemy drones</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://www.technologyreview.com/2026/10/02/1145610/younger-contest-race-to-biological-youth/" target="_blank" rel="noopener">
+          
+          <div class="text">
+            <div class="meta"><span class="source">MIT Technology Review</span><time datetime="2026-10-02T09:00:00+00:00"></time></div>
+            <h3>A new contest pits competitors against each other in a race to biological youth</h3>
+            <p>This week, I officially signed up for an unusual competition. One that rewards competitors for getting younger. I recently turned 40, and I don’t need reminding that both time and my chronological age only tick forward. But this game is focused on…</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://arstechnica.com/security/2026/10/hacks-of-2-federal-agencies-in-a-month-have-spilled-a-bonanza-of-sensitive-data/" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://cdn.arstechnica.net/wp-content/uploads/2021/04/data-leak-1000x648.jpeg" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">Ars Technica</span><time datetime="2026-10-01T20:28:45+00:00"></time></div>
+            <h3>Hacks of 2 federal agencies in a month have spilled a bonanza of sensitive data</h3>
+            <p>It has been a bad month for federal government cybersecurity.</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://spectrum.ieee.org/electricity-theft" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://spectrum.ieee.org/media-library/three-lightbulbs-glowing-with-the-middle-one-appearing-to-wear-a-black-mask-with-a-menacing-face.jpg?id=67857147&amp;width=980" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">IEEE Spectrum</span><time datetime="2026-10-01T12:00:02+00:00"></time></div>
+            <h3>Electricity Theft Is Rampant, but Delhi Found a Fix</h3>
+            <p>It’s disheartening how much power gets generated and then promptly lost as it travels through grid networks. This leaking of electricity happens when it vanishes as heat as well as when it is pilfered by thieves and nonpaying customers. More than half of the…</p>
+          </div>
+        </a>
+      </article>
+      </div>
+    </section>
+    <section class="section" id="across-the-sciences">
+      <h2 class="section-title">Across the Sciences</h2>
+      <div class="stories">
+      <article class="story lead">
+        <a href="https://nautil.us/this-obscure-1960s-guide-to-lsd-holds-up-1285476/" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://lede-admin.nautil.us/wp-content/uploads/sites/70/2026/10/shutterstock_1877534338.jpg?w=564" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">Nautilus</span><time datetime="2026-10-02T17:00:58+00:00"></time></div>
+            <h3>This Obscure 1960s Guide to LSD Holds Up</h3>
+            <p>A survey of more than 500 private psychedelic users finds real utility in a 60-year-old pamphlet on safe tripping penned by a pioneer of harm reduction The post This Obscure 1960s Guide to LSD Holds Up appeared first on Nautilus.</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://www.newscientist.com/article/2591803-fossil-mammal-with-reptile-like-teeth-changes-picture-of-our-evolution/" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://www.newscientist.com/wp-content/uploads/2026/10/SEI_314972990.jpg" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">New Scientist</span><span class="badge">Subscriber</span><time datetime="2026-10-02T16:00:00+00:00"></time></div>
+            <h3>Fossil mammal with reptile-like teeth changes picture of our evolution</h3>
+            <p>Unlike most modern mammals, which get just two sets of teeth in their lifetime, an ancient species from the Cretaceous, found in China, appears to have had the ability to replace its teeth throughout its life</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://arstechnica.com/space/2026/10/rocket-report-spacex-completes-launch-triple-header-rocket-lab-nets-big-contract/" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://cdn.arstechnica.net/wp-content/uploads/2026/10/falcon9_falconheavy-1152x648-1790915768.jpg" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">Ars Technica</span><time datetime="2026-10-02T13:54:34+00:00"></time></div>
+            <h3>Rocket Report: SpaceX completes launch triple-header; Rocket Lab nets big contract</h3>
+            <p>Blue Origin seeks FAA approval for up to 50 New Glenn launches and 50 booster landings per year.</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://www.nature.com/articles/d41586-026-03057-4" target="_blank" rel="noopener">
+          
+          <div class="text">
+            <div class="meta"><span class="source">Nature</span><time datetime="2026-10-02T00:00:00+00:00"></time></div>
+            <h3>‘Learning about physics changed my life’: author Hernan Diaz on his new novel Ply</h3>
+            <p>The Pulitzer Prize-winning author joins us to talk about his time visiting CERN and communicating quantum physics in fiction.</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://www.quantamagazine.org/what-does-the-fourth-dimension-actually-look-like-20261001/" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://www.quantamagazine.org/wp-content/uploads/2026/10/JOW-S5-E9-cr-Chanelle-Nibbelink-Default-NO-LOGO.webp" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">Quanta Magazine</span><time datetime="2026-10-01T13:20:29+00:00"></time></div>
+            <h3>What Does the Fourth Dimension Actually Look Like?</h3>
+            <p>Maggie Miller explains why our intuition about three dimensions breaks down in four, and how she visualizes 4D spaces as a reel of three-dimensional snapshots. The post What Does the Fourth Dimension Actually Look Like? first appeared on Quanta Magazine</p>
+          </div>
+        </a>
+      </article>
+      </div>
+    </section>
+    <section class="section" id="nature">
+      <h2 class="section-title">Nature</h2>
+      <div class="stories">
+      <article class="story lead">
+        <a href="https://www.smithsonianmag.com/science-nature/these-15-adorable-photos-of-pandas-will-make-you-want-to-visit-the-zoo-immediately-180989606/" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://th-thumbnailer.cdn-si-edu.com/lGbwj4drCA-2-m76bLCQj4s7vWw=/420x240/filters:focal(2736x1824:2737x1825)/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer_public/98/d3/98d34eb6-92fb-4ac8-97f5-aead47156fa1/1-773b9600-3419-4e37-a754-5ac1737254bb.jpg" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">Smithsonian</span><time datetime="2026-10-02T15:21:12+00:00"></time></div>
+            <h3>These 15 Adorable Photos of Pandas Will Make You Want to Visit the Zoo Immediately</h3>
+            <p>Members of the fluffy and adorable but vulnerable species are often cared for in zoos and breeding centers around the world, and these snapshots may make you jealous of the caretakers’ jobs</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://news.mongabay.com/2026/10/probiotics-prevented-coral-bleaching-during-a-red-sea-heat-wave-study/" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://imgs.mongabay.com/wp-content/uploads/sites/20/2026/10/02132528/Researcher-Raquel-Peixoto-inoculating-probiotics-768x512.jpg" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">Mongabay</span><time datetime="2026-10-02T15:06:24+00:00"></time></div>
+            <h3>Probiotics prevented coral bleaching during a Red Sea heat wave: Study</h3>
+            <p>As a heat wave settled on the Red Sea in 2022, a patch of corals in a reef 15 kilometers (9.3 miles) off the coast of Saudi Arabia reacted differently than other corals. They’d been treated with probiotics, beneficial bacteria isolated from healthy corals…</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://www.bbc.co.uk/news/articles/cjx2zk09rg36o?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://ichef.bbci.co.uk/ace/standard/976/cpsprodpb/b727/live/825286f0-552a-11f1-9e1e-29cb974f260a.jpg" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">BBC</span><time datetime="2026-10-02T14:16:32+00:00"></time></div>
+            <h3>Backshall makes nature &#x27;cool&#x27; to inspire children</h3>
+            <p>Steve Backshall says growing up with rescue animals helped inspire his passion for nature.</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://www.newscientist.com/article/2591745-elephants-imitate-each-other-when-they-produce-deep-rumbling-sounds/" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://www.newscientist.com/wp-content/uploads/2026/10/SEI_314591420.jpg" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">New Scientist</span><span class="badge">Subscriber</span><time datetime="2026-10-01T15:00:00+00:00"></time></div>
+            <h3>Elephants imitate each other when they produce deep rumbling sounds</h3>
+            <p>African savannah elephants use a variety of calls to communicate, and now machine learning has shown that they tune their deepest sounds to match those of other nearby elephants</p>
+          </div>
+        </a>
+      </article>
+      </div>
+    </section>
+    <section class="section" id="tennis">
+      <h2 class="section-title">Tennis</h2>
+      <div class="stories">
+      <article class="story lead">
+        <a href="https://www.bbc.co.uk/sport/tennis/articles/c52e9dkmm7ylo?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://ichef.bbci.co.uk/ace/standard/976/cpsprodpb/03bf/live/2624e5d0-be66-11f1-babe-4199b0e7ccea.jpg" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">BBC Sport</span><time datetime="2026-10-02T16:23:39+00:00"></time></div>
+            <h3>Sabalenka &#x27;trying hard to be easier on myself&#x27;</h3>
+            <p>Aryna Sabalenka says she is &quot;trying so hard to be easier on myself&quot; as she begins her China Open campaign with victory over Renata Zarazua.</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://www.espn.com/tennis/story/_/id/50085460/what-match-djokovic-rallies-beat-home-favorite-bu-reach-china-open-quarterfinals" target="_blank" rel="noopener">
+          
+          <div class="text">
+            <div class="meta"><span class="source">ESPN</span><time datetime="2026-10-02T13:18:15-05:00"></time></div>
+            <h3>Djokovic rallies after medical timeout, improves to 31-0 at China Open</h3>
+            <p>Novak Djokovic rallied to beat Bu Yunchaokete to reach the quarterfinals and maintain his flawless record at the China Open despite again needing a medical timeout.</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://www.espn.com/olympics/story/_/id/50083618/wang-xiyu-defeats-zhang-shuai-tennis-gold-asian-games" target="_blank" rel="noopener">
+          
+          <div class="text">
+            <div class="meta"><span class="source">ESPN</span><time datetime="2026-10-02T06:18:55-05:00"></time></div>
+            <h3>Wang defeats Zhang for tennis gold at Asian Games</h3>
+            <p>Wang Xiyu defeated Zhang Shuai 6-2, 6-1 to win women&#x27;s singles tennis gold on Friday at the Asian Games. The victory also gave her an automatic berth at the 2028 Olympics in Los Angeles.</p>
+          </div>
+        </a>
+      </article>
+      <article class="story">
+        <a href="https://www.theguardian.com/sport/2026/oct/01/womens-tennis-tour-wta-announces-prize-money-parity-with-mens-events" target="_blank" rel="noopener">
+          <div class="thumb"><img src="https://i.guim.co.uk/img/media/bb30d82fe7a44113c92f8255789e68864b3da4fc/409_102_2498_1999/master/2498.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=a673ed2a302335cb4ae18416caff9318" alt="" loading="lazy" decoding="async"></div>
+          <div class="text">
+            <div class="meta"><span class="source">The Guardian</span><time datetime="2026-10-01T19:54:48+00:00"></time></div>
+            <h3>Women’s tennis tour announces prize money parity with men in ‘major milestone’</h3>
+            <p>WTA announces ‘major milestone’ in fight for equality Combined WTA 1000 events to award equal prize money All combined WTA 1000 tournaments will award women equal prize ⁠money to the men from 2027, the Women’s Tennis Association has announced, ⁠with the…</p>
+          </div>
+        </a>
+      </article>
+      </div>
+    </section>
+    </main>
+
+    <footer>
+      <p class="goodnight">That’s all for tonight. Sleep well.</p>
+      <p class="small">Fresh stories every day · <span id="built" data-built="2026-10-02T17:29:42.543748+00:00"></span></p>
+      <p class="small">From APS Physics · Ars Technica · BBC · BBC Sport · ESA · ESPN · IEEE Spectrum · Knowable Magazine · MIT Technology Review · MedPage Today · Medical Xpress · Mongabay · NASA · NEJM · Nature · Nature Medicine · Nautilus · New Scientist · Phys.org · Physics World · Quanta Magazine · STAT · Science · Smithsonian · The BMJ · The Conversation · The Guardian · The Lancet · Universe Today</p>
+    </footer>
+  </div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var now = new Date();
+
+  document.getElementById("date").textContent =
+    now.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" });
+  var h = now.getHours();
+  document.getElementById("greeting").textContent =
+    h >= 18 || h < 4 ? "Good evening. A few good things to read before sleep."
+                     : "A few good things to read before sleep.";
+
+  // "Today", "Yesterday", "3 days ago" next to each story.
+  var day = 864e5, midnight = new Date(now).setHours(0, 0, 0, 0);
+  document.querySelectorAll("time[datetime]").forEach(function (el) {
+    var d = new Date(el.getAttribute("datetime"));
+    if (isNaN(d)) return;
+    var diff = Math.floor((midnight - new Date(d).setHours(0, 0, 0, 0)) / day);
+    el.textContent = diff <= 0 ? "Today" : diff === 1 ? "Yesterday" : diff + " days ago";
+  });
+
+  var b = document.getElementById("built"), bd = new Date(b.dataset.built);
+  if (!isNaN(bd)) b.textContent = "updated " + bd.toLocaleString(undefined, { weekday: "short", hour: "numeric", minute: "2-digit" });
+
+  function save(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+  var themeBtn = document.getElementById("theme");
+  function isPaper() { return root.dataset.mood === "paper"; }
+  function syncThemeBtn() {
+    themeBtn.textContent = isPaper() ? "☀︎" : "☾";
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.content = isPaper() ? "#f3ead8" : "#14110e";
+  }
+  syncThemeBtn();
+  themeBtn.onclick = function () {
+    if (isPaper()) delete root.dataset.mood; else root.dataset.mood = "paper";
+    save("br-theme", isPaper() ? "paper" : "night"); syncThemeBtn();
+  };
+
+  function size() { return parseFloat(getComputedStyle(root).getPropertyValue("--size")) || 20; }
+  function setSize(px) { px = Math.max(16, Math.min(28, px)); root.style.setProperty("--size", px + "px"); save("br-size", px); }
+  document.getElementById("smaller").onclick = function () { setSize(size() - 2); };
+  document.getElementById("bigger").onclick = function () { setSize(size() + 2); };
+})();
+</script>
+</body>
+</html>

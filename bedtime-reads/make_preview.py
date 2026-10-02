@@ -41,9 +41,8 @@ def main():
 
     # Full-width images (picture of the day, lead stories) get more pixels than thumbnails.
     jobs = {}
-    for m in re.finditer(r'<(section class="potd"|article class="story[^"]*")(.*?)</(section|article)>', page, re.S):
-        small = m.group(1).startswith("article") and not re.search(r"\b(lead|pick)\b", m.group(1))
-        width = 320 if small else 1200
+    for m in re.finditer(r'<(section class="potd"|article class="story lead"|article class="story")(.*?)</(section|article)>', page, re.S):
+        width = 320 if m.group(1) == 'article class="story"' else 1200
         for src in re.findall(r'<img src="([^"]+)"', m.group(2)):
             jobs[src] = max(width, jobs.get(src, 0))
 
