@@ -200,6 +200,9 @@ def parse_feed(raw, feed):
             "source": feed["name"],
             "badge": feed.get("badge") or ("Subscriber" if feed.get("subscriber") else ""),
             "low_priority": bool(feed.get("low_priority")),
+            "subscriber": bool(feed.get("subscriber")),
+            "journal": bool(feed.get("journal")),
+            "page": None,
             "lead_ok": feed.get("lead_ok", True),
             "minutes": None,
         })
@@ -267,6 +270,25 @@ def pick(items, count, max_age_days, used, shown_before, now):
                         progress = True
                         break
 
+    return chosen
+
+
+def is_paywalled(item):
+    """Open the article; publishers mark locked pages with isAccessibleForFree: false."""
+    if item["subscriber"]:  # his own subscription (New Scientist) is allowed through
+        return False
+    try:
+        item["page"] = fetch(item["link"], timeout=15).decode("utf-8", "replace")
+    except Exception:
+        return False  # can't tell (some free sites block automated visits); keep it
+    return bool(re.search(r'"isAccessibleForFree"\s*:\s*"?false', item["page"], re.I))
+
+
+def finish(candidates, count):
+    """Drop anything behind a sign-up wall, keep the best `count`, newest first, a photo on top."""
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        locked = list(pool.map(is_paywalled, candidates))
+    chosen = [i for i, lock in zip(candidates, locked) if not lock][:count]
     chosen.sort(key=lambda x: x["date"], reverse=True)
     # Lead with a real photo: prefer sources whose pictures aren't charts or figures.
     leads = [i for i in chosen if i["image"] and i["lead_ok"] and not i["low_priority"]] or \
@@ -274,19 +296,21 @@ def pick(items, count, max_age_days, used, shown_before, now):
     if leads:
         chosen.remove(leads[0])
         chosen.insert(0, leads[0])
-    return chosen
+    return chosen, sum(locked)
 
 
 # ---------- extra detail for the chosen stories ----------
 
 def reading_minutes(item):
-    """Estimate reading time from the article's paragraphs. Paywalled sources are skipped."""
-    if item["badge"]:
+    """Estimate reading time from the article's paragraphs. Subscriber-only sources are skipped."""
+    if item["subscriber"]:
         return
-    try:
-        page = fetch(item["link"], timeout=15).decode("utf-8", "replace")
-    except Exception:
-        return
+    page = item["page"]
+    if page is None:
+        try:
+            page = fetch(item["link"], timeout=15).decode("utf-8", "replace")
+        except Exception:
+            return
 
     def count(fragment):
         n = 0
@@ -334,7 +358,7 @@ def enrich(stories):
     with ThreadPoolExecutor(max_workers=8) as pool:
         list(pool.map(reading_minutes, stories))
     for i in stories:
-        if not i["summary"] and i["badge"] == "Journal":
+        if not i["summary"] and i["journal"]:
             pubmed_summary(i)
             time.sleep(0.4)
 
@@ -485,10 +509,15 @@ def main():
     history = json.loads(HISTORY.read_text()) if HISTORY.exists() else {}
     shown_before = {k for k, d in history.items() if d < edition.isoformat()}
 
-    used, sections = set(), []
+    used, sections, locked = set(), [], 0
     for s in sections_cfg:
         items = [i for f in s["feeds"] for i in results[id(f)][0]]
-        sections.append((s, pick(items, s.get("count", 4), s.get("max_age_days", 4), used, shown_before, now)))
+        count = s.get("count", 4)
+        # Take spares, so stories dropped for being behind a sign-up wall can be replaced.
+        candidates = pick(items, count * 2 + 2, s.get("max_age_days", 4), used, shown_before, now)
+        stories, n_locked = finish(candidates, count)
+        locked += n_locked
+        sections.append((s, stories))
 
     # Tonight's picks: the lead story of chosen sections, moved to the top (not shown twice).
     picks = []
@@ -532,6 +561,7 @@ def main():
     for s, stories in sections:
         new = sum(1 for i in stories if i["key"] not in shown_before)
         print(f"{s['name']:<20} {len(stories)} stories, {new} new  ({', '.join(sorted({i['source'] for i in stories}))})")
+    print(f"Skipped {locked} stories that need a sign-up or subscription")
     timed = sum(1 for i in shown if i["minutes"])
     print(f"Reading times found for {timed} of {len(shown)} stories")
     print(f"Picture of the day: {potd['title'] if potd else 'none'}")

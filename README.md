@@ -27,11 +27,16 @@ Live at **https://naderabsy.github.io/bedtime-reads/**
 - **Proper reporting before press releases.** Press-release sites (Medical Xpress, Phys.org) are used
   only when there isn't enough else. Listicles, photo galleries, quizzes, sponsored posts, webinars and
   newsletter round-ups are filtered out.
+- **Free to read, no sign-up.** Before a story goes on the page, the builder opens it and drops it if
+  the publisher marks it as subscriber-only (`isAccessibleForFree: false`), then fills the gap with
+  the next story. Sources that need an account (New Scientist, STAT, MedPage Today, NEJM, The Lancet,
+  The BMJ, MIT Technology Review, Nautilus) are left out.
 - **Tonight's picks** takes the top story from Long Read, From the Journals and Space & Stars and
   puts them at the top (they aren't repeated further down).
 - **Reading time** comes from the publisher's own word count where available, otherwise from the
-  article text. Paywalled stories (New Scientist, journals) don't get one.
-- **Journal stories with no summary** (NEJM especially) get the abstract's conclusion from PubMed.
+  article text.
+- **Journal stories with no summary** get the abstract's conclusion from PubMed. The journals used are
+  open access (PLOS Medicine, eClinicalMedicine, BMJ Medicine, and the free articles in Nature Medicine).
 
 ## Try it locally
 
@@ -58,12 +63,10 @@ Open the link in Safari → Share button → **Add to Home Screen**. It gets its
 - Saved stories, text size and night/paper choice are stored on the iPad itself, so they don't
   appear on other devices.
 
-New Scientist stories are marked **Subscriber**. They open on New Scientist's own site, so they
-read in full as long as he's logged in to New Scientist in Safari. The page never stores or sees
-his login. To leave New Scientist out entirely, set `"include_new_scientist": false` in `sources.json`.
+Every link opens straight to the full article, with no account needed.
 
-Stories marked **Journal** (NEJM, The Lancet, The BMJ, Nature Medicine) link to the journal's own
-page. Abstracts are free; full text may need his hospital or society access.
+New Scientist is switched off. Its feeds are still in `sources.json`; setting
+`"include_new_scientist": true` brings them back, marked **Subscriber**, for reading with his own login.
 
 ## Notes
 
