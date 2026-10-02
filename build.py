@@ -436,7 +436,9 @@ def render(cfg, edition, built, potd, picks, sections, editions, base, is_archiv
     for s, stories in sections:
         if not stories:
             continue
-        cards = "".join(render_story(i, "lead" if n == 0 and i["image"] else "") for n, i in enumerate(stories))
+        # Only a real photo gets the big lead spot; a chart or figure stays a small thumbnail.
+        cards = "".join(render_story(i, "lead" if n == 0 and i["image"] and i["lead_ok"] else "")
+                        for n, i in enumerate(stories))
         body += f"""
     <section class="section" id="{slug(s["name"])}">
       <h2 class="section-title">{esc(s["name"])}</h2>
