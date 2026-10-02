@@ -463,6 +463,7 @@ def render(cfg, edition, built, potd, picks, sections, editions, base, is_archiv
         "{{EDITION}}": long_date(edition),
         "{{BANNER}}": banner,
         "{{BUILT}}": built,
+        "{{LIVE}}": "" if is_archive else "1",
         "{{NAV}}": nav,
         "{{HERO}}": hero,
         "{{PICKS}}": picks_html,
@@ -552,6 +553,8 @@ def main():
         render(cfg, edition, built, potd, picks, sections, editions, base="", is_archive=False), encoding="utf-8")
     (ARCHIVE / f"{edition.isoformat()}.html").write_text(
         render(cfg, edition, built, potd, picks, sections, editions, base="../", is_archive=True), encoding="utf-8")
+    # A tiny file the open page checks, to notice when a newer edition is out.
+    (SITE / "edition.json").write_text(json.dumps({"built": built, "edition": edition.isoformat()}) + "\n")
     for f in STATIC.glob("*"):
         shutil.copy(f, SITE / f.name)
 

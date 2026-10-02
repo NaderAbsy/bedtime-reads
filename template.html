@@ -213,7 +213,7 @@
     <footer>
       <p class="goodnight">That’s all for tonight. Sleep well.</p>
       {{ARCHIVE}}
-      <p class="small">New stories every evening · <span id="built" data-built="{{BUILT}}"></span></p>
+      <p class="small">New stories every evening · <span id="built" data-built="{{BUILT}}" data-live="{{LIVE}}"></span></p>
       <p class="small">From {{SOURCES}}</p>
     </footer>
   </div>
@@ -349,6 +349,30 @@
 
   syncSaveButtons();
   renderShelf();
+
+  // ---- Auto-refresh: when he comes back to the page, load tonight's edition if a newer one is out ----
+  // (Archive pages are meant to stay old, so only the live page does this.)
+  var lastCheck = 0;
+  function checkForNewEdition() {
+    if (document.getElementById("built").dataset.live !== "1" || Date.now() - lastCheck < 60000) return;
+    lastCheck = Date.now();
+    fetch("edition.json?t=" + Date.now(), { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (info) {
+        if (!info || !info.built || isNaN(built) || new Date(info.built) <= built) return;
+        // Guard against a reload loop if a cache still serves the old page for a few minutes.
+        try {
+          if (sessionStorage.getItem("br-reloaded-for") === info.built) return;
+          sessionStorage.setItem("br-reloaded-for", info.built);
+        } catch (e) {}
+        location.replace(location.pathname + "?edition=" + encodeURIComponent(info.built));
+      })
+      .catch(function () {});
+  }
+  checkForNewEdition();
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) checkForNewEdition(); });
+  window.addEventListener("pageshow", function (e) { if (e.persisted) checkForNewEdition(); });
+  window.addEventListener("focus", checkForNewEdition);
 })();
 </script>
 </body>

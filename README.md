@@ -72,3 +72,5 @@ New Scientist is switched off. Its feeds are still in `sources.json`; setting
 
 - A feed that's down is retried once, then skipped for that day; the rest of the page still builds.
 - Links he has already opened turn a dimmer colour.
+- When he comes back to the page, it checks `edition.json` and reloads itself if a newer edition is out,
+  so he never has to pull down to refresh. Archive pages don't do this.
