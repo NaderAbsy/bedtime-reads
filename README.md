@@ -56,8 +56,10 @@ It rebuilds daily at 15:00 UTC (18:00 Amman time). To change the time, edit the 
 
 Open the link in Safari → Share button → **Add to Home Screen**. It gets its own moon icon.
 
-- **Save for later** on any story puts it in a *Saved for later* list at the top of the page. It stays
-  there through daily updates until he taps **Done**.
+- **Save for later** on any story adds it to **Saved reads**. The **Saved** button at the top (next to
+  A– / A+) shows how many are waiting and opens the list. Each saved story has **Read** and **Done**;
+  Done removes it, with **Undo** for a few seconds in case of a slip. Saved reads stay through the daily
+  updates until he taps Done. The link `…/bedtime-reads/#saved` opens the list directly.
 - **Continue reading** at the top shows the last few stories he opened in the past week.
 - **Previous nights** at the bottom opens any of the last 7 editions.
 - Saved stories, text size and night/paper choice are stored on the iPad itself, so they don't

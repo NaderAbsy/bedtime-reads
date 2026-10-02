@@ -32,6 +32,7 @@
   }
 
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
   body {
     margin: 0; background: var(--bg); color: var(--ink);
@@ -76,6 +77,62 @@
   .shelf .row a { display: block; font-weight: 600; line-height: 1.3; }
   .shelf .row a:visited { color: var(--visited); }
   .shelf .row span { font: 500 13px/1.4 var(--sans); color: var(--ink-faint); }
+
+  /* Saved button + Saved reads panel */
+  .controls .saved-open { display: inline-flex; align-items: center; gap: 8px; padding: 0 12px 0 16px; }
+  .saved-open .count {
+    min-width: 22px; height: 22px; border-radius: 11px; padding: 0 6px; display: inline-grid; place-items: center;
+    font: 700 12px/1 var(--sans); background: var(--rule); color: var(--ink-soft); font-variant-numeric: tabular-nums;
+  }
+  .saved-open.has-items { color: var(--accent); border-color: var(--accent); }
+  .saved-open.has-items .count { background: var(--accent); color: var(--bg); }
+  #saved-panel {
+    margin: 0 0 0 auto; width: min(460px, 100%); height: 100%; max-height: 100%; max-width: 100%;
+    padding: 0; border: 0; border-left: 1px solid var(--rule); background: var(--bg); color: var(--ink);
+  }
+  #saved-panel[open] { animation: panel-in .22s ease-out; }
+  #saved-panel::backdrop { background: rgba(10, 8, 6, .55); }
+  @keyframes panel-in { from { transform: translateX(28px); opacity: 0; } to { transform: none; opacity: 1; } }
+  html.panel-open { overflow: hidden; }
+  .panel { padding: calc(env(safe-area-inset-top, 0px) + 22px) 24px calc(env(safe-area-inset-bottom, 0px) + 32px); }
+  .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .panel-head h2 { margin: 0; font-size: 1.3em; font-weight: 600; }
+  #saved-total { font: 600 15px/1 var(--sans); color: var(--ink-faint); margin-left: 6px; }
+  .panel-close {
+    width: 44px; height: 44px; border-radius: 22px; border: 1px solid var(--rule); background: var(--bg-raised);
+    color: var(--ink-soft); font: 600 16px/1 var(--sans); cursor: pointer; flex-shrink: 0;
+  }
+  .panel-note { font: 500 13px/1.4 var(--sans); color: var(--ink-faint); margin: 6px 0 10px; }
+  .saved-items { list-style: none; margin: 0; padding: 0; }
+  .saved-item { display: flex; gap: 14px; padding: 18px 0; border-bottom: 1px solid var(--rule); align-items: flex-start; }
+  .saved-item:last-child { border-bottom: 0; }
+  .saved-item img { width: 76px; height: 76px; object-fit: cover; border-radius: 8px; flex-shrink: 0; filter: var(--img-filter); background: var(--bg-raised); }
+  .saved-item .row { flex: 1; min-width: 0; }
+  .saved-item .row a { display: block; font-weight: 600; line-height: 1.3; font-size: .98em; }
+  .saved-item .row a:visited { color: var(--visited); }
+  .saved-item .meta-line { display: block; font: 500 13px/1.4 var(--sans); color: var(--ink-faint); margin-top: 4px; }
+  .saved-item p { margin: 6px 0 0; font-size: .82em; line-height: 1.5; color: var(--ink-soft);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .saved-item .actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .saved-item .read {
+    font: 600 13px/1 var(--sans); color: var(--bg); background: var(--accent); border-radius: 18px;
+    padding: 10px 16px; display: inline-flex; align-items: center; min-height: 36px;
+  }
+  .saved-empty { text-align: center; padding: 48px 12px; color: var(--ink-soft); }
+  .saved-empty .big { font-size: 1.15em; color: var(--ink); font-style: italic; margin: 0 0 8px; }
+  .saved-empty p { margin: 0 auto; max-width: 30ch; }
+  .toast {
+    position: fixed; left: 50%; transform: translateX(-50%); z-index: 20;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
+    display: flex; align-items: center; gap: 14px; max-width: calc(100% - 32px);
+    font: 500 15px/1.3 var(--sans); color: var(--ink); background: var(--bg-raised);
+    border: 1px solid var(--rule); border-radius: 26px; padding: 8px 8px 8px 18px; box-shadow: 0 8px 28px rgba(0,0,0,.35);
+  }
+  .toast button {
+    font: 600 14px/1 var(--sans); color: var(--accent); background: transparent; border: 1px solid var(--accent);
+    border-radius: 18px; padding: 9px 14px; cursor: pointer; white-space: nowrap;
+  }
+  dialog .toast { position: sticky; left: auto; transform: none; width: fit-content; margin: 18px auto 0; }
 
   /* Picture of the day */
   .potd { margin: 30px 0 10px; }
@@ -165,6 +222,8 @@
     /* Phone: buttons under the title, sections as one swipeable row. */
     .top { flex-direction: column; gap: 14px; }
     .controls button { height: 40px; min-width: 40px; }
+    .panel { padding-inline: 16px; }
+    #saved-panel { border-left: 0; }
     .jump {
       flex-wrap: nowrap; overflow-x: auto; margin-inline: -16px; padding-inline: 16px;
       scrollbar-width: none; -webkit-overflow-scrolling: touch;
@@ -198,6 +257,7 @@
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
+    #saved-panel[open] { animation: none; }
     body { transition: none; }
   }
 </style>
@@ -220,6 +280,7 @@
           <p class="greeting" id="greeting">A few good things to read before sleep.</p>
         </div>
         <div class="controls">
+          <button id="saved-open" class="saved-open" type="button" aria-haspopup="dialog">Saved <span class="count" id="saved-count">0</span></button>
           <button id="smaller" type="button" aria-label="Smaller text">A−</button>
           <button id="bigger" type="button" aria-label="Bigger text">A+</button>
           <button id="theme" type="button" aria-label="Switch between night and paper colours">☾</button>
@@ -234,10 +295,6 @@
         <div id="continue-block" hidden>
           <h2 class="section-title">Continue reading</h2>
           <ul id="continue-list"></ul>
-        </div>
-        <div id="saved-block" hidden>
-          <h2 class="section-title">Saved for later</h2>
-          <ul id="saved-list"></ul>
         </div>
       </section>
     </aside>
@@ -296,7 +353,7 @@
         <div class="thumb"><img src="https://scx1.b-cdn.net/csz/news/800a/2026/black-holes-may-grow-q-1.jpg" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">Phys.org</span><time datetime="2026-10-02T15:20:02-04:00"></time></div>
+          <div class="meta"><span class="source">Phys.org</span><time datetime="2026-10-02T15:20:02-04:00"></time><span class="mins">5 min read</span></div>
           <h3><a href="https://phys.org/news/2026-10-black-holes-quietly-galaxies-violent.html" target="_blank" rel="noopener">Black holes may grow quietly alongside galaxies even without violent mergers</a></h3>
           <p>Astronomers analyzed 2,435 galaxies hosting actively feeding black holes using data from the Dark Energy Spectroscopic Instrument (DESI). Among them, they identified 546 &quot;bulgeless&quot; galaxies—systems with little or no central stellar bulge. Their paper…</p>
           <button class="save" type="button" aria-pressed="false">Save for later</button>
@@ -341,7 +398,7 @@
         <div class="thumb"><img src="https://scx1.b-cdn.net/csz/news/800a/2026/heres-why-experts-say.jpg" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">Medical Xpress</span><time datetime="2026-10-02T17:40:01-04:00"></time></div>
+          <div class="meta"><span class="source">Medical Xpress</span><time datetime="2026-10-02T17:40:01-04:00"></time><span class="mins">4 min read</span></div>
           <h3><a href="https://medicalxpress.com/news/2026-10-experts-ideal-flu.html" target="_blank" rel="noopener">Here&#x27;s why experts say now is an ideal time to protect yourself from flu</a></h3>
           <p>It&#x27;s October and time for flu shots. Medical experts urge getting a flu vaccination soon, before influenza starts spreading widely—and to get up to date on protection against other fall respiratory viruses, too. Updated COVID-19 shots are available now, plus…</p>
           <button class="save" type="button" aria-pressed="false">Save for later</button>
@@ -372,13 +429,13 @@
     <section class="section" id="from-the-journals">
       <h2 class="section-title">From the Journals</h2>
       <div class="stories">
-      <article class="story no-image" data-k="https://www.nature.com/articles/s41591-026-04658-2">
+      <article class="story no-image" data-k="https://www.thelancet.com/journals/eclinm/article/piis2589-5370(26)00509-2/fulltext">
         
         <div class="text">
           
-          <div class="meta"><span class="source">Nature Medicine</span><span class="badge">Open access</span><time datetime="2026-10-02T00:00:00+00:00"></time></div>
-          <h3><a href="https://www.nature.com/articles/s41591-026-04658-2" target="_blank" rel="noopener">The missing links in agentic AI autonomy</a></h3>
-          <p>A new study tackles issues around operational and decisional trust of agentic artificial intelligence (AI), using locally deployed, on-premise agents and consistency-based gating to refer uncertain cases — but what happens after referral remains untested.</p>
+          <div class="meta"><span class="source">eClinicalMedicine</span><span class="badge">Open access</span><time datetime="2026-10-02T08:13:39+00:00"></time></div>
+          <h3><a href="https://www.thelancet.com/journals/eclinm/article/PIIS2589-5370(26)00509-2/fulltext?rss=yes" target="_blank" rel="noopener">Gestational age references and trajectory of fetal haemoglobin in relation to outcome in neonates born before 30 weeks of gestation: a single-centre retrospective cohort study in The Netherlands</a></h3>
+          <p>RBC transfusions accelerate HbF decline in neonates born before 30 weeks’ gestation. Its association with prematurity-related morbidity supports evaluation of HbF-preserving transfusion strategies. Future studies should incorporate the interval and frequency…</p>
           <button class="save" type="button" aria-pressed="false">Save for later</button>
         </div>
       </article>
@@ -491,7 +548,7 @@
         
         <div class="text">
           
-          <div class="meta"><span class="source">Undark</span><time datetime="2026-09-25T07:00:53+00:00"></time></div>
+          <div class="meta"><span class="source">Undark</span><time datetime="2026-09-25T07:00:53+00:00"></time><span class="mins">17 min read</span></div>
           <h3><a href="https://undark.org/2026/09/25/brain-trust-human-animal-chimeras/" target="_blank" rel="noopener">Engineering Animals to Grow Human Organs — But Not Human Minds</a></h3>
           <p>Chimeras, or animals with human cells and tissues, are not new, and researchers have long used them to gain insights into diseases and even as a potential source of transplantable organs. But the research brings up thorny ethical questions regarding animal…</p>
           <button class="save" type="button" aria-pressed="false">Save for later</button>
@@ -561,7 +618,7 @@
         <div class="thumb"><img src="https://th-thumbnailer.cdn-si-edu.com/oIw6E2xT4MnjAKXsluvUPvukwNY=/420x240/filters:focal(386x271:387x272)/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer_public/08/8b/088beb9a-0b0e-46e9-9a99-ec284db573b4/ezgif-79ce7fc33c96a2a6.jpg" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">Smithsonian</span><time datetime="2026-10-02T18:15:00+00:00"></time><span class="mins">6 min read</span></div>
+          <div class="meta"><span class="source">Smithsonian</span><time datetime="2026-10-02T18:15:00+00:00"></time></div>
           <h3><a href="https://www.smithsonianmag.com/science-nature/ancient-pottery-reveals-the-earliest-known-traces-of-chocolate-east-of-the-mississippi-painting-a-picture-of-connection-in-the-americas-180989559/" target="_blank" rel="noopener">Ancient Pottery Reveals the Earliest Known Traces of Chocolate East of the Mississippi, Painting a Picture of Connection in the Americas</a></h3>
           <p>A new archaeological discovery suggests that people in present-day Georgia have feasted with cacao for 1,000 years</p>
           <button class="save" type="button" aria-pressed="false">Save for later</button>
@@ -610,9 +667,29 @@
     <footer>
       <p class="goodnight">That’s all for tonight. Sleep well.</p>
       
-      <p class="small">New stories every evening · <span id="built" data-built="2026-10-02T22:29:25.630843+00:00" data-live=""></span></p>
+      <p class="small">New stories every evening · <span id="built" data-built="2026-10-02T22:42:35.248701+00:00" data-live=""></span></p>
       <p class="small">From APS Physics · Aeon · Ars Technica · BBC · BBC Sport · BMJ Medicine · ESA · IEEE Spectrum · Knowable Magazine · Medical Xpress · Mongabay · NASA · Nature · Nature Medicine · PLOS Medicine · Phys.org · Physics World · Quanta Magazine · Science · Sky Sports · Smithsonian · The Conversation · The Guardian · Ubitennis · Undark · Universe Today · eClinicalMedicine</p>
     </footer>
+  </div>
+
+  <dialog id="saved-panel" aria-labelledby="saved-title">
+    <div class="panel">
+      <div class="panel-head">
+        <h2 id="saved-title">Saved reads <span id="saved-total"></span></h2>
+        <button type="button" class="panel-close" id="saved-close" aria-label="Close saved reads">✕</button>
+      </div>
+      <p class="panel-note">Kept on this device until you tap Done.</p>
+      <ul class="saved-items" id="saved-items"></ul>
+      <div class="saved-empty" id="saved-empty" hidden>
+        <p class="big">Nothing saved yet.</p>
+        <p>Tap <strong>Save for later</strong> on any story and it will wait here, through the daily updates, until you’ve read it.</p>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden>
+    <span id="toast-text"></span>
+    <button type="button" id="toast-action"></button>
   </div>
 
 <script>
@@ -664,8 +741,13 @@
   function store(k, v) { put(k, JSON.stringify(v)); }
 
   function fromCard(card) {
-    var a = card.querySelector("h3 a");
-    return { k: card.dataset.k, l: a.href, t: a.textContent, s: card.querySelector(".source").textContent, at: Date.now() };
+    var a = card.querySelector("h3 a"), p = card.querySelector(".text > p"), img = card.querySelector(".thumb img");
+    return {
+      k: card.dataset.k, l: a.href, t: a.textContent, s: card.querySelector(".source").textContent, at: Date.now(),
+      d: p ? p.textContent.slice(0, 240) : "",
+      // Only remember web images; embedded preview images are too large to store.
+      i: img && /^https?:/.test(img.getAttribute("src")) ? img.getAttribute("src") : ""
+    };
   }
   function shortDay(t) {
     var n = Math.floor((new Date().setHours(0, 0, 0, 0) - new Date(t).setHours(0, 0, 0, 0)) / DAY);
@@ -676,7 +758,8 @@
     var li = document.createElement("li");
     var div = document.createElement("div"); div.className = "row";
     var a = document.createElement("a");
-    a.href = item.l; a.target = "_blank"; a.rel = "noopener"; a.textContent = item.t; a.dataset.k = item.k;
+    a.href = item.l; a.target = "_blank"; a.rel = "noopener"; a.textContent = item.t;
+    a.dataset.k = item.k; a.dataset.s = item.s;
     var meta = document.createElement("span");
     meta.textContent = item.s + " · " + verb + " " + shortDay(item.at);
     div.appendChild(a); div.appendChild(meta);
@@ -685,7 +768,6 @@
     done.setAttribute("aria-label", "Remove “" + item.t + "”");
     done.onclick = function () {
       store(listKey, load(listKey).filter(function (x) { return x.k !== item.k; }));
-      if (listKey === "br-saved") syncSaveButtons();
       renderShelf();
     };
     li.appendChild(div); li.appendChild(done);
@@ -697,20 +779,109 @@
     var shelf = document.getElementById("shelf");
     var before = shelf.offsetHeight, above = shelf.getBoundingClientRect().bottom < 0;
 
-    var saved = load("br-saved");
-    var savedKeys = saved.map(function (x) { return x.k; });
+    // Saved stories live in the Saved panel, so they're left out here.
+    var savedKeys = load("br-saved").map(function (x) { return x.k; });
     var weekAgo = Date.now() - 7 * DAY;
     var opened = load("br-opened").filter(function (x) { return x.at > weekAgo && savedKeys.indexOf(x.k) < 0; }).slice(0, 3);
 
-    var cl = document.getElementById("continue-list"), sl = document.getElementById("saved-list");
-    cl.textContent = ""; sl.textContent = "";
+    var cl = document.getElementById("continue-list");
+    cl.textContent = "";
     opened.forEach(function (x) { cl.appendChild(row(x, "opened", "br-opened")); });
-    saved.forEach(function (x) { sl.appendChild(row(x, "saved", "br-saved")); });
     document.getElementById("continue-block").hidden = !opened.length;
-    document.getElementById("saved-block").hidden = !saved.length;
-    shelf.hidden = !opened.length && !saved.length;
+    shelf.hidden = !opened.length;
 
     if (above) window.scrollBy(0, shelf.offsetHeight - before);
+  }
+
+  // ---- Saved reads panel ----
+  var panel = document.getElementById("saved-panel");
+  var openBtn = document.getElementById("saved-open");
+
+  function syncSavedCount() {
+    var n = load("br-saved").length;
+    document.getElementById("saved-count").textContent = n;
+    openBtn.classList.toggle("has-items", n > 0);
+    openBtn.setAttribute("aria-label", "Saved reads, " + n + (n === 1 ? " story" : " stories"));
+  }
+
+  function renderPanel() {
+    var saved = load("br-saved"), list = document.getElementById("saved-items");
+    list.textContent = "";
+    document.getElementById("saved-total").textContent = saved.length ? "(" + saved.length + ")" : "";
+    document.getElementById("saved-empty").hidden = saved.length > 0;
+    saved.forEach(function (item) {
+      var li = document.createElement("li"); li.className = "saved-item";
+      if (item.i) {
+        var img = document.createElement("img");
+        img.src = item.i; img.alt = ""; img.loading = "lazy";
+        img.onerror = function () { img.remove(); };
+        li.appendChild(img);
+      }
+      var div = document.createElement("div"); div.className = "row";
+      var a = document.createElement("a");
+      a.href = item.l; a.target = "_blank"; a.rel = "noopener"; a.textContent = item.t;
+      a.dataset.k = item.k; a.dataset.s = item.s;
+      var meta = document.createElement("span"); meta.className = "meta-line";
+      meta.textContent = item.s + " · saved " + shortDay(item.at);
+      div.appendChild(a); div.appendChild(meta);
+      if (item.d) { var p = document.createElement("p"); p.textContent = item.d; div.appendChild(p); }
+      var actions = document.createElement("div"); actions.className = "actions";
+      var read = document.createElement("a");
+      read.className = "read"; read.href = item.l; read.target = "_blank"; read.rel = "noopener";
+      read.textContent = "Read"; read.dataset.k = item.k; read.dataset.s = item.s; read.dataset.t = item.t;
+      var done = document.createElement("button");
+      done.type = "button"; done.className = "done"; done.textContent = "Done";
+      done.setAttribute("aria-label", "Done reading “" + item.t + "”, remove it");
+      done.onclick = function () { removeSaved(item.k); };
+      actions.appendChild(read); actions.appendChild(done);
+      div.appendChild(actions);
+      li.appendChild(div);
+      list.appendChild(li);
+    });
+  }
+
+  function refreshSaved() { syncSaveButtons(); syncSavedCount(); if (panel.open) renderPanel(); renderShelf(); }
+
+  function removeSaved(k) {
+    var saved = load("br-saved"), at = -1;
+    saved.forEach(function (x, n) { if (x.k === k) at = n; });
+    if (at < 0) return;
+    var removed = saved.splice(at, 1)[0];
+    store("br-saved", saved);
+    refreshSaved();
+    toast("Removed from Saved", "Undo", function () {
+      var now = load("br-saved");
+      if (!now.some(function (x) { return x.k === removed.k; })) now.splice(Math.min(at, now.length), 0, removed);
+      store("br-saved", now);
+      refreshSaved();
+    });
+  }
+
+  function openSaved() {
+    renderPanel();
+    if (panel.showModal) panel.showModal(); else panel.setAttribute("open", "");
+    root.classList.add("panel-open");
+    // The toast belongs to whichever layer is on top, so Undo stays visible above the panel.
+    toastEl.hidden = true;
+    panel.querySelector(".panel").appendChild(toastEl);
+  }
+  function closeSaved() { if (panel.close) panel.close(); else { panel.removeAttribute("open"); onClosed(); } }
+  function onClosed() { root.classList.remove("panel-open"); document.body.appendChild(toastEl); }
+  openBtn.onclick = openSaved;
+  document.getElementById("saved-close").onclick = closeSaved;
+  panel.addEventListener("close", onClosed);
+  panel.addEventListener("click", function (e) { if (e.target === panel) closeSaved(); });  // tap outside the sheet
+
+  // ---- small toast with one action (View / Undo) ----
+  var toastEl = document.getElementById("toast"), toastTimer = null;
+  function toast(text, actionLabel, action) {
+    document.getElementById("toast-text").textContent = text;
+    var btn = document.getElementById("toast-action");
+    btn.textContent = actionLabel;
+    btn.onclick = function () { toastEl.hidden = true; action(); };
+    toastEl.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.hidden = true; }, 5000);
   }
 
   function syncSaveButtons() {
@@ -727,10 +898,10 @@
     if (btn) {
       var card = btn.closest(".story"), saved = load("br-saved");
       var exists = saved.some(function (x) { return x.k === card.dataset.k; });
-      saved = exists ? saved.filter(function (x) { return x.k !== card.dataset.k; })
-                     : [fromCard(card)].concat(saved).slice(0, 60);
-      store("br-saved", saved);
-      syncSaveButtons(); renderShelf();
+      if (exists) { removeSaved(card.dataset.k); return; }
+      store("br-saved", [fromCard(card)].concat(saved).slice(0, 60));
+      refreshSaved();
+      toast("Saved for later", "View saved", openSaved);
       return;
     }
     // Remember what he opens, for "Continue reading" next time.
@@ -738,14 +909,14 @@
     if (!a) return;
     var card2 = a.closest(".story[data-k]"), item = null;
     if (card2) item = fromCard(card2);
-    else if (a.dataset.k) item = { k: a.dataset.k, l: a.href, t: a.textContent, s: a.nextSibling ? a.nextSibling.textContent.split(" · ")[0] : "", at: Date.now() };
+    else if (a.dataset.k) item = { k: a.dataset.k, l: a.href, t: a.dataset.t || a.textContent, s: a.dataset.s || "", at: Date.now() };
     if (!item) return;
     var opened = load("br-opened").filter(function (x) { return x.k !== item.k; });
     store("br-opened", [item].concat(opened).slice(0, 12));
   });
 
-  syncSaveButtons();
-  renderShelf();
+  refreshSaved();
+  if (location.hash === "#saved") openSaved();
 
   // ---- Auto-refresh: when he comes back to the page, load tonight's edition if a newer one is out ----
   // (Archive pages are meant to stay old, so only the live page does this.)
