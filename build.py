@@ -9,6 +9,7 @@ import json
 import re
 import shutil
 import sys
+import time
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -170,10 +171,18 @@ def parse_feed(raw, feed):
 
 
 def load(feed):
-    try:
-        return feed, parse_feed(fetch(feed["url"]), feed), None
-    except Exception as e:  # one broken feed should never break the page
-        return feed, [], f"{type(e).__name__}: {e}"
+    err = None
+    for attempt in range(2):  # news sites sometimes hiccup; one retry is enough
+        raw = b""
+        try:
+            raw = fetch(feed["url"])
+            return feed, parse_feed(raw, feed), None
+        except Exception as e:  # one broken feed should never break the page
+            err = f"{type(e).__name__}: {e}"
+            if raw:
+                err += f" | got: {raw[:120]!r}"
+            time.sleep(3)
+    return feed, [], err
 
 
 # ---------- choosing tonight's picks ----------

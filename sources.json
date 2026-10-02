@@ -98,7 +98,9 @@
       "feeds": [
         { "name": "BBC Sport", "url": "https://feeds.bbci.co.uk/sport/tennis/rss.xml" },
         { "name": "The Guardian", "url": "https://www.theguardian.com/sport/tennis/rss" },
-        { "name": "ESPN", "url": "https://www.espn.com/espn/rss/tennis/news" }
+        { "name": "ESPN", "url": "https://www.espn.com/espn/rss/tennis/news" },
+        { "name": "Sky Sports", "url": "https://www.skysports.com/rss/12110" },
+        { "name": "Ubitennis", "url": "https://www.ubitennis.net/feed/" }
       ]
     }
   ]
