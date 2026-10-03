@@ -183,6 +183,15 @@
   .sky-item p.sky-note { font: 500 13px/1.4 var(--sans); color: var(--ink-faint); margin-top: 8px; }
   .sky-foot { font: 500 13px/1.4 var(--sans); color: var(--ink-faint); margin: 10px 0 0; }
 
+  /* Pull to refresh (home-screen app only; Safari has its own) */
+  .ptr {
+    position: fixed; z-index: 30; left: 50%; top: calc(env(safe-area-inset-top, 0px) + 10px);
+    transform: translate(-50%, 0); pointer-events: none;
+    font: 600 14px/1 var(--sans); color: var(--ink-soft); background: var(--bg-raised);
+    border: 1px solid var(--rule); border-radius: 20px; padding: 10px 16px; box-shadow: 0 6px 20px rgba(0,0,0,.3);
+  }
+  .ptr.ready { color: var(--accent); border-color: var(--accent); }
+
   /* Picture of the day */
   .potd { margin: 30px 0 10px; }
   .potd img {
@@ -410,23 +419,23 @@
     <section class="section" id="space-stars" data-sec="space-stars" data-name="Space &amp; Stars">
       <div class="section-head"><h2 class="section-title">Space &amp; Stars</h2><button class="hide-sec" type="button" data-sec="space-stars" aria-label="Hide Space &amp; Stars">Hide</button></div>
       <div class="stories">
-      <article class="story" data-k="https://phys.org/news/2026-10-team-nasa-explore-potential-lunar.html">
-        <div class="thumb"><img src="https://scx1.b-cdn.net/csz/news/800a/2026/psi-led-team-selected.jpg" alt="" loading="lazy" decoding="async"></div>
-        <div class="text">
-          
-          <div class="meta"><span class="source">Phys.org</span><time datetime="2026-10-02T19:20:06-04:00"></time></div>
-          <h3><a href="https://phys.org/news/2026-10-team-nasa-explore-potential-lunar.html" target="_blank" rel="noopener">Team selected for NASA program to explore potential lunar cave</a></h3>
-          <p>NASA has selected a Planetary Science Institute–led proposal to investigate whether a potentially large underground cave extends beyond the opening of a lunar pit. Such a cave may one day provide a safe haven for astronauts to escape the radiation and extreme…</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
-        </div>
-      </article>
-      <article class="story" data-k="https://www.theguardian.com/science/2026/oct/01/spacex-speed-record-first-black-female-commander">
+      <article class="story lead" data-k="https://www.theguardian.com/science/2026/oct/01/spacex-speed-record-first-black-female-commander">
         <div class="thumb"><img src="https://i.guim.co.uk/img/media/30ee35475e62cb104f1583c4f61e0383013ceeaa/734_0_5308_4248/master/5308.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=8751f0142336861900367eeb10d73575" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
           <div class="meta"><span class="source">The Guardian</span><time datetime="2026-10-02T03:18:45+00:00"></time><span class="mins">4 min read</span></div>
           <h3><a href="https://www.theguardian.com/science/2026/oct/01/spacex-speed-record-first-black-female-commander" target="_blank" rel="noopener">‘An amazing ride’: SpaceX flight led by first Black female commander sets US speed record</a></h3>
           <p>Four astronauts pulled up at International Space Station after eight-hour express flight led by Jessica Watkins</p>
+          <button class="save" type="button" aria-pressed="false">Save for later</button>
+        </div>
+      </article>
+      <article class="story" data-k="https://www.universetoday.com/articles/nasas-first-selection-for-a-new-class-of-mission-the-prima-far-infrared-telescope">
+        <div class="thumb"><img src="https://www.universetoday.com/article_images/NASA-Selects-PRIMAa_20261001_211502.jpg" alt="" loading="lazy" decoding="async"></div>
+        <div class="text">
+          
+          <div class="meta"><span class="source">Universe Today</span><time datetime="2026-10-01T22:09:16+00:00"></time><span class="mins">3 min read</span></div>
+          <h3><a href="https://www.universetoday.com/articles/nasas-first-selection-for-a-new-class-of-mission-the-prima-far-infrared-telescope" target="_blank" rel="noopener">NASA&#x27;s First Selection for a New Class of Mission: The PRIMA Far-Infrared Telescope</a></h3>
+          <p>NASA announced Wednesday a mission to explore the history and evolution of the universe, PRIMA (PRobe far-Infrared Mission for Astrophysics), is advancing to the next phase of development. This space telescope is the first in a new class of NASA astrophysics…</p>
           <button class="save" type="button" aria-pressed="false">Save for later</button>
         </div>
       </article>
@@ -500,13 +509,13 @@
     <section class="section" id="from-the-journals" data-sec="from-the-journals" data-name="From the Journals">
       <div class="section-head"><h2 class="section-title">From the Journals</h2><button class="hide-sec" type="button" data-sec="from-the-journals" aria-label="Hide From the Journals">Hide</button></div>
       <div class="stories">
-      <article class="story no-image" data-k="https://www.nature.com/articles/s41591-026-04658-2">
+      <article class="story no-image" data-k="https://www.thelancet.com/journals/eclinm/article/piis2589-5370(26)00495-5/fulltext">
         
         <div class="text">
           
-          <div class="meta"><span class="source">Nature Medicine</span><span class="badge">Open access</span><time datetime="2026-10-02T00:00:00+00:00"></time></div>
-          <h3><a href="https://www.nature.com/articles/s41591-026-04658-2" target="_blank" rel="noopener">The missing links in agentic AI autonomy</a></h3>
-          <p>A new study tackles issues around operational and decisional trust of agentic artificial intelligence (AI), using locally deployed, on-premise agents and consistency-based gating to refer uncertain cases — but what happens after referral remains untested.</p>
+          <div class="meta"><span class="source">eClinicalMedicine</span><span class="badge">Open access</span><time datetime="2026-10-03T05:13:52+00:00"></time></div>
+          <h3><a href="https://www.thelancet.com/journals/eclinm/article/PIIS2589-5370(26)00495-5/fulltext?rss=yes" target="_blank" rel="noopener">Prognostic value of hormone receptor expression in patients with HR+/HER2− advanced BC treated with first-line ET+CDK4/6i: results from the multicentre observational, real-world PALMARES-2 study</a></h3>
+          <p>Effectiveness of first-line ET plus CDK4/6i in patients with HR+/HER2− aBC worsens progressively with decreasing ERα expression, and PgR expression adds further prognostic discrimination, with low ERα and PgR expression identifying a subgroup of patients with…</p>
           <button class="save" type="button" aria-pressed="false">Save for later</button>
         </div>
       </article>
@@ -570,13 +579,13 @@
     <section class="section" id="technology" data-sec="technology" data-name="Technology">
       <div class="section-head"><h2 class="section-title">Technology</h2><button class="hide-sec" type="button" data-sec="technology" aria-label="Hide Technology">Hide</button></div>
       <div class="stories">
-      <article class="story lead" data-k="https://www.theguardian.com/stage/2026/oct/03/deepfake-review-ingenious-interview-with-a-pm-who-dances-around-every-issue">
-        <div class="thumb"><img src="https://i.guim.co.uk/img/media/f4e00d688032a6f4da9f87067f14065954f8e7a0/486_0_6879_5504/master/6879.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=a2ad4cf2f260c34e1f20192dc86b6414" alt="" loading="lazy" decoding="async"></div>
+      <article class="story lead" data-k="https://www.theguardian.com/technology/2026/oct/03/openai-review-hacks-australian-government-sites-costing-500000-a-day">
+        <div class="thumb"><img src="https://i.guim.co.uk/img/media/34037c70168080edcdfe41a93dfbb4139efd2e83/626_0_6259_5010/master/6259.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=f8225bd3c8e45966a6616b704d2c6376" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">The Guardian</span><time datetime="2026-10-03T06:00:52+00:00"></time><span class="mins">2 min read</span></div>
-          <h3><a href="https://www.theguardian.com/stage/2026/oct/03/deepfake-review-ingenious-interview-with-a-pm-who-dances-around-every-issue" target="_blank" rel="noopener">Deepfake review – ingenious interview with a PM who dances around every issue</a></h3>
-          <p>Sadler’s Wells East, London An interrogater tries to get to the bottom of a surreal scandal while green screen actors meddle with the story in Jess and Morgs’ inventive production What audiences remember most from a political interview, a voiceover tells the…</p>
+          <div class="meta"><span class="source">The Guardian</span><time datetime="2026-10-03T05:39:22+00:00"></time><span class="mins">3 min read</span></div>
+          <h3><a href="https://www.theguardian.com/technology/2026/oct/03/openai-review-hacks-australian-government-sites-costing-500000-a-day" target="_blank" rel="noopener">OpenAI says its review into hacks, including on Australian government sites, is costing $500,000 a day</a></h3>
+          <p>Company says it is reviewing 50 petabytes of data after its agents accessed websites including Medicare without authorisation Get our breaking news email, free app or daily news podcast OpenAI says its review in response to the Medicare and Hugging Face agent…</p>
           <button class="save" type="button" aria-pressed="false">Save for later</button>
         </div>
       </article>
@@ -619,7 +628,7 @@
         
         <div class="text">
           
-          <div class="meta"><span class="source">Undark</span><time datetime="2026-09-25T07:00:53+00:00"></time></div>
+          <div class="meta"><span class="source">Undark</span><time datetime="2026-09-25T07:00:53+00:00"></time><span class="mins">17 min read</span></div>
           <h3><a href="https://undark.org/2026/09/25/brain-trust-human-animal-chimeras/" target="_blank" rel="noopener">Engineering Animals to Grow Human Organs — But Not Human Minds</a></h3>
           <p>Chimeras, or animals with human cells and tissues, are not new, and researchers have long used them to gain insights into diseases and even as a potential source of transplantable organs. But the research brings up thorny ethical questions regarding animal…</p>
           <button class="save" type="button" aria-pressed="false">Save for later</button>
@@ -665,13 +674,13 @@
     <section class="section" id="nature" data-sec="nature" data-name="Nature">
       <div class="section-head"><h2 class="section-title">Nature</h2><button class="hide-sec" type="button" data-sec="nature" aria-label="Hide Nature">Hide</button></div>
       <div class="stories">
-      <article class="story lead" data-k="https://www.bbc.co.uk/news/articles/c8e361yqp0x2o">
-        <div class="thumb"><img src="https://ichef.bbci.co.uk/ace/standard/976/cpsprodpb/2367/live/15617120-be73-11f1-babe-4199b0e7ccea.jpg" alt="" loading="lazy" decoding="async"></div>
+      <article class="story lead" data-k="https://www.bbc.co.uk/news/articles/cx1l6len3gj3o">
+        <div class="thumb"><img src="https://ichef.bbci.co.uk/ace/standard/976/cpsprodpb/0485/live/b1fe30d0-bda7-11f1-8373-27235719cf2a.jpg" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">BBC</span><time datetime="2026-10-03T06:24:14+00:00"></time><span class="mins">1 min read</span></div>
-          <h3><a href="https://www.bbc.co.uk/news/articles/c8e361yqp0x2o?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener">Island hosts inter-island environment summit</a></h3>
-          <p>The annual event brings together delegates to share ideas and develop joint projects.</p>
+          <div class="meta"><span class="source">BBC</span><time datetime="2026-10-03T12:47:08+00:00"></time><span class="mins">2 min read</span></div>
+          <h3><a href="https://www.bbc.co.uk/news/articles/cx1l6len3gj3o?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener">Woodlands project records more trees than expected</a></h3>
+          <p>The Lost Woods of the Low Weald and Downs project aims to restore some of Sussex&#x27;s ancient woodland.</p>
           <button class="save" type="button" aria-pressed="false">Save for later</button>
         </div>
       </article>
@@ -689,7 +698,7 @@
         <div class="thumb"><img src="https://th-thumbnailer.cdn-si-edu.com/oIw6E2xT4MnjAKXsluvUPvukwNY=/420x240/filters:focal(386x271:387x272)/https://tf-cmsv2-smithsonianmag-media.s3.amazonaws.com/filer_public/08/8b/088beb9a-0b0e-46e9-9a99-ec284db573b4/ezgif-79ce7fc33c96a2a6.jpg" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">Smithsonian</span><time datetime="2026-10-02T18:15:00+00:00"></time><span class="mins">6 min read</span></div>
+          <div class="meta"><span class="source">Smithsonian</span><time datetime="2026-10-02T18:15:00+00:00"></time></div>
           <h3><a href="https://www.smithsonianmag.com/science-nature/ancient-pottery-reveals-the-earliest-known-traces-of-chocolate-east-of-the-mississippi-painting-a-picture-of-connection-in-the-americas-180989559/" target="_blank" rel="noopener">Ancient Pottery Reveals the Earliest Known Traces of Chocolate East of the Mississippi, Painting a Picture of Connection in the Americas</a></h3>
           <p>A new archaeological discovery suggests that people in present-day Georgia have feasted with cacao for 1,000 years</p>
           <button class="save" type="button" aria-pressed="false">Save for later</button>
@@ -710,13 +719,13 @@
           <button class="save" type="button" aria-pressed="false">Save for later</button>
         </div>
       </article>
-      <article class="story no-image" data-k="https://www.ubitennis.net/2026/10/jannik-sinners-absence-continues-after-shanghai-withdrawal">
+      <article class="story no-image" data-k="https://www.ubitennis.net/2026/10/novak-djokovic-speaks-on-health-ahead-of-zverev-showdown-seeks-atp-finals-berth">
         
         <div class="text">
           
-          <div class="meta"><span class="source">Ubitennis</span><time datetime="2026-10-03T10:29:24+00:00"></time><span class="mins">1 min read</span></div>
-          <h3><a href="https://www.ubitennis.net/2026/10/jannik-sinners-absence-continues-after-shanghai-withdrawal/" target="_blank" rel="noopener">Jannik Sinner’s Absence Continues After Shanghai Withdrawal</a></h3>
-          <p>Jannik Sinner has withdrawn from the Masters 1000 event in Shanghai.</p>
+          <div class="meta"><span class="source">Ubitennis</span><time datetime="2026-10-03T13:09:04+00:00"></time><span class="mins">2 min read</span></div>
+          <h3><a href="https://www.ubitennis.net/2026/10/novak-djokovic-speaks-on-health-ahead-of-zverev-showdown-seeks-atp-finals-berth/" target="_blank" rel="noopener">Novak Djokovic Speaks On Health Ahead Of Zverev Showdown, Seeks ATP Finals Berth</a></h3>
+          <p>Novak Djokovic is seeking a place at the Nitto ATP Finals later this year.</p>
           <button class="save" type="button" aria-pressed="false">Save for later</button>
         </div>
       </article>
@@ -738,7 +747,7 @@
     <footer>
       <p class="goodnight">That’s all for tonight. Sleep well.</p>
       
-      <p class="small">New stories every evening · <span id="built" data-built="2026-10-03T12:19:25.270786+00:00" data-live="1"></span></p>
+      <p class="small">New stories every evening · <span id="built" data-built="2026-10-03T13:24:45.876017+00:00" data-live="1"></span></p>
       <p class="small">From APS Physics · Aeon · Ars Technica · BBC · BBC Sport · BMJ Medicine · ESA · IEEE Spectrum · In the Pipeline (Derek Lowe) · Knowable Magazine · Medical Xpress · Mongabay · NASA · Nature · Nature Medicine · PLOS Medicine · Phys.org · Physics World · Quanta Magazine · Retraction Watch · Science · Science-Based Medicine · Sensible Medicine · Sky Sports · Smithsonian · The Guardian · The Transmitter · Ubitennis · Undark · Universe Today · eClinicalMedicine</p>
     </footer>
   </div>
@@ -769,6 +778,8 @@
       <button type="button" class="reset" id="arrange-reset">Reset to the original order</button>
     </div>
   </dialog>
+
+  <div class="ptr" id="ptr" aria-hidden="true" hidden>Pull to refresh</div>
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden>
     <span id="toast-text"></span>
@@ -1082,6 +1093,43 @@
       setLayout(now);
     });
   });
+
+  // ---- Pull to refresh in the home-screen app ----
+  // iPadOS gives home-screen web apps no pull-down refresh, so the page provides one there.
+  var standalone = window.navigator.standalone === true ||
+    (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches);
+  try { if (localStorage.getItem("br-force-ptr") === "1") standalone = true; } catch (e) {}
+  if (standalone) {
+    var ptr = document.getElementById("ptr"), PULL = 80, startY = null, startX = 0, pulled = 0;
+    var resetPtr = function () { ptr.hidden = true; ptr.classList.remove("ready"); startY = null; pulled = 0; };
+    window.addEventListener("touchstart", function (e) {
+      // Only from the very top of the page, one finger, and not while a panel is open.
+      if (window.scrollY <= 0 && e.touches.length === 1 && !root.classList.contains("panel-open")) {
+        startY = e.touches[0].clientY; startX = e.touches[0].clientX; pulled = 0;
+      } else startY = null;
+    }, { passive: true });
+    window.addEventListener("touchmove", function (e) {
+      if (startY === null) return;
+      var dy = e.touches[0].clientY - startY, dx = e.touches[0].clientX - startX;
+      if (dy <= 0 || Math.abs(dx) > dy) { resetPtr(); return; }  // scrolling up, or swiping sideways
+      pulled = dy;
+      ptr.hidden = false;
+      ptr.style.transform = "translate(-50%, " + Math.min(dy, 140) * 0.4 + "px)";
+      ptr.style.opacity = Math.min(1, dy / PULL);
+      var ready = dy > PULL;
+      ptr.classList.toggle("ready", ready);
+      ptr.textContent = ready ? "Release to refresh" : "Pull to refresh";
+    }, { passive: true });
+    window.addEventListener("touchend", function () {
+      if (startY !== null && pulled > PULL) {
+        ptr.textContent = "Refreshing…";
+        location.reload();
+        return;
+      }
+      resetPtr();
+    }, { passive: true });
+    window.addEventListener("touchcancel", resetPtr, { passive: true });
+  }
 
   applyLayout();
   refreshSaved();

@@ -80,6 +80,8 @@ It rebuilds daily at 15:00 UTC (18:00 Amman time). To change the time, edit the 
 ## On the iPad
 
 Open the link in Safari → Share button → **Add to Home Screen**. It gets its own moon icon.
+In the home-screen app, pull down from the top of the page to refresh (iPadOS doesn't provide this
+for home-screen apps, so the page does).
 
 - **Save for later** on any story adds it to **Saved reads**. The **Saved** button at the top (next to
   A– / A+) shows how many are waiting and opens the list. Each saved story has **Read** and **Done**;
