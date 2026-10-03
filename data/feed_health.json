@@ -15,7 +15,7 @@
   "name": "APS Physics",
   "fails": 0,
   "last_ok": "2026-10-03",
-  "newest": "2026-10-02"
+  "newest": "2026-10-01"
  },
  "https://feeds.arstechnica.com/arstechnica/science": {
   "name": "Ars Technica",
@@ -67,10 +67,9 @@
  },
  "https://medicalxpress.com/rss-feed/": {
   "name": "Medical Xpress",
-  "fails": 1,
+  "fails": 0,
   "last_ok": "2026-10-03",
-  "newest": "2026-10-03",
-  "last_error": "HTTPError: HTTP Error 429: Too Many Requests"
+  "newest": "2026-10-03"
  },
  "https://news.mongabay.com/feed/": {
   "name": "Mongabay",
@@ -80,17 +79,15 @@
  },
  "https://phys.org/rss-feed/physics-news/": {
   "name": "Phys.org",
-  "fails": 1,
+  "fails": 0,
   "last_ok": "2026-10-03",
-  "newest": "2026-10-03",
-  "last_error": "HTTPError: HTTP Error 429: Too Many Requests"
+  "newest": "2026-10-03"
  },
  "https://phys.org/rss-feed/space-news/": {
   "name": "Phys.org",
-  "fails": 1,
+  "fails": 0,
   "last_ok": "2026-10-03",
-  "newest": "2026-10-02",
-  "last_error": "HTTPError: HTTP Error 429: Too Many Requests"
+  "newest": "2026-10-03"
  },
  "https://physicsworld.com/feed/": {
   "name": "Physics World",
