@@ -13,15 +13,16 @@
  },
  "https://erictopol.substack.com/feed": {
   "name": "Ground Truths (Eric Topol)",
-  "fails": 0,
+  "fails": 1,
   "last_ok": "2026-10-03",
-  "newest": "2026-09-30"
+  "newest": "2026-09-30",
+  "last_error": "HTTPError: HTTP Error 403: Forbidden"
  },
  "https://feeds.aps.org/rss/recent/physics.xml": {
   "name": "APS Physics",
   "fails": 0,
   "last_ok": "2026-10-03",
-  "newest": "2026-10-02"
+  "newest": "2026-10-01"
  },
  "https://feeds.arstechnica.com/arstechnica/science": {
   "name": "Ars Technica",
@@ -73,10 +74,9 @@
  },
  "https://medicalxpress.com/rss-feed/": {
   "name": "Medical Xpress",
-  "fails": 1,
-  "last_ok": null,
-  "newest": null,
-  "last_error": "HTTPError: HTTP Error 429: Too Many Requests"
+  "fails": 0,
+  "last_ok": "2026-10-03",
+  "newest": "2026-10-03"
  },
  "https://news.mongabay.com/feed/": {
   "name": "Mongabay",
@@ -86,17 +86,15 @@
  },
  "https://phys.org/rss-feed/physics-news/": {
   "name": "Phys.org",
-  "fails": 1,
-  "last_ok": null,
-  "newest": null,
-  "last_error": "HTTPError: HTTP Error 429: Too Many Requests"
+  "fails": 0,
+  "last_ok": "2026-10-03",
+  "newest": "2026-10-03"
  },
  "https://phys.org/rss-feed/space-news/": {
   "name": "Phys.org",
-  "fails": 1,
-  "last_ok": null,
-  "newest": null,
-  "last_error": "HTTPError: HTTP Error 429: Too Many Requests"
+  "fails": 0,
+  "last_ok": "2026-10-03",
+  "newest": "2026-10-02"
  },
  "https://physicsworld.com/feed/": {
   "name": "Physics World",
@@ -142,9 +140,10 @@
  },
  "https://www.nature.com/nm.rss": {
   "name": "Nature Medicine",
-  "fails": 0,
+  "fails": 1,
   "last_ok": "2026-10-03",
-  "newest": "2026-10-02"
+  "newest": "2026-10-02",
+  "last_error": "ParseError: not well-formed (invalid token): line 14, column 4 | got: b'<!DOCTYPE html>\\n<html lang=\"en\">\\n  <head>\\n    <meta\\n      http-equiv=\"Content-Security-Policy\"\\n      content=\"default-sr'"
  },
  "https://www.quantamagazine.org/feed/": {
   "name": "Quanta Magazine",
@@ -244,8 +243,9 @@
  },
  "https://yourlocalepidemiologist.substack.com/feed": {
   "name": "Your Local Epidemiologist",
-  "fails": 0,
+  "fails": 1,
   "last_ok": "2026-10-03",
-  "newest": "2026-10-01"
+  "newest": "2026-10-01",
+  "last_error": "HTTPError: HTTP Error 403: Forbidden"
  }
 }
