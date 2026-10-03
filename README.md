@@ -11,8 +11,11 @@ Live at **https://naderabsy.github.io/bedtime-reads/**
 | File | What it does |
 |---|---|
 | `sources.json` | The feeds and sections. Edit this to add/remove sources, change how many stories each section shows, or choose which sections feed *Tonight's picks*. |
+| `sky.py` | Works out *Tonight's sky over Amman*: moon phase, sunset and darkness, visible planets, space station passes, meteor showers. Uses Skyfield (`requirements.txt`). |
 | `build.py` | Fetches the feeds, picks tonight's stories, adds reading times and journal abstracts, writes the page. Python 3.9+, no installs. |
 | `template.html` | The page design (night + paper themes, text size, Save for later, Continue reading). |
+| `data/feed_health.json` | How each source did on recent nights (consecutive failures, newest story). |
+| `data/source_problems.md` | Exists only while a source needs attention; the workflow turns it into a GitHub issue. |
 | `data/history.json` | Stories already shown on earlier nights, so each new edition leads with new ones. Kept for 30 days. |
 | `site/` | The built page, plus `site/archive/` with the last 7 nights. |
 | `static/icon.png` | Home-screen icon. |
@@ -24,6 +27,9 @@ Live at **https://naderabsy.github.io/bedtime-reads/**
 - **New first.** Anything shown on an earlier night is skipped unless a section would otherwise be
   empty. Rebuilding on the same day keeps the same stories.
 - **Varied.** At most two stories per source in a section.
+- **No double coverage.** When two outlets report the same news under different headlines, only one
+  is shown (headlines are compared by their meaningful words; study-design terms like "randomized
+  trial" don't count).
 - **Proper reporting before press releases.** Press-release sites (Medical Xpress, Phys.org) are used
   only when there isn't enough else. Listicles, photo galleries, quizzes, sponsored posts, webinars and
   newsletter round-ups are filtered out.
@@ -38,9 +44,24 @@ Live at **https://naderabsy.github.io/bedtime-reads/**
 - **Journal stories with no summary** get the abstract's conclusion from PubMed. The journals used are
   open access (PLOS Medicine, eClinicalMedicine, BMJ Medicine, and the free articles in Nature Medicine).
 
+## Medicine sources
+
+Chosen for a clinician: Eric Topol's *Ground Truths*, Derek Lowe's *In the Pipeline* (Science),
+*Sensible Medicine*, *Science-Based Medicine* and *Your Local Epidemiologist*, with The Guardian, BBC
+and Medical Xpress health news only filling gaps. Paid-only newsletter posts are filtered out by the
+sign-up check.
+
+## Tonight's sky over Amman
+
+Calculated fresh each evening for Amman (set in `sources.json` under `location`): moon phase with a
+drawing of tonight's moon, moonrise/set, sunset and when it's fully dark, which planets are up around
+21:00 and where to look, visible space station passes (orbit data from CelesTrak), and any active meteor
+shower. If the astronomy library isn't installed, the page simply builds without this panel.
+
 ## Try it locally
 
 ```bash
+pip3 install -r requirements.txt   # optional, for the sky panel
 python3 build.py
 ```
 
@@ -60,6 +81,8 @@ Open the link in Safari → Share button → **Add to Home Screen**. It gets its
   A– / A+) shows how many are waiting and opens the list. Each saved story has **Read** and **Done**;
   Done removes it, with **Undo** for a few seconds in case of a slip. Saved reads stay through the daily
   updates until he taps Done. The link `…/bedtime-reads/#saved` opens the list directly.
+- **Hide or reorder sections:** each section has a **Hide** button (with Undo), and **Arrange** at the
+  end of the section buttons opens a list to show, hide and move sections up or down. Remembered on the device.
 - **Continue reading** at the top shows the last few stories he opened in the past week.
 - **Previous nights** at the bottom opens any of the last 7 editions.
 - Saved stories, text size and night/paper choice are stored on the iPad itself, so they don't
@@ -73,6 +96,9 @@ New Scientist is switched off. Its feeds are still in `sources.json`; setting
 ## Notes
 
 - A feed that's down is retried once, then skipped for that day; the rest of the page still builds.
+- If a source fails 3 nights in a row, or publishes nothing new for 30 days, the workflow opens an issue
+  titled *Some reading sources need attention* on the repository, which emails the owner. It closes
+  itself once every source works again.
 - Links he has already opened turn a dimmer colour.
 - When he comes back to the page, it checks `edition.json` and reloads itself if a newer edition is out,
   so he never has to pull down to refresh. Archive pages don't do this.

@@ -11,6 +11,7 @@ permissions:
   contents: write   # to save the built page back to the repo
   pages: write
   id-token: write
+  issues: write     # to open an issue (which emails you) when a source stops working
 
 concurrency:
   group: pages
@@ -28,6 +29,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      # Skyfield works out tonight's sky; its planet-position file (~17 MB) is cached between runs.
+      - name: Install the astronomy library
+        run: pip install -r requirements.txt
+      - uses: actions/cache@v4
+        with:
+          path: .skyfield
+          key: skyfield-de421
 
       - name: Fetch feeds and build the page
         run: python build.py
@@ -49,3 +58,20 @@ jobs:
           path: site
       - id: deploy
         uses: actions/deploy-pages@v4
+
+      # If a source has failed 3 nights running (or gone quiet for a month), open an issue on the
+      # repository; GitHub emails the owner. The issue is updated while problems last and closed
+      # automatically once every source works again.
+      - name: Report sources that need attention
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="Some reading sources need attention"
+          open=$(gh issue list --state open --search "in:title \"$title\"" --json number --jq '.[0].number // empty')
+          if [ -f data/source_problems.md ]; then
+            { echo "@${{ github.repository_owner }}"; echo; cat data/source_problems.md; } > /tmp/body.md
+            if [ -n "$open" ]; then gh issue edit "$open" --body-file /tmp/body.md
+            else gh issue create --title "$title" --body-file /tmp/body.md; fi
+          elif [ -n "$open" ]; then
+            gh issue close "$open" --comment "All sources are working again."
+          fi

@@ -21,6 +21,7 @@
     --bg: #14110e; --bg-raised: #1c1814; --ink: #e6dac6; --ink-soft: #a89a85;
     --ink-faint: #74685a; --rule: #2e2721; --accent: #d9a35f; --visited: #8a7d6b;
     --img-filter: brightness(.82) saturate(.85);
+    --moon-lit: #eadbbd; --moon-dark: #2a241e;
     color-scheme: dark;
   }
   /* Paper: sepia for reading with a lamp on. Chosen with the in-page button only. */
@@ -29,6 +30,7 @@
     --bg: #f3ead8; --bg-raised: #ece1cb; --ink: #3a2f24; --ink-soft: #6b5c4b;
     --ink-faint: #94846f; --rule: #dccfb6; --accent: #9a5b1e; --visited: #8f8070;
     --img-filter: none;
+    --moon-lit: #fffaf0; --moon-dark: #4a3d30;
   }
 
   * { box-sizing: border-box; }
@@ -86,12 +88,12 @@
   }
   .saved-open.has-items { color: var(--accent); border-color: var(--accent); }
   .saved-open.has-items .count { background: var(--accent); color: var(--bg); }
-  #saved-panel {
+  .sheet {
     margin: 0 0 0 auto; width: min(460px, 100%); height: 100%; max-height: 100%; max-width: 100%;
     padding: 0; border: 0; border-left: 1px solid var(--rule); background: var(--bg); color: var(--ink);
   }
-  #saved-panel[open] { animation: panel-in .22s ease-out; }
-  #saved-panel::backdrop { background: rgba(10, 8, 6, .55); }
+  .sheet[open] { animation: panel-in .22s ease-out; }
+  .sheet::backdrop { background: rgba(10, 8, 6, .55); }
   @keyframes panel-in { from { transform: translateX(28px); opacity: 0; } to { transform: none; opacity: 1; } }
   html.panel-open { overflow: hidden; }
   .panel { padding: calc(env(safe-area-inset-top, 0px) + 22px) 24px calc(env(safe-area-inset-bottom, 0px) + 32px); }
@@ -133,6 +135,53 @@
     border-radius: 18px; padding: 9px 14px; cursor: pointer; white-space: nowrap;
   }
   dialog .toast { position: sticky; left: auto; transform: none; width: fit-content; margin: 18px auto 0; }
+
+  /* Section heading with its Hide button */
+  .section-head { display: flex; align-items: center; gap: 10px; margin: 0 0 6px; }
+  .section-head .section-title { flex: 1; margin: 0; }
+  .hide-sec {
+    font: 600 12px/1 var(--sans); color: var(--ink-faint); background: transparent; border: 0;
+    padding: 8px 6px; min-height: 32px; cursor: pointer; border-radius: 6px;
+  }
+  .hide-sec:hover { color: var(--ink-soft); }
+  .jump .arrange-open {
+    font: 600 15px/1 var(--sans); color: var(--accent); background: transparent; cursor: pointer;
+    padding: 11px 16px; border: 1px dashed var(--rule); border-radius: 22px; flex-shrink: 0;
+  }
+
+  /* Arrange panel */
+  .arrange-list { list-style: none; margin: 0; padding: 0; }
+  .arrange-list li { display: flex; align-items: center; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--rule); }
+  .arrange-list label { flex: 1; display: flex; align-items: center; gap: 12px; min-width: 0; cursor: pointer; font-weight: 600; }
+  .arrange-list li.off label span { color: var(--ink-faint); font-weight: 500; text-decoration: line-through; }
+  .arrange-list input { width: 22px; height: 22px; accent-color: var(--accent); flex-shrink: 0; }
+  .arrange-list .move {
+    width: 40px; height: 40px; border-radius: 20px; border: 1px solid var(--rule); background: var(--bg-raised);
+    color: var(--ink-soft); font: 600 16px/1 var(--sans); cursor: pointer;
+  }
+  .arrange-list .move:disabled { opacity: .3; cursor: default; }
+  .reset {
+    margin-top: 18px; font: 600 14px/1 var(--sans); color: var(--ink-soft); background: transparent;
+    border: 1px solid var(--rule); border-radius: 18px; padding: 11px 16px; cursor: pointer;
+  }
+
+  /* Tonight's sky */
+  .sky-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding-top: 14px; }
+  .sky-moon, .sky-item { background: var(--bg-raised); border: 1px solid var(--rule); border-radius: 14px; padding: 14px 16px; min-width: 0; }
+  .sky-moon { grid-column: 1 / -1; display: flex; align-items: center; gap: 18px; }
+  .sky-grid > .sky-item:last-child:nth-child(even) { grid-column: 1 / -1; }
+  .moon { width: 64px; height: 64px; flex-shrink: 0; }
+  .moon-dark { fill: var(--moon-dark); }
+  .moon-lit { fill: var(--moon-lit); }
+  .sky-label { font: 600 11px/1.3 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  .sky-moon strong { display: block; font-size: 1.12em; line-height: 1.3; }
+  .sky-moon span { font: 500 14px/1.45 var(--sans); color: var(--ink-soft); }
+  .sky-item p, .sky-item li { font-size: .86em; line-height: 1.5; color: var(--ink-soft); margin: 0; }
+  .sky-item strong { color: var(--ink); }
+  .sky-item ul { margin: 0; padding-left: 18px; }
+  .sky-item li + li { margin-top: 6px; }
+  .sky-item p.sky-note { font: 500 13px/1.4 var(--sans); color: var(--ink-faint); margin-top: 8px; }
+  .sky-foot { font: 500 13px/1.4 var(--sans); color: var(--ink-faint); margin: 10px 0 0; }
 
   /* Picture of the day */
   .potd { margin: 30px 0 10px; }
@@ -223,7 +272,9 @@
     .top { flex-direction: column; gap: 14px; }
     .controls button { height: 40px; min-width: 40px; }
     .panel { padding-inline: 16px; }
-    #saved-panel { border-left: 0; }
+    .sky-grid { grid-template-columns: 1fr; }
+    .jump .arrange-open { padding: 11px 14px; }
+    .sheet { border-left: 0; }
     .jump {
       flex-wrap: nowrap; overflow-x: auto; margin-inline: -16px; padding-inline: 16px;
       scrollbar-width: none; -webkit-overflow-scrolling: touch;
@@ -249,6 +300,7 @@
     }
     .jump a { border: 0; border-radius: 8px; padding: 10px 12px; }
     .jump a:hover { background: var(--bg-raised); color: var(--ink); }
+    .jump .arrange-open { text-align: left; border-radius: 8px; padding: 10px 12px; margin-top: 6px; }
     .shelf { padding-top: 30px; margin-top: 22px; border-top: 1px solid var(--rule); }
     .shelf .row a { font-size: .86em; }
     .shelf li { gap: 10px; padding: 10px 0; }
@@ -257,7 +309,7 @@
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
-    #saved-panel[open] { animation: none; }
+    .sheet[open] { animation: none; }
     body { transition: none; }
   }
 </style>
@@ -290,7 +342,7 @@
 
     <div class="layout">
     <aside class="side">
-      <nav class="jump" aria-label="Sections">{{NAV}}</nav>
+      <nav class="jump" aria-label="Sections">{{NAV}}<button type="button" class="arrange-open" id="arrange-open" aria-haspopup="dialog">Arrange</button></nav>
       <section class="shelf" id="shelf" hidden>
         <div id="continue-block" hidden>
           <h2 class="section-title">Continue reading</h2>
@@ -300,7 +352,7 @@
     </aside>
 
     <main>
-      {{HERO}}{{PICKS}}{{SECTIONS}}
+      {{HERO}}{{SKY}}{{PICKS}}{{SECTIONS}}
     </main>
     </div>
 
@@ -312,7 +364,7 @@
     </footer>
   </div>
 
-  <dialog id="saved-panel" aria-labelledby="saved-title">
+  <dialog id="saved-panel" class="sheet" aria-labelledby="saved-title">
     <div class="panel">
       <div class="panel-head">
         <h2 id="saved-title">Saved reads <span id="saved-total"></span></h2>
@@ -324,6 +376,18 @@
         <p class="big">Nothing saved yet.</p>
         <p>Tap <strong>Save for later</strong> on any story and it will wait here, through the daily updates, until you’ve read it.</p>
       </div>
+    </div>
+  </dialog>
+
+  <dialog id="arrange-panel" class="sheet" aria-labelledby="arrange-title">
+    <div class="panel">
+      <div class="panel-head">
+        <h2 id="arrange-title">Arrange sections</h2>
+        <button type="button" class="panel-close" id="arrange-close" aria-label="Close arrange sections">✕</button>
+      </div>
+      <p class="panel-note">Show, hide and reorder the sections. Kept on this device.</p>
+      <ul class="arrange-list" id="arrange-list"></ul>
+      <button type="button" class="reset" id="arrange-reset">Reset to the original order</button>
     </div>
   </dialog>
 
@@ -497,20 +561,24 @@
     });
   }
 
-  function openSaved() {
-    renderPanel();
-    if (panel.showModal) panel.showModal(); else panel.setAttribute("open", "");
+  // Side sheets (Saved reads, Arrange sections) share one open/close behaviour.
+  function openSheet(d) {
+    if (d.showModal) d.showModal(); else d.setAttribute("open", "");
     root.classList.add("panel-open");
-    // The toast belongs to whichever layer is on top, so Undo stays visible above the panel.
+    // The toast belongs to whichever layer is on top, so Undo stays visible above the sheet.
     toastEl.hidden = true;
-    panel.querySelector(".panel").appendChild(toastEl);
+    d.querySelector(".panel").appendChild(toastEl);
   }
-  function closeSaved() { if (panel.close) panel.close(); else { panel.removeAttribute("open"); onClosed(); } }
-  function onClosed() { root.classList.remove("panel-open"); document.body.appendChild(toastEl); }
+  function closeSheet(d) { if (d.close) d.close(); else { d.removeAttribute("open"); onSheetClosed(); } }
+  function onSheetClosed() { root.classList.remove("panel-open"); document.body.appendChild(toastEl); }
+  document.querySelectorAll("dialog.sheet").forEach(function (d) {
+    d.addEventListener("close", onSheetClosed);
+    d.addEventListener("click", function (e) { if (e.target === d) closeSheet(d); });  // tap outside the sheet
+  });
+
+  function openSaved() { renderPanel(); openSheet(panel); }
   openBtn.onclick = openSaved;
-  document.getElementById("saved-close").onclick = closeSaved;
-  panel.addEventListener("close", onClosed);
-  panel.addEventListener("click", function (e) { if (e.target === panel) closeSaved(); });  // tap outside the sheet
+  document.getElementById("saved-close").onclick = function () { closeSheet(panel); };
 
   // ---- small toast with one action (View / Undo) ----
   var toastEl = document.getElementById("toast"), toastTimer = null;
@@ -555,8 +623,91 @@
     store("br-opened", [item].concat(opened).slice(0, 12));
   });
 
+  // ---- Arrange sections: hide and reorder, remembered on this device ----
+  var mainEl = document.querySelector("main"), jump = document.querySelector(".jump");
+  var arrangeBtn = document.getElementById("arrange-open"), arrangePanel = document.getElementById("arrange-panel");
+  var DEFAULT_ORDER = Array.prototype.map.call(mainEl.querySelectorAll("section[data-sec]"), function (x) { return x.dataset.sec; });
+
+  function getLayout() {
+    var v = {};
+    try { v = JSON.parse(localStorage.getItem("br-layout")) || {}; } catch (e) {}
+    var order = (v.order || []).filter(function (id) { return DEFAULT_ORDER.indexOf(id) >= 0; });
+    // Sections that are new since he arranged things go in at their usual place.
+    DEFAULT_ORDER.forEach(function (id, n) { if (order.indexOf(id) < 0) order.splice(Math.min(n, order.length), 0, id); });
+    return { order: order, hidden: (v.hidden || []).filter(function (id) { return DEFAULT_ORDER.indexOf(id) >= 0; }) };
+  }
+  function setLayout(l) { put("br-layout", JSON.stringify(l)); applyLayout(); }
+  function sectionName(id) { var el = document.querySelector('section[data-sec="' + id + '"]'); return el ? el.dataset.name : id; }
+
+  function applyLayout() {
+    var l = getLayout();
+    l.order.forEach(function (id) {
+      var sec = mainEl.querySelector('section[data-sec="' + id + '"]');
+      var link = jump.querySelector('a[data-sec="' + id + '"]');
+      if (sec) { mainEl.appendChild(sec); sec.hidden = l.hidden.indexOf(id) >= 0; }
+      if (link) { jump.insertBefore(link, arrangeBtn); link.hidden = l.hidden.indexOf(id) >= 0; }
+    });
+  }
+
+  function renderArrange() {
+    var l = getLayout(), list = document.getElementById("arrange-list");
+    list.textContent = "";
+    l.order.forEach(function (id, n) {
+      var on = l.hidden.indexOf(id) < 0;
+      var li = document.createElement("li"); if (!on) li.className = "off";
+      var label = document.createElement("label");
+      var box = document.createElement("input"); box.type = "checkbox"; box.checked = on;
+      box.onchange = function () {
+        var cur = getLayout();
+        cur.hidden = cur.hidden.filter(function (x) { return x !== id; });
+        if (!box.checked) cur.hidden.push(id);
+        setLayout(cur); renderArrange();
+      };
+      var name = document.createElement("span"); name.textContent = sectionName(id);
+      label.appendChild(box); label.appendChild(name);
+      li.appendChild(label);
+      [["↑", -1, "up"], ["↓", 1, "down"]].forEach(function (m) {
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "move"; b.textContent = m[0];
+        b.setAttribute("aria-label", "Move " + sectionName(id) + " " + m[2]);
+        b.disabled = (m[1] < 0 && n === 0) || (m[1] > 0 && n === l.order.length - 1);
+        b.onclick = function () {
+          var cur = getLayout(), at = cur.order.indexOf(id), to = at + m[1];
+          cur.order.splice(at, 1); cur.order.splice(to, 0, id);
+          setLayout(cur); renderArrange();
+          var again = document.getElementById("arrange-list").children[to];
+          if (again) { var same = again.querySelectorAll(".move")[m[1] < 0 ? 0 : 1]; if (same && !same.disabled) same.focus(); }
+        };
+        li.appendChild(b);
+      });
+      list.appendChild(li);
+    });
+  }
+
+  function openArrange() { renderArrange(); openSheet(arrangePanel); }
+  arrangeBtn.onclick = openArrange;
+  document.getElementById("arrange-close").onclick = function () { closeSheet(arrangePanel); };
+  document.getElementById("arrange-reset").onclick = function () {
+    try { localStorage.removeItem("br-layout"); } catch (e) {}
+    applyLayout(); renderArrange();
+  };
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest(".hide-sec");
+    if (!b) return;
+    var id = b.dataset.sec, cur = getLayout();
+    if (cur.hidden.indexOf(id) < 0) cur.hidden.push(id);
+    setLayout(cur);
+    toast(sectionName(id) + " hidden", "Undo", function () {
+      var now = getLayout();
+      now.hidden = now.hidden.filter(function (x) { return x !== id; });
+      setLayout(now);
+    });
+  });
+
+  applyLayout();
   refreshSaved();
   if (location.hash === "#saved") openSaved();
+  if (location.hash === "#arrange") openArrange();
 
   // ---- Auto-refresh: when he comes back to the page, load tonight's edition if a newer one is out ----
   // (Archive pages are meant to stay old, so only the live page does this.)

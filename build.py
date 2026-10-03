@@ -33,6 +33,8 @@ ROOT = Path(__file__).parent
 SITE = ROOT / "site"
 ARCHIVE = SITE / "archive"
 HISTORY = ROOT / "data" / "history.json"
+HEALTH = ROOT / "data" / "feed_health.json"
+PROBLEMS = ROOT / "data" / "source_problems.md"
 TEMPLATE = ROOT / "template.html"
 STATIC = ROOT / "static"
 
@@ -155,7 +157,7 @@ def parse_feed(raw, feed):
             title = el.findtext("rss1:title", "", NS)
             link = el.findtext("rss1:link", "", NS)
             body = el.findtext("rss1:description", "", NS) or el.findtext("content:encoded", "", NS)
-            date_s = el.findtext("dc:date", "", NS)
+            date_s = el.findtext("dc:date", "", NS) or el.findtext("rss1:pubDate", "", NS)
         elif el.tag.endswith("entry"):  # Atom
             title = el.findtext("atom:title", "", NS)
             link_el = el.find("atom:link[@rel='alternate']", NS)
@@ -192,6 +194,7 @@ def parse_feed(raw, feed):
             continue
         items.append({
             "title": title,
+            "words": title_words(title),
             "link": link,
             "key": link_key(link),
             "summary": shorten(summary),
@@ -226,12 +229,47 @@ def load(feed):
 
 # ---------- choosing tonight's stories ----------
 
-def norm_title(t):
-    return re.sub(r"[^a-z0-9]+", " ", t.lower()).strip()
+STOPWORDS = set("""a an and are as at be been but by can could did do does for from had has have he her his how i if
+in into is it its may more most new not of on or our out over says say she so than that the their them they this
+to up was we were what when where which who why will with would you your after about just now could first one two
+year years study research scientists finds find found show shows reveal reveals
+randomized randomised controlled placebo trial trials systematic review meta analysis network cohort phase
+patients adults children effect effects efficacy safety intervention interventions treatment non pharmacological
+association associated risk among versus using based long term condition conditions people health care
+clinical disease outcomes""".split())
 
 
-def pick(items, count, max_age_days, used, shown_before, now):
-    """Choose a section's stories: new-to-him first, varied across sources, newest first."""
+def title_words(t):
+    """The meaningful words of a headline, lightly normalised (plurals folded), for spotting the same story."""
+    words = set()
+    for w in re.findall(r"[a-z0-9]+", t.lower().replace("’", "'")):
+        if len(w) < 3 or w in STOPWORDS:
+            continue
+        words.add(w[:-1] if len(w) > 4 and w.endswith("s") else w)
+    return words
+
+
+def same_story(a, b):
+    """Two headlines about the same news: share 3+ meaningful words covering most of the shorter one."""
+    shared = len(a & b)
+    return shared >= 3 and shared / max(1, min(len(a), len(b))) >= 0.6
+
+
+class Seen:
+    """Stories already on tonight's page, matched by link or by a near-identical headline."""
+    def __init__(self):
+        self.keys, self.titles = set(), []
+
+    def has(self, item):
+        return item["key"] in self.keys or any(same_story(item["words"], t) for t in self.titles)
+
+    def add(self, item):
+        self.keys.add(item["key"])
+        self.titles.append(item["words"])
+
+
+def pick(items, count, max_age_days, seen, shown_before, now):
+    """Choose a section's candidates: new-to-him first, varied across sources, nothing already on the page."""
     dated = [i for i in items if i["date"]]
     age = lambda i: now - i["date"]
     is_new = lambda i: i["key"] not in shown_before
@@ -243,13 +281,12 @@ def pick(items, count, max_age_days, used, shown_before, now):
         dated,
     ]
 
-    chosen, per_source = [], {}
+    chosen, per_source, local = [], {}, Seen()
 
     def take(i, cap=True):
-        k_t = norm_title(i["title"])
-        if i["key"] in used or k_t in used or (cap and per_source.get(i["source"], 0) >= MAX_PER_SOURCE):
+        if seen.has(i) or local.has(i) or (cap and per_source.get(i["source"], 0) >= MAX_PER_SOURCE):
             return False
-        used.update((i["key"], k_t))
+        local.add(i)
         per_source[i["source"]] = per_source.get(i["source"], 0) + 1
         chosen.append(i)
         return True
@@ -405,8 +442,80 @@ def render_story(i, kind="", label=""):
       </article>"""
 
 
-def render(cfg, edition, built, potd, picks, sections, editions, base, is_archive):
-    nav = "".join(f'<a href="#{slug(s["name"])}">{esc(s["name"])}</a>' for s, stories in sections if stories)
+def section_head(name, sid):
+    """Section title with a Hide button (sections can be hidden and reordered on the device)."""
+    return (f'<div class="section-head"><h2 class="section-title">{esc(name)}</h2>'
+            f'<button class="hide-sec" type="button" data-sec="{sid}" aria-label="Hide {esc(name)}">Hide</button></div>')
+
+
+def moon_svg(lit, waxing):
+    """The moon as it looks tonight: a dark disc with the lit part drawn on top (northern-hemisphere view)."""
+    r = 30
+    rx = r * abs(2 * lit - 1)
+    sweep = 1 if lit > 0.5 else 0  # gibbous adds the far lobe; crescent carves it away
+    path = f"M0,{-r} A{r},{r} 0 0 1 0,{r} A{rx:.2f},{r} 0 0 {sweep} 0,{-r} Z"
+    flip = "" if waxing else ' transform="scale(-1,1)"'
+    return (f'<svg class="moon" viewBox="-34 -34 68 68" role="img" aria-label="{round(lit * 100)}% of the moon lit">'
+            f'<circle r="{r}" class="moon-dark"/><path d="{path}" class="moon-lit"{flip}/></svg>')
+
+
+def render_sky(sky, place):
+    if not sky:
+        return ""
+    m = sky["moon"]
+    moon_bits = [f"{round(m['lit'] * 100)}% lit"] + [f"{verb} {t}" for verb, t in m["events"]]
+    if m["up_at_9"]:
+        moon_bits.append(f"in the {m['dir_at_9']} at 21:00")
+    blocks = [f"""
+        <div class="sky-moon">{moon_svg(m['lit'], m['waxing'])}
+          <div><div class="sky-label">Moon</div><strong>{esc(m['phase'])}</strong><span>{esc(' · '.join(moon_bits))}</span></div>
+        </div>"""]
+    sun = []
+    if sky["sunset"]:
+        sun.append(f"Sunset {sky['sunset']}")
+    if sky["dark"]:
+        sun.append(f"fully dark from {sky['dark']}")
+    if sun:
+        blocks.append(f'<div class="sky-item"><div class="sky-label">Sun</div><p>{esc(" · ".join(sun))}</p></div>')
+    if sky["planets"]:
+        items = "".join(
+            f"<li><strong>{esc(p['name'])}</strong> {esc(p['brightness'])}{', ' if p['brightness'] else ''}"
+            f"in the {esc(p['dir'])}, {esc(p['height'])} ({p['alt']}°) at {p['time']}</li>" for p in sky["planets"])
+        blocks.append(f'<div class="sky-item"><div class="sky-label">Planets to see</div><ul>{items}</ul></div>')
+    else:
+        blocks.append('<div class="sky-item"><div class="sky-label">Planets to see</div><p>No bright planets up this evening.</p></div>')
+    if sky["iss"] is not None:
+        if sky["iss"]:
+            items = "".join(
+                f"<li><strong>{p['time']}</strong> appears in the {esc(p['from'])}, climbs to {p['top_alt']}° in the "
+                f"{esc(p['top_dir'])}, fades in the {esc(p['to'])} · {p['minutes']} min</li>" for p in sky["iss"])
+            iss = f"<ul>{items}</ul><p class=\"sky-note\">Looks like a bright, steady star moving quickly, with no blinking lights.</p>"
+        else:
+            iss = "<p>No visible passes tonight.</p>"
+        blocks.append(f'<div class="sky-item"><div class="sky-label">Space station</div>{iss}</div>')
+    if sky["showers"]:
+        items = "".join(f"<li><strong>{esc(x['name'])}</strong> {esc(x['when'])}: {esc(x['note'])}.</li>"
+                        for x in sky["showers"])
+        blocks.append(f'<div class="sky-item"><div class="sky-label">Meteors</div><ul>{items}</ul></div>')
+    name = f"Tonight’s sky over {place}"
+    return f"""
+    <section class="section sky" id="tonights-sky" data-sec="tonights-sky" data-name="{esc(name)}">
+      {section_head(name, "tonights-sky")}
+      <div class="sky-grid">{''.join(blocks)}
+      </div>
+      <p class="sky-foot">Times are local to {esc(place)}. Away from city lights you’ll see much more.</p>
+    </section>"""
+
+
+def render(cfg, edition, built, potd, picks, sections, editions, base, is_archive, sky=None):
+    place = (cfg.get("location") or {}).get("name", "")
+    nav_items = []
+    if sky:
+        nav_items.append(("tonights-sky", "Tonight’s sky"))
+    if picks:
+        nav_items.append(("tonights-picks", "Tonight’s picks"))
+    nav_items += [(slug(s["name"]), s["name"]) for s, stories in sections if stories]
+    nav = "".join(f'<a href="#{sid}" data-sec="{sid}">{esc(name)}</a>' for sid, name in nav_items)
 
     hero = ""
     if potd:
@@ -426,8 +535,8 @@ def render(cfg, edition, built, potd, picks, sections, editions, base, is_archiv
     if picks:
         cards = "".join(render_story(i, "pick", label) for label, i in picks)
         picks_html = f"""
-    <section class="section picks" id="tonights-picks">
-      <h2 class="section-title">Tonight’s picks</h2>
+    <section class="section picks" id="tonights-picks" data-sec="tonights-picks" data-name="Tonight’s picks">
+      {section_head("Tonight’s picks", "tonights-picks")}
       <div class="pick-grid">{cards}
       </div>
     </section>"""
@@ -440,8 +549,8 @@ def render(cfg, edition, built, potd, picks, sections, editions, base, is_archiv
         cards = "".join(render_story(i, "lead" if n == 0 and i["image"] and i["lead_ok"] else "")
                         for n, i in enumerate(stories))
         body += f"""
-    <section class="section" id="{slug(s["name"])}">
-      <h2 class="section-title">{esc(s["name"])}</h2>
+    <section class="section" id="{slug(s["name"])}" data-sec="{slug(s["name"])}" data-name="{esc(s["name"])}">
+      {section_head(s["name"], slug(s["name"]))}
       <div class="stories">{cards}
       </div>
     </section>"""
@@ -468,6 +577,7 @@ def render(cfg, edition, built, potd, picks, sections, editions, base, is_archiv
         "{{LIVE}}": "" if is_archive else "1",
         "{{NAV}}": nav,
         "{{HERO}}": hero,
+        "{{SKY}}": render_sky(sky, place),
         "{{PICKS}}": picks_html,
         "{{SECTIONS}}": body,
         "{{ARCHIVE}}": archive,
@@ -475,6 +585,56 @@ def render(cfg, edition, built, potd, picks, sections, editions, base, is_archiv
     }.items():
         page = page.replace(key, val)
     return page
+
+
+# ---------- source health ----------
+
+def track_health(jobs, results, edition):
+    """Count consecutive failures per source and write a report of any that need attention.
+
+    data/source_problems.md exists only while something is wrong; the GitHub workflow turns it into an
+    issue on the repository (which emails the owner) and closes the issue once everything works again.
+    """
+    health = json.loads(HEALTH.read_text()) if HEALTH.exists() else {}
+    today = edition.isoformat()
+    broken, stale = [], []
+    for f in jobs:
+        items, err = results[id(f)]
+        h = health.setdefault(f["url"], {"name": f["name"], "fails": 0, "last_ok": None, "newest": None})
+        h["name"] = f["name"]
+        if err:
+            h["fails"] += 1
+            h["last_error"] = err[:200]
+        else:
+            h["fails"], h["last_ok"] = 0, today
+            h.pop("last_error", None)
+            dates = [i["date"] for i in items if i["date"]]
+            if dates:
+                h["newest"] = max(dates).date().isoformat()
+        if h["fails"] >= 3:
+            broken.append(h | {"url": f["url"]})
+        elif h["newest"] and (edition - date.fromisoformat(h["newest"])).days > 30:
+            stale.append(h | {"url": f["url"]})
+    active = {f["url"] for f in jobs}
+    health = {u: h for u, h in sorted(health.items()) if u in active}
+    HEALTH.write_text(json.dumps(health, indent=1) + "\n")
+
+    if not broken and not stale:
+        PROBLEMS.unlink(missing_ok=True)
+        return []
+    lines = ["Some sources for Bedtime Reads need attention. The page still builds without them.", ""]
+    if broken:
+        lines += ["**Not working for 3+ nights in a row**", ""]
+        lines += [f"- **{h['name']}** ({h['fails']} nights; last worked {h['last_ok'] or 'never'}): "
+                  f"`{h['url']}`  \n  Error: `{h.get('last_error', '')[:140]}`" for h in broken]
+        lines.append("")
+    if stale:
+        lines += ["**Nothing new for over 30 days** (the feed may have moved or stopped)", ""]
+        lines += [f"- **{h['name']}** (newest story {h['newest']}): `{h['url']}`" for h in stale]
+        lines.append("")
+    lines.append("Fix or replace them in `sources.json`. This issue closes itself once every source works again.")
+    PROBLEMS.write_text("\n".join(lines) + "\n")
+    return broken + stale
 
 
 # ---------- main ----------
@@ -502,6 +662,8 @@ def main():
     with ThreadPoolExecutor(max_workers=12) as pool:
         results = {id(f): (items, err) for f, items, err in pool.map(load, jobs)}
     failures = [(f["name"], f["url"], results[id(f)][1]) for f in jobs if results[id(f)][1]]
+    HISTORY.parent.mkdir(exist_ok=True)
+    problems = track_health(jobs, results, edition)
 
     potd = None
     if potd_feed:
@@ -512,13 +674,15 @@ def main():
     history = json.loads(HISTORY.read_text()) if HISTORY.exists() else {}
     shown_before = {k for k, d in history.items() if d < edition.isoformat()}
 
-    used, sections, locked = set(), [], 0
+    seen, sections, locked = Seen(), [], 0
     for s in sections_cfg:
         items = [i for f in s["feeds"] for i in results[id(f)][0]]
         count = s.get("count", 4)
         # Take spares, so stories dropped for being behind a sign-up wall can be replaced.
-        candidates = pick(items, count * 2 + 2, s.get("max_age_days", 4), used, shown_before, now)
+        candidates = pick(items, count * 2 + 2, s.get("max_age_days", 4), seen, shown_before, now)
         stories, n_locked = finish(candidates, count)
+        for i in stories:
+            seen.add(i)
         locked += n_locked
         sections.append((s, stories))
 
@@ -550,11 +714,22 @@ def main():
             pass
     editions = sorted({date.fromisoformat(f.stem) for f in ARCHIVE.glob("*.html")} | {edition}, reverse=True)
 
+    sky_tonight = None
+    loc = cfg.get("location")
+    if loc:
+        try:
+            import sky as skymod
+            sky_tonight = skymod.tonight(loc["lat"], loc["lon"], loc.get("elevation_m", 0), tz, edition, fetch=fetch)
+        except Exception as e:  # e.g. Skyfield not installed locally; the rest of the page still builds
+            print(f"  ! sky panel skipped: {type(e).__name__}: {e}", file=sys.stderr)
+
     built = now.isoformat()
     (SITE / "index.html").write_text(
-        render(cfg, edition, built, potd, picks, sections, editions, base="", is_archive=False), encoding="utf-8")
+        render(cfg, edition, built, potd, picks, sections, editions, base="", is_archive=False, sky=sky_tonight),
+        encoding="utf-8")
     (ARCHIVE / f"{edition.isoformat()}.html").write_text(
-        render(cfg, edition, built, potd, picks, sections, editions, base="../", is_archive=True), encoding="utf-8")
+        render(cfg, edition, built, potd, picks, sections, editions, base="../", is_archive=True, sky=sky_tonight),
+        encoding="utf-8")
     # A tiny file the open page checks, to notice when a newer edition is out.
     (SITE / "edition.json").write_text(json.dumps({"built": built, "edition": edition.isoformat()}) + "\n")
     for f in STATIC.glob("*"):
@@ -570,6 +745,11 @@ def main():
     timed = sum(1 for i in shown if i["minutes"])
     print(f"Reading times found for {timed} of {len(shown)} stories")
     print(f"Picture of the day: {potd['title'] if potd else 'none'}")
+    if sky_tonight:
+        print(f"Sky: {sky_tonight['moon']['phase']}, planets: {', '.join(p['name'] for p in sky_tonight['planets']) or 'none'}, "
+              f"space station passes: {len(sky_tonight['iss']) if sky_tonight['iss'] is not None else 'unavailable'}")
+    if problems:
+        print(f"Sources needing attention: {', '.join(h['name'] for h in problems)} (see data/source_problems.md)")
     for name, url, err in failures:
         print(f"  ! skipped {name} ({url}): {err}", file=sys.stderr)
 
