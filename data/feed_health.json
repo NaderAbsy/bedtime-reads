@@ -13,7 +13,7 @@
  },
  "https://erictopol.substack.com/feed": {
   "name": "Ground Truths (Eric Topol)",
-  "fails": 1,
+  "fails": 2,
   "last_ok": "2026-10-03",
   "newest": "2026-09-30",
   "last_error": "HTTPError: HTTP Error 403: Forbidden"
@@ -140,10 +140,9 @@
  },
  "https://www.nature.com/nm.rss": {
   "name": "Nature Medicine",
-  "fails": 1,
+  "fails": 0,
   "last_ok": "2026-10-03",
-  "newest": "2026-10-02",
-  "last_error": "ParseError: not well-formed (invalid token): line 14, column 4 | got: b'<!DOCTYPE html>\\n<html lang=\"en\">\\n  <head>\\n    <meta\\n      http-equiv=\"Content-Security-Policy\"\\n      content=\"default-sr'"
+  "newest": "2026-10-02"
  },
  "https://www.quantamagazine.org/feed/": {
   "name": "Quanta Magazine",
@@ -243,7 +242,7 @@
  },
  "https://yourlocalepidemiologist.substack.com/feed": {
   "name": "Your Local Epidemiologist",
-  "fails": 1,
+  "fails": 2,
   "last_ok": "2026-10-03",
   "newest": "2026-10-01",
   "last_error": "HTTPError: HTTP Error 403: Forbidden"
