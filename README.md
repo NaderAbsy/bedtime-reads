@@ -27,6 +27,9 @@ Live at **https://naderabsy.github.io/bedtime-reads/**
 - **New first.** Anything shown on an earlier night is skipped unless a section would otherwise be
   empty. Rebuilding on the same day keeps the same stories.
 - **Varied.** At most two stories per source in a section.
+- **Only real reads.** Blog housekeeping ("Time off", "On vacation"), journal corrections and retraction
+  notices, link round-ups ("Weekend reads"), podcast and lecture posts are dropped, as is anything under
+  150 words where the length can be measured reliably.
 - **No double coverage.** When two outlets report the same news under different headlines, only one
   is shown (headlines are compared by their meaningful words; study-design terms like "randomized
   trial" don't count).

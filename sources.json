@@ -59,11 +59,13 @@
         },
         {
           "name": "In the Pipeline (Derek Lowe)",
-          "url": "https://www.science.org/blogs/pipeline/feed"
+          "url": "https://www.science.org/blogs/pipeline/feed",
+          "full_text": true
         },
         {
           "name": "Sensible Medicine",
-          "url": "https://www.sensible-med.com/feed"
+          "url": "https://www.sensible-med.com/feed",
+          "full_text": true
         },
         {
           "name": "Science-Based Medicine",
@@ -71,7 +73,8 @@
         },
         {
           "name": "Retraction Watch",
-          "url": "https://retractionwatch.com/feed/"
+          "url": "https://retractionwatch.com/feed/",
+          "full_text": true
         },
         {
           "name": "The Transmitter",
@@ -137,7 +140,8 @@
         },
         {
           "name": "Physics World",
-          "url": "https://physicsworld.com/feed/"
+          "url": "https://physicsworld.com/feed/",
+          "full_text": true
         },
         {
           "name": "APS Physics",

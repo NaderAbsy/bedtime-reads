@@ -51,6 +51,21 @@ SKIP_TITLE = re.compile(
     r"|\bphotos of\b|\bin pictures\b|\bquiz\b|\bcrossword\b|\bpuzzle\b",
     re.I,
 )
+# Not articles: blog housekeeping, journal notices, link round-ups, lecture/podcast posts.
+SKIP_NOTICE = re.compile(
+    r"^(time off|on vacation|vacation|out of (the )?office|programming note|housekeeping|blog note|site news|"
+    r"a? ?note to readers|open thread|posting (note|schedule)|schedule change|back soon|holiday break|"
+    r"announcement|correction|corrigendum|erratum|retraction( note)?|expression of concern|withdrawn?|"
+    r"weekend reads|this (week|fortnight|month) in\b|lecture \d+|podcast|episode \d+|webinar)\b",
+    re.I,
+)
+SKIP_NOTICE_TEXT = re.compile(
+    r"posting will resume|i'?ll be (away|off|taking)|taking (the rest of )?(this|next) week off|"
+    r"(be )?back (on|next) (monday|tuesday|wednesday|thursday|friday|week)|i'?m on vacation|out of the office",
+    re.I,
+)
+MIN_WORDS = 150  # anything shorter isn't worth a bedtime read
+
 NS = {
     "atom": "http://www.w3.org/2005/Atom",
     "media": "http://search.yahoo.com/mrss/",
@@ -184,6 +199,7 @@ def parse_feed(raw, feed):
             body = el.findtext("description", "") or el.findtext("content:encoded", "", NS)
             date_s = el.findtext("pubDate", "") or el.findtext("dc:date", "", NS)
         summary, body_img = strip_html(body)
+        full_text = el.findtext("content:encoded", "", NS) or el.findtext("atom:content", "", NS)
         # Journal feeds lead with citation boilerplate ("Nature Medicine, Published online: ...; doi:...").
         summary = re.sub(r"^[^;]{0,80}Published online:[^;]*;\s*doi:\S+\s*", "", summary)
         # Some feeds (The Guardian) give the standfirst and then the opening paragraph, which repeats it.
@@ -196,7 +212,12 @@ def parse_feed(raw, feed):
             summary = ""
         title, _ = strip_html(title)
         title = re.sub(r"^\[[^\]]{1,30}\]\s*", "", title)  # "[Comment] ..." -> "..." (The Lancet)
-        if not title or not link or SKIP_TITLE.search(title):
+        if not title or not link or SKIP_TITLE.search(title) or SKIP_NOTICE.search(title):
+            continue
+        if SKIP_NOTICE_TEXT.search(summary[:400]):
+            continue
+        # Feeds that carry the whole article: a very short post is a note, a video or a link, not a read.
+        if feed.get("full_text") and len(strip_html(full_text or body)[0].split()) < MIN_WORDS:
             continue
         categories = [c.text or c.get("term", "") for c in el.findall("category") + el.findall("atom:category", NS)]
         if any(SKIP_CATEGORY.search(c) for c in categories):
@@ -322,6 +343,26 @@ def pick(items, count, max_age_days, seen, shown_before, now):
     return chosen
 
 
+def page_words(page):
+    """Article length: the publisher's stated word count, else the <article> body, else the whole page.
+    Returns (words, reliable) — only the first two are trustworthy enough to call something too short."""
+    def count(fragment):
+        n = 0
+        for p in re.findall(r"<p[^>]*>(.*?)</p>", fragment, re.S | re.I):
+            w = len(re.sub(r"<[^>]+>", " ", p).split())
+            if w >= 8:  # skip captions, bylines and buttons
+                n += w
+        return n
+
+    stated = re.search(r'"wordCount"\s*:\s*"?(\d+)', page)
+    if stated and int(stated.group(1)) > 0:
+        return int(stated.group(1)), True
+    words = max((count(a) for a in re.findall(r"<article\b.*?</article>", page, re.S | re.I)), default=0)
+    if words >= MIN_WORDS:
+        return words, True
+    return count(page), False
+
+
 def is_paywalled(item):
     """Open the article; publishers mark locked pages with isAccessibleForFree: false."""
     if item["subscriber"]:  # his own subscription (New Scientist) is allowed through
@@ -333,11 +374,20 @@ def is_paywalled(item):
     return bool(re.search(r'"isAccessibleForFree"\s*:\s*"?false', item["page"], re.I))
 
 
+def is_thin(item):
+    """Too short to be a real read (a notice, a photo caption, a one-paragraph brief)."""
+    if not item["page"]:
+        return False
+    words, reliable = page_words(item["page"])
+    return reliable and words < MIN_WORDS
+
+
 def finish(candidates, count):
-    """Drop anything behind a sign-up wall, keep the best `count`, newest first, a photo on top."""
+    """Drop anything behind a sign-up wall or too slight to read; keep the best `count`, newest first, a photo on top."""
     with ThreadPoolExecutor(max_workers=8) as pool:
         locked = list(pool.map(is_paywalled, candidates))
-    chosen = [i for i, lock in zip(candidates, locked) if not lock][:count]
+    thin = [is_thin(i) for i in candidates]
+    chosen = [i for i, lock, t in zip(candidates, locked, thin) if not lock and not t][:count]
     chosen.sort(key=lambda x: x["date"], reverse=True)
     # Lead with a real photo: prefer sources whose pictures aren't charts or figures.
     leads = [i for i in chosen if i["image"] and i["lead_ok"] and not i["low_priority"]] or \
@@ -345,13 +395,13 @@ def finish(candidates, count):
     if leads:
         chosen.remove(leads[0])
         chosen.insert(0, leads[0])
-    return chosen, sum(locked)
+    return chosen, sum(locked), sum(1 for l, t in zip(locked, thin) if t and not l)
 
 
 # ---------- extra detail for the chosen stories ----------
 
 def reading_minutes(item):
-    """Estimate reading time from the article's paragraphs. Subscriber-only sources are skipped."""
+    """Estimate reading time from the article. Subscriber-only sources are skipped."""
     if item["subscriber"]:
         return
     page = item["page"]
@@ -360,23 +410,8 @@ def reading_minutes(item):
             page = fetch(item["link"], timeout=15).decode("utf-8", "replace")
         except Exception:
             return
-
-    def count(fragment):
-        n = 0
-        for p in re.findall(r"<p[^>]*>(.*?)</p>", fragment, re.S | re.I):
-            w = len(re.sub(r"<[^>]+>", " ", p).split())
-            if w >= 8:  # skip captions, bylines and buttons
-                n += w
-        return n
-
-    # Best: the publisher's own word count. Next: the <article> body. Last resort: the whole page.
-    stated = re.search(r'"wordCount"\s*:\s*"?(\d+)', page)
-    words = int(stated.group(1)) if stated else 0
-    if not words:
-        words = max((count(a) for a in re.findall(r"<article\b.*?</article>", page, re.S | re.I)), default=0)
-    if words < 150:
-        words = count(page)
-    if 150 <= words <= 15000:
+    words, _ = page_words(page)
+    if MIN_WORDS <= words <= 15000:
         item["minutes"] = max(1, round(words / WORDS_PER_MINUTE))
 
 
@@ -686,13 +721,14 @@ def main():
     history = json.loads(HISTORY.read_text()) if HISTORY.exists() else {}
     shown_before = {k for k, d in history.items() if d < edition.isoformat()}
 
-    seen, sections, locked = Seen(), [], 0
+    seen, sections, locked, thin_total = Seen(), [], 0, 0
     for s in sections_cfg:
         items = [i for f in s["feeds"] for i in results[id(f)][0]]
         count = s.get("count", 4)
         # Take spares, so stories dropped for being behind a sign-up wall can be replaced.
         candidates = pick(items, count * 2 + 2, s.get("max_age_days", 4), seen, shown_before, now)
-        stories, n_locked = finish(candidates, count)
+        stories, n_locked, n_thin = finish(candidates, count)
+        thin_total += n_thin
         for i in stories:
             seen.add(i)
         locked += n_locked
@@ -753,7 +789,7 @@ def main():
     for s, stories in sections:
         new = sum(1 for i in stories if i["key"] not in shown_before)
         print(f"{s['name']:<20} {len(stories)} stories, {new} new  ({', '.join(sorted({i['source'] for i in stories}))})")
-    print(f"Skipped {locked} stories that need a sign-up or subscription")
+    print(f"Skipped {locked} stories that need a sign-up or subscription, and {thin_total} too short to be a real read")
     timed = sum(1 for i in shown if i["minutes"])
     print(f"Reading times found for {timed} of {len(shown)} stories")
     print(f"Picture of the day: {potd['title'] if potd else 'none'}")

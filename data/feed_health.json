@@ -21,7 +21,7 @@
   "name": "Ars Technica",
   "fails": 0,
   "last_ok": "2026-10-03",
-  "newest": "2026-10-02"
+  "newest": "2026-10-03"
  },
  "https://feeds.arstechnica.com/arstechnica/technology-lab": {
   "name": "Ars Technica",
@@ -67,9 +67,10 @@
  },
  "https://medicalxpress.com/rss-feed/": {
   "name": "Medical Xpress",
-  "fails": 0,
+  "fails": 1,
   "last_ok": "2026-10-03",
-  "newest": "2026-10-03"
+  "newest": "2026-10-03",
+  "last_error": "HTTPError: HTTP Error 429: Too Many Requests"
  },
  "https://news.mongabay.com/feed/": {
   "name": "Mongabay",
@@ -79,15 +80,17 @@
  },
  "https://phys.org/rss-feed/physics-news/": {
   "name": "Phys.org",
-  "fails": 0,
+  "fails": 1,
   "last_ok": "2026-10-03",
-  "newest": "2026-10-03"
+  "newest": "2026-10-03",
+  "last_error": "HTTPError: HTTP Error 429: Too Many Requests"
  },
  "https://phys.org/rss-feed/space-news/": {
   "name": "Phys.org",
-  "fails": 0,
+  "fails": 1,
   "last_ok": "2026-10-03",
-  "newest": "2026-10-02"
+  "newest": "2026-10-02",
+  "last_error": "HTTPError: HTTP Error 429: Too Many Requests"
  },
  "https://physicsworld.com/feed/": {
   "name": "Physics World",
@@ -159,7 +162,7 @@
   "name": "In the Pipeline (Derek Lowe)",
   "fails": 0,
   "last_ok": "2026-10-03",
-  "newest": "2026-09-30"
+  "newest": "2026-09-29"
  },
  "https://www.science.org/rss/news_current.xml": {
   "name": "Science",
@@ -207,7 +210,7 @@
   "name": "The Guardian",
   "fails": 0,
   "last_ok": "2026-10-03",
-  "newest": "2026-10-02"
+  "newest": "2026-10-03"
  },
  "https://www.theguardian.com/sport/tennis/rss": {
   "name": "The Guardian",
