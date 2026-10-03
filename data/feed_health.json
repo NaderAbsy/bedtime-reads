@@ -15,7 +15,7 @@
   "name": "APS Physics",
   "fails": 0,
   "last_ok": "2026-10-03",
-  "newest": "2026-10-01"
+  "newest": "2026-10-02"
  },
  "https://feeds.arstechnica.com/arstechnica/science": {
   "name": "Ars Technica",
@@ -51,7 +51,7 @@
   "name": "BBC Sport",
   "fails": 0,
   "last_ok": "2026-10-03",
-  "newest": "2026-10-02"
+  "newest": "2026-10-03"
  },
  "https://journals.plos.org/plosmedicine/feed/atom": {
   "name": "PLOS Medicine",
@@ -177,7 +177,7 @@
   "name": "Sky Sports",
   "fails": 0,
   "last_ok": "2026-10-03",
-  "newest": "2026-10-02"
+  "newest": "2026-10-03"
  },
  "https://www.smithsonianmag.com/rss/science-nature/": {
   "name": "Smithsonian",
