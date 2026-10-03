@@ -46,10 +46,11 @@ Live at **https://naderabsy.github.io/bedtime-reads/**
 
 ## Medicine sources
 
-Chosen for a clinician: Eric Topol's *Ground Truths*, Derek Lowe's *In the Pipeline* (Science),
-*Sensible Medicine*, *Science-Based Medicine* and *Your Local Epidemiologist*, with The Guardian, BBC
-and Medical Xpress health news only filling gaps. Paid-only newsletter posts are filtered out by the
-sign-up check.
+Chosen for a clinician: Derek Lowe's *In the Pipeline* (Science), *Sensible Medicine*, *Science-Based
+Medicine*, *Retraction Watch* and *The Transmitter* (neuroscience), with The Guardian, BBC and Medical
+Xpress health news only filling gaps. Paid-only newsletter posts are filtered out by the sign-up check.
+Newsletters hosted on substack.com (e.g. Eric Topol's *Ground Truths*) can't be used: Substack refuses
+GitHub's servers.
 
 ## Tonight's sky over Amman
 
