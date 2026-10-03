@@ -11,18 +11,11 @@
   "last_ok": "2026-10-03",
   "newest": "2026-10-01"
  },
- "https://erictopol.substack.com/feed": {
-  "name": "Ground Truths (Eric Topol)",
-  "fails": 2,
-  "last_ok": "2026-10-03",
-  "newest": "2026-09-30",
-  "last_error": "HTTPError: HTTP Error 403: Forbidden"
- },
  "https://feeds.aps.org/rss/recent/physics.xml": {
   "name": "APS Physics",
   "fails": 0,
   "last_ok": "2026-10-03",
-  "newest": "2026-10-01"
+  "newest": "2026-10-02"
  },
  "https://feeds.arstechnica.com/arstechnica/science": {
   "name": "Ars Technica",
@@ -98,6 +91,12 @@
  },
  "https://physicsworld.com/feed/": {
   "name": "Physics World",
+  "fails": 0,
+  "last_ok": "2026-10-03",
+  "newest": "2026-10-02"
+ },
+ "https://retractionwatch.com/feed/": {
+  "name": "Retraction Watch",
   "fails": 0,
   "last_ok": "2026-10-03",
   "newest": "2026-10-02"
@@ -228,6 +227,12 @@
   "last_ok": "2026-10-03",
   "newest": "2026-10-03"
  },
+ "https://www.thetransmitter.org/feed/": {
+  "name": "The Transmitter",
+  "fails": 0,
+  "last_ok": "2026-10-03",
+  "newest": "2026-10-02"
+ },
  "https://www.ubitennis.net/feed/": {
   "name": "Ubitennis",
   "fails": 0,
@@ -239,12 +244,5 @@
   "fails": 0,
   "last_ok": "2026-10-03",
   "newest": "2026-10-02"
- },
- "https://yourlocalepidemiologist.substack.com/feed": {
-  "name": "Your Local Epidemiologist",
-  "fails": 2,
-  "last_ok": "2026-10-03",
-  "newest": "2026-10-01",
-  "last_error": "HTTPError: HTTP Error 403: Forbidden"
  }
 }
