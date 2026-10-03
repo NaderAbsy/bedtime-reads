@@ -15,6 +15,7 @@ import re
 import shutil
 import sys
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -61,10 +62,21 @@ NS = {
 
 # ---------- fetching & parsing ----------
 
+BROWSER_UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 "
+              "(KHTML, like Gecko) Version/18.0 Safari/605.1.15")
+
+
 def fetch(url, timeout=20):
-    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "*/*"})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return r.read()
+    """Fetch a URL. Some hosts (Substack, for one) refuse unfamiliar clients from data centres,
+    so a refusal is retried once with an ordinary browser identity."""
+    for ua in (UA, BROWSER_UA):
+        req = urllib.request.Request(url, headers={"User-Agent": ua, "Accept": "*/*"})
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                return r.read()
+        except urllib.error.HTTPError as e:
+            if e.code not in (401, 403) or ua == BROWSER_UA:
+                raise
 
 
 class _Text(HTMLParser):
