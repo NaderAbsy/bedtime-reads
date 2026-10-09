@@ -2,247 +2,247 @@
  "https://aeon.co/feed.rss": {
   "name": "Aeon",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://bmjmedicine.bmj.com/rss/current.xml": {
   "name": "BMJ Medicine",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-06"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-08"
  },
  "https://feeds.aps.org/rss/recent/physics.xml": {
   "name": "APS Physics",
   "fails": 0,
-  "last_ok": "2026-10-08",
+  "last_ok": "2026-10-09",
   "newest": "2026-10-08"
  },
  "https://feeds.arstechnica.com/arstechnica/science": {
   "name": "Ars Technica",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://feeds.arstechnica.com/arstechnica/technology-lab": {
   "name": "Ars Technica",
   "fails": 0,
-  "last_ok": "2026-10-08",
+  "last_ok": "2026-10-09",
   "newest": "2026-10-06"
  },
  "https://feeds.bbci.co.uk/news/health/rss.xml": {
   "name": "BBC",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://feeds.bbci.co.uk/news/science_and_environment/rss.xml": {
   "name": "BBC",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://feeds.bbci.co.uk/news/technology/rss.xml": {
   "name": "BBC",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://feeds.bbci.co.uk/sport/tennis/rss.xml": {
   "name": "BBC Sport",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://journals.plos.org/plosmedicine/feed/atom": {
   "name": "PLOS Medicine",
   "fails": 0,
-  "last_ok": "2026-10-08",
+  "last_ok": "2026-10-09",
   "newest": "2026-10-08"
  },
  "https://knowablemagazine.org/rss": {
   "name": "Knowable Magazine",
   "fails": 0,
-  "last_ok": "2026-10-08",
+  "last_ok": "2026-10-09",
   "newest": "2026-10-07"
  },
  "https://medicalxpress.com/rss-feed/": {
   "name": "Medical Xpress",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://news.mongabay.com/feed/": {
   "name": "Mongabay",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://phys.org/rss-feed/physics-news/": {
   "name": "Phys.org",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://phys.org/rss-feed/space-news/": {
   "name": "Phys.org",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://physicsworld.com/feed/": {
   "name": "Physics World",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://retractionwatch.com/feed/": {
   "name": "Retraction Watch",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://sciencebasedmedicine.org/feed/": {
   "name": "Science-Based Medicine",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-07"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://spectrum.ieee.org/feeds/feed.rss": {
   "name": "IEEE Spectrum",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-07"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://undark.org/feed/": {
   "name": "Undark",
   "fails": 0,
-  "last_ok": "2026-10-08",
+  "last_ok": "2026-10-09",
   "newest": "2026-09-25"
  },
  "https://www.esa.int/rssfeed/Our_Activities/Space_Science": {
   "name": "ESA",
   "fails": 0,
-  "last_ok": "2026-10-08",
+  "last_ok": "2026-10-09",
   "newest": "2026-10-08"
  },
  "https://www.nasa.gov/feeds/iotd-feed/": {
   "name": "NASA",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://www.nature.com/nature.rss": {
   "name": "Nature",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://www.nature.com/nm.rss": {
   "name": "Nature Medicine",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://www.quantamagazine.org/feed/": {
   "name": "Quanta Magazine",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-07"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://www.quantamagazine.org/physics/feed/": {
   "name": "Quanta Magazine",
   "fails": 0,
-  "last_ok": "2026-10-08",
+  "last_ok": "2026-10-09",
   "newest": "2026-10-02"
  },
  "https://www.science.org/blogs/pipeline/feed": {
   "name": "In the Pipeline (Derek Lowe)",
   "fails": 0,
-  "last_ok": "2026-10-08",
+  "last_ok": "2026-10-09",
   "newest": "2026-09-29"
  },
  "https://www.science.org/rss/news_current.xml": {
   "name": "Science",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://www.sensible-med.com/feed": {
   "name": "Sensible Medicine",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://www.skysports.com/rss/12110": {
   "name": "Sky Sports",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://www.smithsonianmag.com/rss/science-nature/": {
   "name": "Smithsonian",
   "fails": 0,
-  "last_ok": "2026-10-08",
+  "last_ok": "2026-10-09",
   "newest": "2026-10-07"
  },
  "https://www.theguardian.com/environment/wildlife/rss": {
   "name": "The Guardian",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://www.theguardian.com/science/rss": {
   "name": "The Guardian",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://www.theguardian.com/science/space/rss": {
   "name": "The Guardian",
   "fails": 0,
-  "last_ok": "2026-10-08",
+  "last_ok": "2026-10-09",
   "newest": "2026-10-08"
  },
  "https://www.theguardian.com/society/health/rss": {
   "name": "The Guardian",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://www.theguardian.com/sport/tennis/rss": {
   "name": "The Guardian",
   "fails": 0,
-  "last_ok": "2026-10-08",
+  "last_ok": "2026-10-09",
   "newest": "2026-10-08"
  },
  "https://www.theguardian.com/technology/rss": {
   "name": "The Guardian",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://www.thelancet.com/rssfeed/eclinm_current.xml": {
   "name": "eClinicalMedicine",
   "fails": 0,
-  "last_ok": "2026-10-08",
+  "last_ok": "2026-10-09",
   "newest": "2026-10-08"
  },
  "https://www.thetransmitter.org/feed/": {
   "name": "The Transmitter",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://www.ubitennis.net/feed/": {
   "name": "Ubitennis",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  },
  "https://www.universetoday.com/feed/": {
   "name": "Universe Today",
   "fails": 0,
-  "last_ok": "2026-10-08",
-  "newest": "2026-10-08"
+  "last_ok": "2026-10-09",
+  "newest": "2026-10-09"
  }
 }
