@@ -55,7 +55,7 @@ SKIP_TITLE = re.compile(
 SKIP_NOTICE = re.compile(
     r"^(time off|on vacation|vacation|out of (the )?office|programming note|housekeeping|blog note|site news|"
     r"a? ?note to readers|open thread|posting (note|schedule)|schedule change|back soon|holiday break|"
-    r"announcement|correction|corrigendum|erratum|retraction( note)?|expression of concern|withdrawn?|"
+    r"announcement|correction|corrigendum|erratum|errors? in (the )?\w+|incorrect \w+|missing (\w+ ){1,3}in\b|retraction( note)?|expression of concern|withdrawn?|"
     r"weekend reads|this (week|fortnight|month) in\b|lecture \d+|podcast|episode \d+|webinar)\b",
     re.I,
 )
@@ -214,6 +214,8 @@ def parse_feed(raw, feed):
         title = re.sub(r"^\[[^\]]{1,30}\]\s*", "", title)  # "[Comment] ..." -> "..." (The Lancet)
         if not title or not link or SKIP_TITLE.search(title) or SKIP_NOTICE.search(title):
             continue
+        if feed.get("journal") and feed["name"].lower() in title.lower():
+            continue  # a journal's editorial about itself
         if SKIP_NOTICE_TEXT.search(summary[:400]):
             continue
         # Feeds that carry the whole article: a very short post is a note, a video or a link, not a read.
@@ -236,8 +238,12 @@ def parse_feed(raw, feed):
             "source": feed["name"],
             "badge": feed.get("badge") or ("Subscriber" if feed.get("subscriber") else ""),
             "low_priority": bool(feed.get("low_priority")),
+            "featured": bool(feed.get("featured")),        # tried first in its section
+            "max_age": feed.get("max_age_days"),           # per-feed override of the section's limit
             "subscriber": bool(feed.get("subscriber")),
             "journal": bool(feed.get("journal")),
+            "pubmed_journal": feed.get("pubmed_journal"),          # find the paper in PubMed by title
+            "prefer_conclusions": bool(feed.get("prefer_conclusions")),  # feed summaries are one-liners
             "page": None,
             "lead_ok": feed.get("lead_ok", True),
             "minutes": None,
@@ -306,13 +312,14 @@ def pick(items, count, max_age_days, seen, shown_before, now, shown_today=frozen
     dated = [i for i in items if i["date"]]
     age = lambda i: now - i["date"]
     is_new = lambda i: i["key"] not in shown_before
+    limit = lambda i, k=1: timedelta(days=(i["max_age"] or max_age_days) * k)
     tiers = [
         # A second build on the same evening keeps what the first one chose.
         [i for i in dated if i["key"] in shown_today],
-        [i for i in dated if is_new(i) and age(i) <= timedelta(days=max_age_days)],
+        [i for i in dated if is_new(i) and age(i) <= limit(i)],
         # A quiet day: reach further back for something he hasn't seen before repeating anything.
-        [i for i in dated if is_new(i) and age(i) <= timedelta(days=max_age_days * 3)],
-        [i for i in dated if age(i) <= timedelta(days=max_age_days)],
+        [i for i in dated if is_new(i) and age(i) <= limit(i, 3)],
+        [i for i in dated if age(i) <= limit(i)],
         dated,
     ]
 
@@ -331,7 +338,8 @@ def pick(items, count, max_age_days, seen, shown_before, now, shown_today=frozen
         for i in sorted(tier, key=lambda x: x["date"], reverse=True):
             by_source.setdefault(i["source"], []).append(i)
         # Proper reporting before press-release sites; within that, the freshest source first.
-        order = sorted(by_source, key=lambda s: (by_source[s][0]["low_priority"], -by_source[s][0]["date"].timestamp()))
+        order = sorted(by_source, key=lambda s: (not by_source[s][0]["featured"], by_source[s][0]["low_priority"],
+                                                 -by_source[s][0]["date"].timestamp()))
         progress = True
         while len(chosen) < count and progress:
             progress = False
@@ -418,23 +426,42 @@ def reading_minutes(item):
 
 
 def pubmed_summary(item):
-    """Journal feeds (NEJM especially) often give no summary. Pull the abstract's conclusion from PubMed."""
+    """Journal feeds often give no summary, or a one-liner. Use the abstract's conclusion from PubMed.
+
+    Finds the paper by DOI when the link has one, otherwise by title within the journal. Several results
+    can match a short title (the study and an editorial about it), so the one with a matching title and
+    an abstract wins."""
     m = re.search(r"10\.\d{4,9}/[^\s?#&]+", urllib.parse.unquote(item["link"]))
-    if not m:
+    if m:
+        term = m.group(0).rstrip(".") + "[doi]"
+    elif item.get("pubmed_journal"):
+        words = " ".join(f"{w}[ti]" for w in re.findall(r"[A-Za-z0-9]{3,}", item["title"]) if w.lower() not in STOPWORDS)
+        term = f'{words} AND "{item["pubmed_journal"]}"[ta]'
+    else:
         return
     base = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
     try:
-        q = urllib.parse.quote(m.group(0).rstrip(".") + "[doi]")
-        ids = json.loads(fetch(f"{base}esearch.fcgi?db=pubmed&retmode=json&term={q}"))["esearchresult"]["idlist"]
+        q = urllib.parse.quote(term)
+        ids = json.loads(fetch(f"{base}esearch.fcgi?db=pubmed&retmode=json&retmax=5&term={q}"))["esearchresult"]["idlist"]
         if not ids:
             return
         time.sleep(0.4)  # PubMed asks for at most 3 requests a second
-        xml = fetch(f"{base}efetch.fcgi?db=pubmed&rettype=abstract&retmode=xml&id={ids[0]}").decode("utf-8", "replace")
+        xml = fetch(f"{base}efetch.fcgi?db=pubmed&rettype=abstract&retmode=xml&id={','.join(ids)}").decode("utf-8", "replace")
     except Exception:
         return
-    parts = re.findall(r'<AbstractText(?:[^>]*Label="([^"]*)")?[^>]*>(.*?)</AbstractText>', xml, re.S)
-    if not parts:
+    want = norm_words = re.sub(r"[^a-z0-9]+", " ", item["title"].lower()).strip()
+    best = None
+    for art in re.findall(r"<PubmedArticle>.*?</PubmedArticle>", xml, re.S):
+        title = strip_html(re.search(r"<ArticleTitle>(.*?)</ArticleTitle>", art, re.S).group(1) if "<ArticleTitle>" in art else "")[0]
+        parts = re.findall(r'<AbstractText(?:[^>]*Label="([^"]*)")?[^>]*>(.*?)</AbstractText>', art, re.S)
+        if not parts:
+            continue
+        starts = re.sub(r"[^a-z0-9]+", " ", title.lower()).strip().startswith(want)
+        if best is None or (starts and not best[0]):
+            best = (starts, parts)
+    if not best:
         return
+    parts = best[1]
     conclusions = [t for label, t in parts if label.upper().startswith("CONCLUSION")]
     text = strip_html(conclusions[0] if conclusions else parts[0][1])[0]
     item["summary"] = shorten(("Conclusions: " if conclusions else "") + text, 320)
@@ -444,7 +471,7 @@ def enrich(stories):
     with ThreadPoolExecutor(max_workers=8) as pool:
         list(pool.map(reading_minutes, stories))
     for i in stories:
-        if not i["summary"] and i["journal"]:
+        if i["journal"] and (not i["summary"] or i["prefer_conclusions"]):
             pubmed_summary(i)
             time.sleep(0.4)
 
@@ -515,37 +542,63 @@ def render_sky(sky, place):
     moon_bits = [f"{round(m['lit'] * 100)}% lit"] + [f"{verb} {t}" for verb, t in m["events"]]
     if m["up_at_9"]:
         moon_bits.append(f"in the {m['dir_at_9']} at 21:00")
-    blocks = [f"""
+    blocks = []
+    w = sky.get("weather")
+    if w:
+        chips = "".join(
+            f'<span class="cloud-chip" style="--c:{x["cloud"]}"><b>{x["hour"]}:00</b>{x["cloud"]}%<span> cloud</span></span>'
+            for x in w["hours"])
+        notes = f'<span>{esc("; ".join(w["notes"]).capitalize())}.</span>' if w["notes"] else ""
+        blocks.append(f"""
+        <div class="sky-weather rating-{w['rating']}">
+          <div class="sky-label">Stargazing outlook</div>
+          <strong>{esc(w['verdict'])}</strong>{notes}
+          <div class="cloud-row" aria-label="Cloud cover by hour">{chips}</div>
+        </div>""")
+    blocks.append(f"""
         <div class="sky-moon">{moon_svg(m['lit'], m['waxing'])}
           <div><div class="sky-label">Moon</div><strong>{esc(m['phase'])}</strong><span>{esc(' · '.join(moon_bits))}</span></div>
-        </div>"""]
+        </div>""")
+    small = []
     sun = []
     if sky["sunset"]:
         sun.append(f"Sunset {sky['sunset']}")
     if sky["dark"]:
         sun.append(f"fully dark from {sky['dark']}")
     if sun:
-        blocks.append(f'<div class="sky-item"><div class="sky-label">Sun</div><p>{esc(" · ".join(sun))}</p></div>')
+        small.append(f'<div class="sky-item"><div class="sky-label">Sun</div><p>{esc(" · ".join(sun))}</p></div>')
     if sky["planets"]:
         items = "".join(
             f"<li><strong>{esc(p['name'])}</strong> {esc(p['brightness'])}{', ' if p['brightness'] else ''}"
             f"in the {esc(p['dir'])}, {esc(p['height'])} ({p['alt']}°) at {p['time']}</li>" for p in sky["planets"])
-        blocks.append(f'<div class="sky-item"><div class="sky-label">Planets to see</div><ul>{items}</ul></div>')
+        small.append(f'<div class="sky-item"><div class="sky-label">Planets to see</div><ul>{items}</ul></div>')
     else:
-        blocks.append('<div class="sky-item"><div class="sky-label">Planets to see</div><p>No bright planets up this evening.</p></div>')
+        small.append('<div class="sky-item"><div class="sky-label">Planets to see</div><p>No bright planets up this evening.</p></div>')
     if sky["iss"] is not None:
         if sky["iss"]:
             items = "".join(
                 f"<li><strong>{p['time']}</strong> appears in the {esc(p['from'])}, climbs to {p['top_alt']}° in the "
                 f"{esc(p['top_dir'])}, fades in the {esc(p['to'])} · {p['minutes']} min</li>" for p in sky["iss"])
             iss = f"<ul>{items}</ul><p class=\"sky-note\">Looks like a bright, steady star moving quickly, with no blinking lights.</p>"
+        elif sky.get("iss_next"):
+            p = sky["iss_next"][0]
+            iss = (f"<p>No visible passes tonight. Next: <strong>{esc(p['day'])}, {p['time']}</strong>, "
+                   f"climbing to {p['top_alt']}° in the {esc(p['top_dir'])}.</p>")
+        elif sky.get("iss_morning"):
+            p = sky["iss_morning"]
+            iss = (f"<p>No evening passes this week; at the moment it's only visible before dawn "
+                   f"(next: {esc(p['day'])}, {p['time']}).</p>")
         else:
-            iss = "<p>No visible passes tonight.</p>"
-        blocks.append(f'<div class="sky-item"><div class="sky-label">Space station</div>{iss}</div>')
+            iss = "<p>No visible passes this week.</p>"
+        small.append(f'<div class="sky-item"><div class="sky-label">Space station</div>{iss}</div>')
     if sky["showers"]:
         items = "".join(f"<li><strong>{esc(x['name'])}</strong> {esc(x['when'])}: {esc(x['note'])}.</li>"
                         for x in sky["showers"])
-        blocks.append(f'<div class="sky-item"><div class="sky-label">Meteors</div><ul>{items}</ul></div>')
+        small.append(f'<div class="sky-item"><div class="sky-label">Meteors</div><ul>{items}</ul></div>')
+    blocks.append(f'<div class="sky-items">{"".join(small)}</div>')
+    if sky.get("coming"):
+        items = "".join(f"<li><strong>{esc(c['when'])}</strong> {esc(c['text'])}</li>" for c in sky["coming"])
+        blocks.append(f'<div class="sky-item sky-coming"><div class="sky-label">Coming up</div><ul>{items}</ul></div>')
     name = f"Tonight’s sky over {place}"
     return f"""
     <section class="section sky" id="tonights-sky" data-sec="tonights-sky" data-name="{esc(name)}">

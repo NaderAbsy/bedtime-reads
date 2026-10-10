@@ -44,8 +44,14 @@ Live at **https://naderabsy.github.io/bedtime-reads/**
   puts them at the top (they aren't repeated further down).
 - **Reading time** comes from the publisher's own word count where available, otherwise from the
   article text.
-- **Journal stories with no summary** get the abstract's conclusion from PubMed. The journals used are
-  open access (PLOS Medicine, eClinicalMedicine, BMJ Medicine, and the free articles in Nature Medicine).
+- **Journal stories** show the abstract's conclusion from PubMed when the feed has no summary or only a
+  one-liner (JAMA). Papers are found by DOI, or by title within the journal. All journals are open access:
+  JAMA Network Open (its *most read* list, tried first and allowed to reach back a month), PLOS Medicine,
+  eClinicalMedicine, BMJ Medicine, and the free articles in Nature Medicine. Correction notices
+  ("Error in…", "Corrigendum…") and journals' editorials about themselves are skipped.
+- **Journals checked and left out:** Lancet Healthy Longevity and Lancet Digital Health (papers not open
+  access), Cell Reports Medicine (some reviews not open access and can't be checked automatically),
+  eBioMedicine (free but mostly lab research).
 
 ## Medicine sources
 
@@ -57,10 +63,21 @@ GitHub's servers.
 
 ## Tonight's sky over Amman
 
-Calculated fresh each evening for Amman (set in `sources.json` under `location`): moon phase with a
-drawing of tonight's moon, moonrise/set, sunset and when it's fully dark, which planets are up around
-21:00 and where to look, visible space station passes (orbit data from CelesTrak), and any active meteor
-shower. If the astronomy library isn't installed, the page simply builds without this panel.
+Calculated fresh each evening for Amman (set in `sources.json` under `location`):
+
+- **Stargazing outlook:** tonight's cloud forecast from Open-Meteo (free, no account), 20:00 to midnight,
+  as a one-line verdict plus hourly cloud. Low cloud counts fully; thin high cloud counts for less, since
+  the moon and bright planets usually show through it. Notes a dark (moonless) sky or a bright moon.
+- **Moon:** a drawing of tonight's phase, how much is lit, moonrise/set.
+- **Sun:** sunset and when it's fully dark.
+- **Planets to see** around 21:00, where to look and how bright.
+- **Space station:** tonight's visible passes; otherwise the next one this week, or a note when it's
+  only passing before dawn (orbit data from CelesTrak).
+- **Meteors:** showers active tonight.
+- **Coming up:** the week's moon phases, the Moon passing close to a planet, shower peaks not yet
+  active, and any lunar eclipse in the next month that's visible from Amman.
+
+If the astronomy library isn't installed, the page simply builds without this panel.
 
 ## Try it locally
 

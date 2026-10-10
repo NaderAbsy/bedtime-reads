@@ -166,10 +166,26 @@
   }
 
   /* Tonight's sky */
-  .sky-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding-top: 14px; }
+  .sky-grid { display: grid; gap: 12px; padding-top: 14px; }
+  .sky-items { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .sky-items > .sky-item:last-child:nth-child(odd) { grid-column: 1 / -1; }
   .sky-moon, .sky-item { background: var(--bg-raised); border: 1px solid var(--rule); border-radius: 14px; padding: 14px 16px; min-width: 0; }
-  .sky-moon { grid-column: 1 / -1; display: flex; align-items: center; gap: 18px; }
-  .sky-grid > .sky-item:last-child:nth-child(even) { grid-column: 1 / -1; }
+  .sky-moon { display: flex; align-items: center; gap: 18px; }
+  .sky-weather { background: var(--bg-raised); border: 1px solid var(--rule); border-radius: 14px; padding: 14px 16px; }
+  .sky-weather strong { display: block; font-size: 1.12em; line-height: 1.3; }
+  .sky-weather > span { display: block; font: 500 14px/1.45 var(--sans); color: var(--ink-soft); margin-top: 2px; }
+  .sky-weather.rating-good { border-color: color-mix(in srgb, var(--accent) 55%, var(--rule)); }
+  .sky-weather.rating-poor strong { color: var(--ink-soft); }
+  .cloud-row { display: flex; gap: 6px; margin-top: 12px; }
+  @media (max-width: 560px) { .cloud-chip { font-size: 11px; padding: 6px 2px; } .cloud-chip span { display: none; } }
+  .cloud-chip {
+    flex: 1 1 0; min-width: 0; font: 500 12px/1.3 var(--sans); color: var(--ink-faint); text-align: center;
+    padding: 7px 4px; border-radius: 8px; border: 1px solid var(--rule);
+    background: linear-gradient(to top, color-mix(in srgb, var(--ink-faint) 32%, transparent) calc(var(--c) * 1%), transparent 0);
+  }
+  .cloud-chip b { display: block; color: var(--ink-soft); font-weight: 600; }
+
+
   .moon { width: 64px; height: 64px; flex-shrink: 0; }
   .moon-dark { fill: var(--moon-dark); }
   .moon-lit { fill: var(--moon-lit); }
@@ -282,7 +298,7 @@
     .top { flex-direction: column; gap: 14px; }
     .controls button { height: 40px; min-width: 40px; }
     .panel { padding-inline: 16px; }
-    .sky-grid { grid-template-columns: 1fr; }
+    .sky-items { grid-template-columns: 1fr; }
     .jump .arrange-open { padding: 11px 14px; }
     .sheet { border-left: 0; }
     .jump {

@@ -103,6 +103,16 @@
       "max_age_days": 8,
       "feeds": [
         {
+          "name": "JAMA Network Open",
+          "url": "https://jamanetwork.com/rss/site_214/mostReadArticles.xml",
+          "badge": "Open access",
+          "journal": true,
+          "pubmed_journal": "JAMA Netw Open",
+          "prefer_conclusions": true,
+          "featured": true,
+          "max_age_days": 30
+        },
+        {
           "name": "PLOS Medicine",
           "url": "https://journals.plos.org/plosmedicine/feed/atom",
           "badge": "Open access",
@@ -118,7 +128,8 @@
           "name": "BMJ Medicine",
           "url": "https://bmjmedicine.bmj.com/rss/current.xml",
           "badge": "Open access",
-          "journal": true
+          "journal": true,
+          "pubmed_journal": "BMJ Med"
         },
         {
           "name": "Nature Medicine",

@@ -53,6 +53,12 @@
   "last_ok": "2026-10-10",
   "newest": "2026-10-09"
  },
+ "https://jamanetwork.com/rss/site_214/mostReadArticles.xml": {
+  "name": "JAMA Network Open",
+  "fails": 0,
+  "last_ok": "2026-10-10",
+  "newest": "2026-09-25"
+ },
  "https://journals.plos.org/plosmedicine/feed/atom": {
   "name": "PLOS Medicine",
   "fails": 0,
@@ -139,10 +145,9 @@
  },
  "https://www.nature.com/nm.rss": {
   "name": "Nature Medicine",
-  "fails": 1,
+  "fails": 0,
   "last_ok": "2026-10-10",
-  "newest": "2026-10-09",
-  "last_error": "ParseError: not well-formed (invalid token): line 14, column 4 | got: b'<!DOCTYPE html>\\n<html lang=\"en\">\\n  <head>\\n    <meta\\n      http-equiv=\"Content-Security-Policy\"\\n      content=\"default-sr'"
+  "newest": "2026-10-09"
  },
  "https://www.quantamagazine.org/feed/": {
   "name": "Quanta Magazine",

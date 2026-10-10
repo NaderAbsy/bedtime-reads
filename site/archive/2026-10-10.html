@@ -166,10 +166,26 @@
   }
 
   /* Tonight's sky */
-  .sky-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding-top: 14px; }
+  .sky-grid { display: grid; gap: 12px; padding-top: 14px; }
+  .sky-items { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .sky-items > .sky-item:last-child:nth-child(odd) { grid-column: 1 / -1; }
   .sky-moon, .sky-item { background: var(--bg-raised); border: 1px solid var(--rule); border-radius: 14px; padding: 14px 16px; min-width: 0; }
-  .sky-moon { grid-column: 1 / -1; display: flex; align-items: center; gap: 18px; }
-  .sky-grid > .sky-item:last-child:nth-child(even) { grid-column: 1 / -1; }
+  .sky-moon { display: flex; align-items: center; gap: 18px; }
+  .sky-weather { background: var(--bg-raised); border: 1px solid var(--rule); border-radius: 14px; padding: 14px 16px; }
+  .sky-weather strong { display: block; font-size: 1.12em; line-height: 1.3; }
+  .sky-weather > span { display: block; font: 500 14px/1.45 var(--sans); color: var(--ink-soft); margin-top: 2px; }
+  .sky-weather.rating-good { border-color: color-mix(in srgb, var(--accent) 55%, var(--rule)); }
+  .sky-weather.rating-poor strong { color: var(--ink-soft); }
+  .cloud-row { display: flex; gap: 6px; margin-top: 12px; }
+  @media (max-width: 560px) { .cloud-chip { font-size: 11px; padding: 6px 2px; } .cloud-chip span { display: none; } }
+  .cloud-chip {
+    flex: 1 1 0; min-width: 0; font: 500 12px/1.3 var(--sans); color: var(--ink-faint); text-align: center;
+    padding: 7px 4px; border-radius: 8px; border: 1px solid var(--rule);
+    background: linear-gradient(to top, color-mix(in srgb, var(--ink-faint) 32%, transparent) calc(var(--c) * 1%), transparent 0);
+  }
+  .cloud-chip b { display: block; color: var(--ink-soft); font-weight: 600; }
+
+
   .moon { width: 64px; height: 64px; flex-shrink: 0; }
   .moon-dark { fill: var(--moon-dark); }
   .moon-lit { fill: var(--moon-lit); }
@@ -282,7 +298,7 @@
     .top { flex-direction: column; gap: 14px; }
     .controls button { height: 40px; min-width: 40px; }
     .panel { padding-inline: 16px; }
-    .sky-grid { grid-template-columns: 1fr; }
+    .sky-items { grid-template-columns: 1fr; }
     .jump .arrange-open { padding: 11px 14px; }
     .sheet { border-left: 0; }
     .jump {
@@ -376,9 +392,14 @@
     <section class="section sky" id="tonights-sky" data-sec="tonights-sky" data-name="Tonight’s sky over Amman">
       <div class="section-head"><h2 class="section-title">Tonight’s sky over Amman</h2><button class="hide-sec" type="button" data-sec="tonights-sky" aria-label="Hide Tonight’s sky over Amman">Hide</button></div>
       <div class="sky-grid">
+        <div class="sky-weather rating-good">
+          <div class="sky-label">Stargazing outlook</div>
+          <strong>Mostly clear, with some cloud</strong><span>No bright moon, so it&#x27;s a dark sky for faint stars.</span>
+          <div class="cloud-row" aria-label="Cloud cover by hour"><span class="cloud-chip" style="--c:45"><b>20:00</b>45%<span> cloud</span></span><span class="cloud-chip" style="--c:45"><b>21:00</b>45%<span> cloud</span></span><span class="cloud-chip" style="--c:31"><b>22:00</b>31%<span> cloud</span></span><span class="cloud-chip" style="--c:28"><b>23:00</b>28%<span> cloud</span></span><span class="cloud-chip" style="--c:20"><b>00:00</b>20%<span> cloud</span></span></div>
+        </div>
         <div class="sky-moon"><svg class="moon" viewBox="-34 -34 68 68" role="img" aria-label="0% of the moon lit"><circle r="30" class="moon-dark"/><path d="M0,-30 A30,30 0 0 1 0,30 A29.92,30 0 0 0 0,-30 Z" class="moon-lit"/></svg>
           <div><div class="sky-label">Moon</div><strong>New moon</strong><span>0% lit · sets 17:48</span></div>
-        </div><div class="sky-item"><div class="sky-label">Sun</div><p>Sunset 18:10 · fully dark from 19:31</p></div><div class="sky-item"><div class="sky-label">Planets to see</div><ul><li><strong>Saturn</strong> bright, in the south-east, partway up (37°) at 21:00</li></ul></div><div class="sky-item"><div class="sky-label">Space station</div><p>No visible passes tonight.</p></div><div class="sky-item"><div class="sky-label">Meteors</div><ul><li><strong>Draconids</strong> active, past its peak: up to about 10 an hour at its peak from a dark site.</li><li><strong>Orionids</strong> active; peaks 21 October: up to about 20 an hour at its peak from a dark site.</li></ul></div>
+        </div><div class="sky-items"><div class="sky-item"><div class="sky-label">Sun</div><p>Sunset 18:10 · fully dark from 19:31</p></div><div class="sky-item"><div class="sky-label">Planets to see</div><ul><li><strong>Saturn</strong> bright, in the south-east, partway up (37°) at 21:00</li></ul></div><div class="sky-item"><div class="sky-label">Space station</div><p>No evening passes this week; at the moment it's only visible before dawn (next: Sun 11 Oct, 05:47).</p></div><div class="sky-item"><div class="sky-label">Meteors</div><ul><li><strong>Draconids</strong> active, past its peak: up to about 10 an hour at its peak from a dark site.</li><li><strong>Orionids</strong> active; peaks 21 October: up to about 20 an hour at its peak from a dark site.</li></ul></div></div>
       </div>
       <p class="sky-foot">Times are local to Amman. Away from city lights you’ll see much more.</p>
     </section>
@@ -424,7 +445,7 @@
         <div class="thumb"><img src="https://scx1.b-cdn.net/csz/news/800a/2026/nasa-advances-lisa-mis.jpg" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">Phys.org</span><time datetime="2026-10-09T16:40:01-04:00"></time></div>
+          <div class="meta"><span class="source">Phys.org</span><time datetime="2026-10-09T16:40:01-04:00"></time><span class="mins">3 min read</span></div>
           <h3><a href="https://phys.org/news/2026-10-nasa-advances-lisa-mission-contributions.html" target="_blank" rel="noopener">NASA advances LISA mission contributions with new test telescope</a></h3>
           <p>NASA has taken the next step in the process of developing a new all-glass telescope for the LISA (Laser Interferometer Space Antenna) mission, a space observatory designed to detect ripples in space-time called gravitational waves.</p>
           <button class="save" type="button" aria-pressed="false">Save for later</button>
@@ -469,7 +490,7 @@
         <div class="thumb"><img src="https://scx1.b-cdn.net/csz/news/800a/2026/most-labs-testing-chil.jpg" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">Medical Xpress</span><time datetime="2026-10-10T12:40:02-04:00"></time></div>
+          <div class="meta"><span class="source">Medical Xpress</span><time datetime="2026-10-10T12:40:02-04:00"></time><span class="mins">2 min read</span></div>
           <h3><a href="https://medicalxpress.com/news/2026-10-labs-children-cardiac-troponin-lack.html" target="_blank" rel="noopener">Most labs testing children for cardiac troponin lack pediatric reference ranges, survey finds</a></h3>
           <p>Cardiac troponin, a protein released into the blood when heart muscle is damaged, can be used as a quick measure of heart injury in adults, and testing for it has revolutionized adult cardiology. For children, however, doctors often lack data on normal…</p>
           <button class="save" type="button" aria-pressed="false">Save for later</button>
@@ -520,23 +541,23 @@
           <button class="save" type="button" aria-pressed="false">Save for later</button>
         </div>
       </article>
-      <article class="story no-image" data-k="https://journals.plos.org/plosmedicine/article">
+      <article class="story no-image" data-k="https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2854492">
         
         <div class="text">
           
-          <div class="meta"><span class="source">PLOS Medicine</span><span class="badge">Open access</span><time datetime="2026-10-08T14:00:00+00:00"></time><span class="mins">43 min read</span></div>
-          <h3><a href="https://journals.plos.org/plosmedicine/article?id=10.1371%2Fjournal.pmed.1005274" target="_blank" rel="noopener">Genotype-informed docosahexaenoic acid dosing based on the FADS Indel to reduce preterm and prolonged gestation: A secondary analysis of the ADORE randomized trial</a></h3>
-          <p>by Yan Ning Li, Kumar S. D. Kothapalli, Susan E. Carlson, Byron J. Gajewski, Emily A. DeFranco, J. Thomas Brenna Background Spontaneous early preterm birth (EPB &lt; 34 weeks) is a major contributor to newborn morbidity and mortality; it depends on ancestry, and…</p>
+          <div class="meta"><span class="source">JAMA Network Open</span><span class="badge">Open access</span><time datetime="2026-09-25T00:00:00+00:00"></time></div>
+          <h3><a href="https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2854492" target="_blank" rel="noopener">Smartphone Ownership and Eating Disorder Symptoms in Early Adolescence</a></h3>
+          <p>Conclusions: In this cohort study of US adolescents, smartphone ownership was associated with a variety of ED symptoms, suggesting that the timing of smartphone ownership may be associated with ED risk. Future research is needed to characterize the mechanisms underlying these observed associations.</p>
           <button class="save" type="button" aria-pressed="false">Save for later</button>
         </div>
       </article>
-      <article class="story no-image" data-k="https://bmjmedicine.bmj.com/cgi/content/short/5/1/e003139">
+      <article class="story no-image" data-k="https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2854378">
         
         <div class="text">
           
-          <div class="meta"><span class="source">BMJ Medicine</span><span class="badge">Open access</span><time datetime="2026-09-18T03:01:00-07:00"></time></div>
-          <h3><a href="https://bmjmedicine.bmj.com/cgi/content/short/5/1/e003139?rss=1" target="_blank" rel="noopener">Promoting access and trust: cohort and data profiles in BMJ Medicine</a></h3>
-          
+          <div class="meta"><span class="source">JAMA Network Open</span><span class="badge">Open access</span><time datetime="2026-09-23T00:00:00+00:00"></time></div>
+          <h3><a href="https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2854378" target="_blank" rel="noopener">Probiotics and Risk of Death, NEC, and Sepsis in Very Preterm Infants</a></h3>
+          <p>This cohort study examines the association of probiotic supplementation with risk of death, necrotizing enterocolitis (NEC), and/or culture-proven sepsis in infants born very preterm in Sweden.</p>
           <button class="save" type="button" aria-pressed="false">Save for later</button>
         </div>
       </article>
@@ -549,7 +570,7 @@
         <div class="thumb"><img src="https://scx1.b-cdn.net/csz/news/800a/2026/classifying-non-equili.jpg" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">Phys.org</span><time datetime="2026-10-10T13:00:02-04:00"></time></div>
+          <div class="meta"><span class="source">Phys.org</span><time datetime="2026-10-10T13:00:02-04:00"></time><span class="mins">9 min read</span></div>
           <h3><a href="https://phys.org/news/2026-10-stability-distinguish-quantum-phases-older.html" target="_blank" rel="noopener">New stability rules distinguish quantum phases of matter that an older method wrongly groups together</a></h3>
           <p>Most of us recognize basic phases of matter and their properties: solids maintain their shape, liquids flow freely with constant volume, and gases expand to fill their container. Quantum phases, on the other hand, are much harder to categorize, overturning…</p>
           <button class="save" type="button" aria-pressed="false">Save for later</button>
@@ -619,7 +640,7 @@
         
         <div class="text">
           
-          <div class="meta"><span class="source">Undark</span><time datetime="2026-09-25T07:00:13+00:00"></time></div>
+          <div class="meta"><span class="source">Undark</span><time datetime="2026-09-25T07:00:13+00:00"></time><span class="mins">2 min read</span></div>
           <h3><a href="https://undark.org/2026/09/25/italy-extraterrestrial-life/" target="_blank" rel="noopener">In Italy, What Earth Can Tell Us About Extraterrestrial Life</a></h3>
           <p>Photo Essay | From sampling hydrothermal vents and abandoned mines to lab experiments that replicate Mars’ atmosphere, scientists are using what we know about life on Earth to understand how it may exist on other worlds. Italy, it seems, provides particularly…</p>
           <button class="save" type="button" aria-pressed="false">Save for later</button>
@@ -748,8 +769,8 @@
     <footer>
       <p class="goodnight">That’s all for tonight. Sleep well.</p>
       <nav class="previous" id="nights" aria-label="Previous nights"><span class="nights-label">Previous nights</span><a href="../">Tonight</a><a href="2026-10-09.html">Fri 9 Oct</a><a href="2026-10-08.html">Thu 8 Oct</a><a href="2026-10-07.html">Wed 7 Oct</a><a href="2026-10-06.html">Tue 6 Oct</a><a href="2026-10-04.html">Sun 4 Oct</a><a href="2026-10-03.html">Sat 3 Oct</a></nav>
-      <p class="small">New stories every evening · <span id="built" data-built="2026-10-10T17:56:37.416525+00:00" data-live="" data-edition="2026-10-10"></span></p>
-      <p class="small">From APS Physics · Aeon · Ars Technica · BBC · BBC Sport · BMJ Medicine · ESA · IEEE Spectrum · In the Pipeline (Derek Lowe) · Knowable Magazine · Medical Xpress · Mongabay · NASA · Nature · Nature Medicine · PLOS Medicine · Phys.org · Physics World · Quanta Magazine · Retraction Watch · Science · Science-Based Medicine · Sensible Medicine · Sky Sports · Smithsonian · The Guardian · The Transmitter · Ubitennis · Undark · Universe Today · eClinicalMedicine</p>
+      <p class="small">New stories every evening · <span id="built" data-built="2026-10-10T19:23:48.369987+00:00" data-live="" data-edition="2026-10-10"></span></p>
+      <p class="small">From APS Physics · Aeon · Ars Technica · BBC · BBC Sport · BMJ Medicine · ESA · IEEE Spectrum · In the Pipeline (Derek Lowe) · JAMA Network Open · Knowable Magazine · Medical Xpress · Mongabay · NASA · Nature · Nature Medicine · PLOS Medicine · Phys.org · Physics World · Quanta Magazine · Retraction Watch · Science · Science-Based Medicine · Sensible Medicine · Sky Sports · Smithsonian · The Guardian · The Transmitter · Ubitennis · Undark · Universe Today · eClinicalMedicine</p>
     </footer>
   </div>
 
