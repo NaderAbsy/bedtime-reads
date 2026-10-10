@@ -301,12 +301,14 @@ class Seen:
         self.titles.append(item["words"])
 
 
-def pick(items, count, max_age_days, seen, shown_before, now):
+def pick(items, count, max_age_days, seen, shown_before, now, shown_today=frozenset()):
     """Choose a section's candidates: new-to-him first, varied across sources, nothing already on the page."""
     dated = [i for i in items if i["date"]]
     age = lambda i: now - i["date"]
     is_new = lambda i: i["key"] not in shown_before
     tiers = [
+        # A second build on the same evening keeps what the first one chose.
+        [i for i in dated if i["key"] in shown_today],
         [i for i in dated if is_new(i) and age(i) <= timedelta(days=max_age_days)],
         # A quiet day: reach further back for something he hasn't seen before repeating anything.
         [i for i in dated if is_new(i) and age(i) <= timedelta(days=max_age_days * 3)],
@@ -554,6 +556,29 @@ def render_sky(sky, place):
     </section>"""
 
 
+def render_nights(edition, editions, latest, is_archive):
+    """The "Previous nights" buttons: Tonight plus every kept night, the one being viewed highlighted.
+    The page refreshes this row from archive/editions.json, so older editions also link to newer ones."""
+    tonight_href = "../" if is_archive else "./"
+    to_archive = "" if is_archive else "archive/"
+    links = []
+    viewing_latest = edition == latest and not is_archive
+    links.append('<span class="current" aria-current="page">Tonight</span>' if viewing_latest
+                 else f'<a href="{tonight_href}">Tonight</a>')
+    for d in editions:
+        if d == latest:
+            continue  # that's Tonight
+        label = f"{d:%a} {d.day} {d:%b}"
+        if d == edition and is_archive:
+            links.append(f'<span class="current" aria-current="page">{label}</span>')
+        else:
+            links.append(f'<a href="{to_archive}{d.isoformat()}.html">{label}</a>')
+    if len(links) < 2:
+        return ""
+    return ('<nav class="previous" id="nights" aria-label="Previous nights"><span class="nights-label">Previous nights</span>'
+            + "".join(links) + "</nav>")
+
+
 def render(cfg, edition, built, potd, picks, sections, editions, base, is_archive, sky=None):
     place = (cfg.get("location") or {}).get("name", "")
     nav_items = []
@@ -602,12 +627,7 @@ def render(cfg, edition, built, potd, picks, sections, editions, base, is_archiv
       </div>
     </section>"""
 
-    prefix = "" if is_archive else "archive/"
-    others = [d for d in editions if d != edition][:7]
-    archive = ""
-    if others:
-        links = "".join(f'<a href="{prefix}{d.isoformat()}.html">{d:%a} {d.day} {d:%b}</a>' for d in others)
-        archive = f'<nav class="previous" aria-label="Previous nights"><span>Previous nights</span>{links}</nav>'
+    archive = render_nights(edition, editions, editions[0] if editions else edition, is_archive)
 
     banner = ""
     if is_archive:
@@ -621,6 +641,7 @@ def render(cfg, edition, built, potd, picks, sections, editions, base, is_archiv
         "{{EDITION}}": long_date(edition),
         "{{BANNER}}": banner,
         "{{BUILT}}": built,
+        "{{EDITION_ISO}}": edition.isoformat(),
         "{{LIVE}}": "" if is_archive else "1",
         "{{NAV}}": nav,
         "{{HERO}}": hero,
@@ -632,6 +653,30 @@ def render(cfg, edition, built, potd, picks, sections, editions, base, is_archiv
     }.items():
         page = page.replace(key, val)
     return page
+
+
+OLD_NIGHTS_CSS = ".previous span { width: 100%; color: var(--ink-faint); margin-bottom: 4px; }"
+NEW_NIGHTS_CSS = (".previous .nights-label { width: 100%; color: var(--ink-faint); margin-bottom: 4px; }\n"
+                  "  .previous .current { color: var(--bg); background: var(--accent); border-color: var(--accent); "
+                  "font-weight: 600; padding: 10px 14px; border: 1px solid var(--accent); border-radius: 20px; }")
+
+
+def refresh_archive_nights(editions, latest):
+    """Rewrite the date buttons inside every kept edition, so each one links to all the others
+    (including nights added after it was built)."""
+    for f in ARCHIVE.glob("*.html"):
+        try:
+            d = date.fromisoformat(f.stem)
+        except ValueError:
+            continue
+        page = f.read_text(encoding="utf-8")
+        row = render_nights(d, editions, latest, is_archive=True)
+        if re.search(r'<nav class="previous".*?</nav>', page, re.S):
+            page = re.sub(r'<nav class="previous".*?</nav>', lambda m: row, page, count=1, flags=re.S)
+        else:
+            page = re.sub(r'(<p class="goodnight">.*?</p>)', lambda m: m.group(1) + "\n      " + row, page, count=1, flags=re.S)
+        page = page.replace(OLD_NIGHTS_CSS, NEW_NIGHTS_CSS)  # editions built before the highlighted button
+        f.write_text(page, encoding="utf-8")
 
 
 # ---------- source health ----------
@@ -695,7 +740,9 @@ def main():
         except Exception:
             pass
     now = datetime.now(timezone.utc)
-    edition = now.astimezone(tz).date()
+    # GitHub sometimes starts the evening build hours late; a run in the small hours still belongs to
+    # the previous evening's edition, so a late start can never skip a date.
+    edition = (now.astimezone(tz) - timedelta(hours=cfg.get("edition_rollover_hours", 6))).date()
 
     sections_cfg = cfg["sections"]
     if not cfg.get("include_new_scientist", True):
@@ -720,13 +767,14 @@ def main():
     # History: stories first shown on an earlier night count as "seen". Same-day rebuilds stay stable.
     history = json.loads(HISTORY.read_text()) if HISTORY.exists() else {}
     shown_before = {k for k, d in history.items() if d < edition.isoformat()}
+    shown_today = {k for k, d in history.items() if d == edition.isoformat()}
 
     seen, sections, locked, thin_total = Seen(), [], 0, 0
     for s in sections_cfg:
         items = [i for f in s["feeds"] for i in results[id(f)][0]]
         count = s.get("count", 4)
         # Take spares, so stories dropped for being behind a sign-up wall can be replaced.
-        candidates = pick(items, count * 2 + 2, s.get("max_age_days", 4), seen, shown_before, now)
+        candidates = pick(items, count * 2 + 2, s.get("max_age_days", 4), seen, shown_before, now, shown_today)
         stories, n_locked, n_thin = finish(candidates, count)
         thin_total += n_thin
         for i in stories:
@@ -771,6 +819,9 @@ def main():
         except Exception as e:  # e.g. Skyfield not installed locally; the rest of the page still builds
             print(f"  ! sky panel skipped: {type(e).__name__}: {e}", file=sys.stderr)
 
+    (ARCHIVE / "editions.json").write_text(
+        json.dumps({"latest": edition.isoformat(), "editions": [d.isoformat() for d in editions]}) + "\n")
+
     built = now.isoformat()
     (SITE / "index.html").write_text(
         render(cfg, edition, built, potd, picks, sections, editions, base="", is_archive=False, sky=sky_tonight),
@@ -780,6 +831,7 @@ def main():
         encoding="utf-8")
     # A tiny file the open page checks, to notice when a newer edition is out.
     (SITE / "edition.json").write_text(json.dumps({"built": built, "edition": edition.isoformat()}) + "\n")
+    refresh_archive_nights(editions, edition)
     for f in STATIC.glob("*"):
         shutil.copy(f, SITE / f.name)
 

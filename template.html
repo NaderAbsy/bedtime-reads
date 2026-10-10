@@ -266,8 +266,9 @@
   footer .goodnight { font-style: italic; font-size: 1.25em; color: var(--ink-soft); }
   footer .small { font: 13px/1.6 var(--sans); }
   .previous { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; font: 500 14px/1 var(--sans); }
-  .previous span { width: 100%; color: var(--ink-faint); margin-bottom: 4px; }
-  .previous a { color: var(--ink-soft); padding: 10px 14px; border: 1px solid var(--rule); border-radius: 20px; }
+  .previous .nights-label { width: 100%; color: var(--ink-faint); margin-bottom: 4px; }
+  .previous a, .previous .current { color: var(--ink-soft); padding: 10px 14px; border: 1px solid var(--rule); border-radius: 20px; }
+  .previous .current { color: var(--bg); background: var(--accent); border-color: var(--accent); font-weight: 600; }
 
   @media (max-width: 560px) {
     .pick-grid { grid-template-columns: 1fr; }
@@ -368,7 +369,7 @@
     <footer>
       <p class="goodnight">That’s all for tonight. Sleep well.</p>
       {{ARCHIVE}}
-      <p class="small">New stories every evening · <span id="built" data-built="{{BUILT}}" data-live="{{LIVE}}"></span></p>
+      <p class="small">New stories every evening · <span id="built" data-built="{{BUILT}}" data-live="{{LIVE}}" data-edition="{{EDITION_ISO}}"></span></p>
       <p class="small">From {{SOURCES}}</p>
     </footer>
   </div>
@@ -714,6 +715,43 @@
       setLayout(now);
     });
   });
+
+  // ---- Previous nights: the same row of buttons on every edition, the one being viewed highlighted ----
+  // Each edition was built on its own night, so the row is refreshed from the always-current list.
+  (function () {
+    var nav = document.getElementById("nights"), info = document.getElementById("built").dataset;
+    var isArchive = info.live !== "1", here = info.edition;
+    var base = isArchive ? "" : "archive/";
+    fetch(base + "editions.json?t=" + Date.now(), { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) {
+        if (!data || !data.editions) return;
+        if (!nav) {  // the first night had no row yet
+          nav = document.createElement("nav"); nav.className = "previous"; nav.id = "nights";
+          nav.setAttribute("aria-label", "Previous nights");
+          var foot = document.querySelector("footer .goodnight");
+          foot.parentNode.insertBefore(nav, foot.nextSibling);
+        }
+        nav.textContent = "";
+        var label = document.createElement("span"); label.className = "nights-label"; label.textContent = "Previous nights";
+        nav.appendChild(label);
+        function add(text, href, current) {
+          var el = document.createElement(current ? "span" : "a");
+          el.textContent = text;
+          if (current) { el.className = "current"; el.setAttribute("aria-current", "page"); } else el.href = href;
+          nav.appendChild(el);
+        }
+        add("Tonight", isArchive ? "../" : "./", !isArchive);
+        data.editions.forEach(function (iso) {
+          if (iso === data.latest) return;  // that's Tonight
+          var d = new Date(iso + "T12:00:00");
+          var text = d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }).replace(",", "");
+          add(text, (isArchive ? "" : "archive/") + iso + ".html", isArchive && iso === here);
+        });
+        nav.hidden = nav.children.length < 3;
+      })
+      .catch(function () {});
+  })();
 
   // ---- Pull to refresh in the home-screen app ----
   // iPadOS gives home-screen web apps no pull-down refresh, so the page provides one there.

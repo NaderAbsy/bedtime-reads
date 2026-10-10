@@ -73,8 +73,11 @@ Then open `site/index.html` in a browser. Running it locally also updates `data/
 
 ## Schedule
 
-It rebuilds daily at 15:00 UTC (18:00 Amman time). To change the time, edit the `cron` line in
-`.github/workflows/daily.yml` (it's in UTC). For a manual refresh: **Actions** tab →
+It rebuilds every afternoon at 15:23 Amman time, with a backup run at 17:53. GitHub often starts
+scheduled runs late (it has been 3–7 hours on the hour), hence the odd minutes and the backup. A second
+run on the same evening keeps the stories the first one chose, and a run that starts after midnight still
+counts as the previous evening's edition, so no date is ever skipped. To change the times, edit the
+`cron` lines in `.github/workflows/daily.yml` (they're in UTC; Amman is UTC+3). For a manual refresh: **Actions** tab →
 *Build tonight's page* → **Run workflow**.
 
 ## On the iPad
@@ -90,7 +93,9 @@ for home-screen apps, so the page does).
 - **Hide or reorder sections:** each section has a **Hide** button (with Undo), and **Arrange** at the
   end of the section buttons opens a list to show, hide and move sections up or down. Remembered on the device.
 - **Continue reading** at the top shows the last few stories he opened in the past week.
-- **Previous nights** at the bottom opens any of the last 7 editions.
+- **Previous nights** at the bottom: Tonight plus every kept night (about a week), the same row on every
+  edition with the one being viewed highlighted. Older editions are rewritten each night so they also link
+  to newer ones.
 - Saved stories, text size and night/paper choice are stored on the iPad itself, so they don't
   appear on other devices.
 

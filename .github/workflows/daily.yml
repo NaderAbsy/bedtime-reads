@@ -2,9 +2,11 @@ name: Build tonight's page
 
 on:
   schedule:
-    # Every day at 15:00 UTC = 18:00 in Amman, ready well before bedtime.
-    # GitHub can start scheduled runs up to ~30 minutes late; that's normal.
-    - cron: "0 15 * * *"
+    # GitHub often starts scheduled runs late, worst on the hour (we've seen 3-7 hours), so the build is
+    # scheduled at odd minutes in the afternoon, with a backup run. Times are UTC; Amman is UTC+3.
+    # A second run on the same evening keeps the stories the first one chose.
+    - cron: "23 12 * * *"   # 15:23 Amman
+    - cron: "53 14 * * *"   # 17:53 Amman, backup
   workflow_dispatch: {}   # adds a "Run workflow" button for a manual refresh
 
 permissions:

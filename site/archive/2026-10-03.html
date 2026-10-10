@@ -266,7 +266,8 @@
   footer .goodnight { font-style: italic; font-size: 1.25em; color: var(--ink-soft); }
   footer .small { font: 13px/1.6 var(--sans); }
   .previous { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; font: 500 14px/1 var(--sans); }
-  .previous span { width: 100%; color: var(--ink-faint); margin-bottom: 4px; }
+  .previous .nights-label { width: 100%; color: var(--ink-faint); margin-bottom: 4px; }
+  .previous .current { color: var(--bg); background: var(--accent); border-color: var(--accent); font-weight: 600; padding: 10px 14px; border: 1px solid var(--accent); border-radius: 20px; }
   .previous a { color: var(--ink-soft); padding: 10px 14px; border: 1px solid var(--rule); border-radius: 20px; }
 
   @media (max-width: 560px) {
@@ -746,6 +747,7 @@
 
     <footer>
       <p class="goodnight">That’s all for tonight. Sleep well.</p>
+      <nav class="previous" id="nights" aria-label="Previous nights"><span class="nights-label">Previous nights</span><a href="../">Tonight</a><a href="2026-10-09.html">Fri 9 Oct</a><a href="2026-10-08.html">Thu 8 Oct</a><a href="2026-10-07.html">Wed 7 Oct</a><a href="2026-10-06.html">Tue 6 Oct</a><a href="2026-10-04.html">Sun 4 Oct</a><span class="current" aria-current="page">Sat 3 Oct</span></nav>
       
       <p class="small">New stories every evening · <span id="built" data-built="2026-10-03T18:32:13.597450+00:00" data-live=""></span></p>
       <p class="small">From APS Physics · Aeon · Ars Technica · BBC · BBC Sport · BMJ Medicine · ESA · IEEE Spectrum · In the Pipeline (Derek Lowe) · Knowable Magazine · Medical Xpress · Mongabay · NASA · Nature · Nature Medicine · PLOS Medicine · Phys.org · Physics World · Quanta Magazine · Retraction Watch · Science · Science-Based Medicine · Sensible Medicine · Sky Sports · Smithsonian · The Guardian · The Transmitter · Ubitennis · Undark · Universe Today · eClinicalMedicine</p>
