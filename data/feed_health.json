@@ -87,7 +87,7 @@
   "name": "Phys.org",
   "fails": 0,
   "last_ok": "2026-10-11",
-  "newest": "2026-10-10"
+  "newest": "2026-10-11"
  },
  "https://phys.org/rss-feed/space-news/": {
   "name": "Phys.org",
@@ -145,9 +145,10 @@
  },
  "https://www.nature.com/nm.rss": {
   "name": "Nature Medicine",
-  "fails": 0,
+  "fails": 1,
   "last_ok": "2026-10-11",
-  "newest": "2026-10-09"
+  "newest": "2026-10-09",
+  "last_error": "ParseError: not well-formed (invalid token): line 14, column 4 | got: b'<!DOCTYPE html>\\n<html lang=\"en\">\\n  <head>\\n    <meta\\n      http-equiv=\"Content-Security-Policy\"\\n      content=\"default-sr'"
  },
  "https://www.quantamagazine.org/feed/": {
   "name": "Quanta Magazine",
@@ -241,10 +242,9 @@
  },
  "https://www.ubitennis.net/feed/": {
   "name": "Ubitennis",
-  "fails": 1,
-  "last_ok": "2026-10-10",
-  "newest": "2026-10-09",
-  "last_error": "URLError: <urlopen error timed out>"
+  "fails": 0,
+  "last_ok": "2026-10-11",
+  "newest": "2026-10-11"
  },
  "https://www.universetoday.com/feed/": {
   "name": "Universe Today",
