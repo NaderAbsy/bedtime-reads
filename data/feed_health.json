@@ -21,7 +21,7 @@
   "name": "Ars Technica",
   "fails": 0,
   "last_ok": "2026-10-14",
-  "newest": "2026-10-13"
+  "newest": "2026-10-14"
  },
  "https://feeds.arstechnica.com/arstechnica/technology-lab": {
   "name": "Ars Technica",
@@ -117,7 +117,7 @@
   "name": "IEEE Spectrum",
   "fails": 0,
   "last_ok": "2026-10-14",
-  "newest": "2026-10-12"
+  "newest": "2026-10-14"
  },
  "https://undark.org/feed/": {
   "name": "Undark",
@@ -139,10 +139,9 @@
  },
  "https://www.nature.com/nature.rss": {
   "name": "Nature",
-  "fails": 1,
-  "last_ok": "2026-10-13",
-  "newest": "2026-10-13",
-  "last_error": "ParseError: not well-formed (invalid token): line 14, column 4 | got: b'<!DOCTYPE html>\\n<html lang=\"en\">\\n  <head>\\n    <meta\\n      http-equiv=\"Content-Security-Policy\"\\n      content=\"default-sr'"
+  "fails": 0,
+  "last_ok": "2026-10-14",
+  "newest": "2026-10-14"
  },
  "https://www.nature.com/nm.rss": {
   "name": "Nature Medicine",
@@ -166,7 +165,7 @@
   "name": "In the Pipeline (Derek Lowe)",
   "fails": 0,
   "last_ok": "2026-10-14",
-  "newest": "2026-10-13"
+  "newest": "2026-10-14"
  },
  "https://www.science.org/rss/news_current.xml": {
   "name": "Science",
@@ -208,7 +207,7 @@
   "name": "The Guardian",
   "fails": 0,
   "last_ok": "2026-10-14",
-  "newest": "2026-10-10"
+  "newest": "2026-10-14"
  },
  "https://www.theguardian.com/society/health/rss": {
   "name": "The Guardian",
