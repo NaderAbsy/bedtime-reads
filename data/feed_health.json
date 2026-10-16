@@ -63,7 +63,7 @@
   "name": "PLOS Medicine",
   "fails": 0,
   "last_ok": "2026-10-16",
-  "newest": "2026-10-15"
+  "newest": "2026-10-16"
  },
  "https://knowablemagazine.org/rss": {
   "name": "Knowable Magazine",
@@ -117,7 +117,7 @@
   "name": "IEEE Spectrum",
   "fails": 0,
   "last_ok": "2026-10-16",
-  "newest": "2026-10-15"
+  "newest": "2026-10-16"
  },
  "https://undark.org/feed/": {
   "name": "Undark",
@@ -135,7 +135,7 @@
   "name": "NASA",
   "fails": 0,
   "last_ok": "2026-10-16",
-  "newest": "2026-10-15"
+  "newest": "2026-10-16"
  },
  "https://www.nature.com/nature.rss": {
   "name": "Nature",
@@ -145,10 +145,9 @@
  },
  "https://www.nature.com/nm.rss": {
   "name": "Nature Medicine",
-  "fails": 2,
+  "fails": 0,
   "last_ok": "2026-10-16",
-  "newest": "2026-10-16",
-  "last_error": "ParseError: not well-formed (invalid token): line 14, column 4 | got: b'<!DOCTYPE html>\\n<html lang=\"en\">\\n  <head>\\n    <meta\\n      http-equiv=\"Content-Security-Policy\"\\n      content=\"default-sr'"
+  "newest": "2026-10-16"
  },
  "https://www.quantamagazine.org/feed/": {
   "name": "Quanta Magazine",
@@ -190,7 +189,7 @@
   "name": "Smithsonian",
   "fails": 0,
   "last_ok": "2026-10-16",
-  "newest": "2026-10-07"
+  "newest": "2026-10-16"
  },
  "https://www.theguardian.com/environment/wildlife/rss": {
   "name": "The Guardian",
