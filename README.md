@@ -133,4 +133,4 @@ New Scientist is switched off. Its feeds are still in `sources.json`; setting
   titled *Some reading sources need attention* on the repository, which emails the owner. It closes
   itself once every source works again.
 - When a reader comes back to the page, it checks `edition.json` and reloads itself if a newer edition is out,
-  so he never has to pull down to refresh. Archive pages don't do this.
+  so nobody has to pull down to refresh. Archive pages don't do this.
