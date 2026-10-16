@@ -308,7 +308,7 @@ class Seen:
 
 
 def pick(items, count, max_age_days, seen, shown_before, now, shown_today=frozenset()):
-    """Choose a section's candidates: new-to-him first, varied across sources, nothing already on the page."""
+    """Choose a section's candidates: new to the reader first, varied across sources, nothing already on the page."""
     dated = [i for i in items if i["date"]]
     age = lambda i: now - i["date"]
     is_new = lambda i: i["key"] not in shown_before
@@ -317,7 +317,7 @@ def pick(items, count, max_age_days, seen, shown_before, now, shown_today=frozen
         # A second build on the same evening keeps what the first one chose.
         [i for i in dated if i["key"] in shown_today],
         [i for i in dated if is_new(i) and age(i) <= limit(i)],
-        # A quiet day: reach further back for something he hasn't seen before repeating anything.
+        # A quiet day: reach further back for something not seen before repeating anything.
         [i for i in dated if is_new(i) and age(i) <= limit(i, 3)],
         [i for i in dated if age(i) <= limit(i)],
         dated,
@@ -375,7 +375,7 @@ def page_words(page):
 
 def is_paywalled(item):
     """Open the article; publishers mark locked pages with isAccessibleForFree: false."""
-    if item["subscriber"]:  # his own subscription (New Scientist) is allowed through
+    if item["subscriber"]:  # a reader's own subscription (New Scientist) is allowed through
         return False
     try:
         item["page"] = fetch(item["link"], timeout=15).decode("utf-8", "replace")
@@ -513,7 +513,10 @@ def render_story(i, kind="", label=""):
           <div class="meta"><span class="source">{esc(i["source"])}</span>{badge}<time datetime="{iso}"></time>{minutes}</div>
           <h3><a href="{esc(i["link"])}" target="_blank" rel="noopener">{esc(i["title"])}</a></h3>
           {f'<p>{esc(i["summary"])}</p>' if i["summary"] else ''}
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>"""
 

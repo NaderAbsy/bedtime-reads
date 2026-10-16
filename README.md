@@ -97,29 +97,34 @@ counts as the previous evening's edition, so no date is ever skipped. To change 
 `cron` lines in `.github/workflows/daily.yml` (they're in UTC; Amman is UTC+3). For a manual refresh: **Actions** tab →
 *Build tonight's page* → **Run workflow**.
 
-## On the iPad
+## For readers
 
-Open the link in Safari → Share button → **Add to Home Screen**. It gets its own moon icon.
+Several people can read it, each on their own phone, iPad or computer, with no accounts. Everything personal
+(saved stories, what's been opened, section order, text size, theme) is kept on each device separately.
+New readers see a short welcome card once; **How this page works** in the footer shows it again.
+
+On an iPhone or iPad: open the link in Safari → Share button → **Add to Home Screen**. It gets its own moon icon.
 In the home-screen app, pull down from the top of the page to refresh (iPadOS doesn't provide this
 for home-screen apps, so the page does).
 
 - **Save for later** on any story adds it to **Saved reads**. The **Saved** button at the top (next to
   A– / A+) shows how many are waiting and opens the list. Each saved story has **Read** and **Done**;
   Done removes it, with **Undo** for a few seconds in case of a slip. Saved reads stay through the daily
-  updates until he taps Done. The link `…/bedtime-reads/#saved` opens the list directly.
+  updates until the reader taps Done. The link `…/bedtime-reads/#saved` opens the list directly.
 - **Hide or reorder sections:** each section has a **Hide** button (with Undo), and **Arrange** at the
   end of the section buttons opens a list to show, hide and move sections up or down. Remembered on the device.
-- **Continue reading** at the top shows the last few stories he opened in the past week.
+- **Share** on any story opens the device's share sheet (Messages, WhatsApp, Mail), or copies the link.
+- **Continue reading** at the top shows the last few stories opened on that device in the past week.
 - **Previous nights** at the bottom: Tonight plus every kept night (about a week), the same row on every
   edition with the one being viewed highlighted. Older editions are rewritten each night so they also link
   to newer ones.
-- Saved stories, text size and night/paper choice are stored on the iPad itself, so they don't
-  appear on other devices.
+- Stories already opened turn grey. This uses each device's own browsing history, so one reader's
+  reading never greys out stories for anyone else.
 
 Every link opens straight to the full article, with no account needed.
 
 New Scientist is switched off. Its feeds are still in `sources.json`; setting
-`"include_new_scientist": true` brings them back, marked **Subscriber**, for reading with his own login.
+`"include_new_scientist": true` brings them back, marked **Subscriber**, for readers with their own login.
 
 ## Notes
 
@@ -127,6 +132,5 @@ New Scientist is switched off. Its feeds are still in `sources.json`; setting
 - If a source fails 3 nights in a row, or publishes nothing new for 30 days, the workflow opens an issue
   titled *Some reading sources need attention* on the repository, which emails the owner. It closes
   itself once every source works again.
-- Links he has already opened turn a dimmer colour.
-- When he comes back to the page, it checks `edition.json` and reloads itself if a newer edition is out,
+- When a reader comes back to the page, it checks `edition.json` and reloads itself if a newer edition is out,
   so he never has to pull down to refresh. Archive pages don't do this.
