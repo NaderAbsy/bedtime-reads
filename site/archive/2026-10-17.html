@@ -166,10 +166,26 @@
   }
 
   /* Tonight's sky */
-  .sky-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding-top: 14px; }
+  .sky-grid { display: grid; gap: 12px; padding-top: 14px; }
+  .sky-items { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .sky-items > .sky-item:last-child:nth-child(odd) { grid-column: 1 / -1; }
   .sky-moon, .sky-item { background: var(--bg-raised); border: 1px solid var(--rule); border-radius: 14px; padding: 14px 16px; min-width: 0; }
-  .sky-moon { grid-column: 1 / -1; display: flex; align-items: center; gap: 18px; }
-  .sky-grid > .sky-item:last-child:nth-child(even) { grid-column: 1 / -1; }
+  .sky-moon { display: flex; align-items: center; gap: 18px; }
+  .sky-weather { background: var(--bg-raised); border: 1px solid var(--rule); border-radius: 14px; padding: 14px 16px; }
+  .sky-weather strong { display: block; font-size: 1.12em; line-height: 1.3; }
+  .sky-weather > span { display: block; font: 500 14px/1.45 var(--sans); color: var(--ink-soft); margin-top: 2px; }
+  .sky-weather.rating-good { border-color: color-mix(in srgb, var(--accent) 55%, var(--rule)); }
+  .sky-weather.rating-poor strong { color: var(--ink-soft); }
+  .cloud-row { display: flex; gap: 6px; margin-top: 12px; }
+  @media (max-width: 560px) { .cloud-chip { font-size: 11px; padding: 6px 2px; } .cloud-chip span { display: none; } }
+  .cloud-chip {
+    flex: 1 1 0; min-width: 0; font: 500 12px/1.3 var(--sans); color: var(--ink-faint); text-align: center;
+    padding: 7px 4px; border-radius: 8px; border: 1px solid var(--rule);
+    background: linear-gradient(to top, color-mix(in srgb, var(--ink-faint) 32%, transparent) calc(var(--c) * 1%), transparent 0);
+  }
+  .cloud-chip b { display: block; color: var(--ink-soft); font-weight: 600; }
+
+
   .moon { width: 64px; height: 64px; flex-shrink: 0; }
   .moon-dark { fill: var(--moon-dark); }
   .moon-lit { fill: var(--moon-lit); }
@@ -191,6 +207,28 @@
     border: 1px solid var(--rule); border-radius: 20px; padding: 10px 16px; box-shadow: 0 6px 20px rgba(0,0,0,.3);
   }
   .ptr.ready { color: var(--accent); border-color: var(--accent); }
+
+  /* Welcome card for new readers, and the Share button */
+  .welcome {
+    margin-top: 28px; padding: 18px 20px; background: var(--bg-raised);
+    border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--rule)); border-radius: 14px;
+  }
+  .welcome h2 { margin: 0 0 6px; font-size: 1.2em; font-weight: 600; text-wrap: balance; }
+  .welcome p { margin: 0 0 10px; color: var(--ink-soft); font-size: .92em; }
+  .welcome ul { margin: 0 0 14px; padding-left: 20px; color: var(--ink-soft); font-size: .88em; line-height: 1.55; }
+  .welcome li + li { margin-top: 4px; }
+  .welcome strong { color: var(--ink); }
+  .welcome-ok {
+    font: 600 14px/1 var(--sans); color: var(--bg); background: var(--accent); border: 0;
+    border-radius: 18px; padding: 11px 18px; cursor: pointer;
+  }
+  .link-btn { font: inherit; color: var(--ink-soft); background: none; border: 0; padding: 6px; text-decoration: underline; cursor: pointer; }
+  .story-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .share {
+    position: relative; z-index: 1; cursor: pointer;
+    font: 600 13px/1 var(--sans); color: var(--ink-faint); background: transparent;
+    border: 1px solid var(--rule); border-radius: 18px; padding: 9px 14px; min-height: 36px;
+  }
 
   /* Picture of the day */
   .potd { margin: 30px 0 10px; }
@@ -239,7 +277,7 @@
     font: 600 13px/1 var(--sans); color: var(--ink-faint); background: transparent;
     border: 1px solid var(--rule); border-radius: 18px; padding: 9px 14px; min-height: 36px;
   }
-  .save { margin-top: 12px; }
+  .save { margin-top: 0; }
   .save[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); }
   .done { flex-shrink: 0; }
 
@@ -267,8 +305,8 @@
   footer .small { font: 13px/1.6 var(--sans); }
   .previous { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; font: 500 14px/1 var(--sans); }
   .previous .nights-label { width: 100%; color: var(--ink-faint); margin-bottom: 4px; }
-  .previous .current { color: var(--bg); background: var(--accent); border-color: var(--accent); font-weight: 600; padding: 10px 14px; border: 1px solid var(--accent); border-radius: 20px; }
-  .previous a { color: var(--ink-soft); padding: 10px 14px; border: 1px solid var(--rule); border-radius: 20px; }
+  .previous a, .previous .current { color: var(--ink-soft); padding: 10px 14px; border: 1px solid var(--rule); border-radius: 20px; }
+  .previous .current { color: var(--bg); background: var(--accent); border-color: var(--accent); font-weight: 600; }
 
   @media (max-width: 560px) {
     .pick-grid { grid-template-columns: 1fr; }
@@ -282,7 +320,7 @@
     .top { flex-direction: column; gap: 14px; }
     .controls button { height: 40px; min-width: 40px; }
     .panel { padding-inline: 16px; }
-    .sky-grid { grid-template-columns: 1fr; }
+    .sky-items { grid-template-columns: 1fr; }
     .jump .arrange-open { padding: 11px 14px; }
     .sheet { border-left: 0; }
     .jump {
@@ -334,10 +372,10 @@
 <body>
   <div class="wrap">
     <header>
-      <p class="banner">This is the edition from Friday 9 October. <a href="../">Go to tonight’s →</a></p>
+      <p class="banner">This is the edition from Saturday 17 October. <a href="../">Go to tonight’s →</a></p>
       <div class="top">
         <div>
-          <p class="date">Friday 9 October</p>
+          <p class="date">Saturday 17 October</p>
           <h1>Bedtime Reads</h1>
           <p class="greeting" id="greeting">A few good things to read before sleep.</p>
         </div>
@@ -362,57 +400,84 @@
     </aside>
 
     <main>
+      <section class="welcome" id="welcome" hidden aria-labelledby="welcome-title">
+        <h2 id="welcome-title">Welcome to Bedtime Reads</h2>
+        <p>A short, fresh selection of science, medicine, space, nature and tennis, ready by early evening every day.</p>
+        <ul>
+          <li><strong>Save for later</strong> keeps a story under <strong>Saved</strong> at the top until you tap Done.</li>
+          <li><strong>Share</strong> sends a story to someone else.</li>
+          <li><strong>Hide</strong> a section you don’t want, or tap <strong>Arrange</strong> to reorder them.</li>
+          <li>On an iPhone or iPad, tap Share in Safari, then <strong>Add to Home Screen</strong>. Pull down to refresh.</li>
+          <li>Stories you’ve opened turn grey, so you can see what you’ve read.</li>
+          <li>Whatever you save, open or change stays on this device only; everyone else keeps their own.</li>
+        </ul>
+        <button type="button" class="welcome-ok" id="welcome-ok">Got it</button>
+      </section>
       
     <section class="potd">
-      <a href="https://www.nasa.gov/image-detail/galaxies-in-a-cosmic-house-of-mirrors/" target="_blank" rel="noopener">
-        <img src="https://www.nasa.gov/wp-content/uploads/2026/10/55558916046-731625cbe5-o.jpg?w=1600" alt="Cosmic House of Mirrors" decoding="async">
+      <a href="https://www.nasa.gov/image-detail/afs-8-101-1320/" target="_blank" rel="noopener">
+        <img src="https://www.nasa.gov/wp-content/uploads/2026/10/ksc-20260411-navy01-0045orig-rotated.jpg?w=1600" alt="Artemis II Heat Shield After Splashdown" decoding="async">
       </a>
       <div class="potd-text">
         <div class="eyebrow">Tonight’s picture · NASA Image of the Day</div>
-        <h2>Cosmic House of Mirrors</h2>
-        <p>This NASA/ESA/CSA James Webb Space Telescope Picture of the Month features galaxies in incredible detail that have been warped and multiplied like they’ve stepped into a house of mirrors.</p>
+        <h2>Artemis II Heat Shield After Splashdown</h2>
+        <p>Shortly after Artemis II splashdown on April 10, 2026, U.S. Navy divers captured underwater imagery of the Orion spacecraft’s heat shield.</p>
       </div>
     </section>
     <section class="section sky" id="tonights-sky" data-sec="tonights-sky" data-name="Tonight’s sky over Amman">
       <div class="section-head"><h2 class="section-title">Tonight’s sky over Amman</h2><button class="hide-sec" type="button" data-sec="tonights-sky" aria-label="Hide Tonight’s sky over Amman">Hide</button></div>
       <div class="sky-grid">
-        <div class="sky-moon"><svg class="moon" viewBox="-34 -34 68 68" role="img" aria-label="1% of the moon lit"><circle r="30" class="moon-dark"/><path d="M0,-30 A30,30 0 0 1 0,30 A29.40,30 0 0 0 0,-30 Z" class="moon-lit" transform="scale(-1,1)"/></svg>
-          <div><div class="sky-label">Moon</div><strong>New moon</strong><span>1% lit · sets 17:19</span></div>
-        </div><div class="sky-item"><div class="sky-label">Sun</div><p>Sunset 18:11 · fully dark from 19:32</p></div><div class="sky-item"><div class="sky-label">Planets to see</div><ul><li><strong>Saturn</strong> bright, in the south-east, partway up (37°) at 21:00</li></ul></div><div class="sky-item"><div class="sky-label">Space station</div><p>No visible passes tonight.</p></div><div class="sky-item"><div class="sky-label">Meteors</div><ul><li><strong>Draconids</strong> peaks tonight: up to about 10 an hour at its peak from a dark site.</li><li><strong>Orionids</strong> active; peaks 21 October: up to about 20 an hour at its peak from a dark site.</li></ul></div>
+        <div class="sky-weather rating-good">
+          <div class="sky-label">Stargazing outlook</div>
+          <strong>Clear skies tonight</strong>
+          <div class="cloud-row" aria-label="Cloud cover by hour"><span class="cloud-chip" style="--c:0"><b>20:00</b>0%<span> cloud</span></span><span class="cloud-chip" style="--c:0"><b>21:00</b>0%<span> cloud</span></span><span class="cloud-chip" style="--c:13"><b>22:00</b>13%<span> cloud</span></span><span class="cloud-chip" style="--c:3"><b>23:00</b>3%<span> cloud</span></span><span class="cloud-chip" style="--c:0"><b>00:00</b>0%<span> cloud</span></span></div>
+        </div>
+        <div class="sky-moon"><svg class="moon" viewBox="-34 -34 68 68" role="img" aria-label="41% of the moon lit"><circle r="30" class="moon-dark"/><path d="M0,-30 A30,30 0 0 1 0,30 A5.15,30 0 0 0 0,-30 Z" class="moon-lit"/></svg>
+          <div><div class="sky-label">Moon</div><strong>First quarter</strong><span>41% lit · sets 22:45 · in the south-west at 21:00</span></div>
+        </div><div class="sky-items"><div class="sky-item"><div class="sky-label">Sun</div><p>Sunset 18:01 · fully dark from 19:23</p></div><div class="sky-item"><div class="sky-label">Planets to see</div><ul><li><strong>Saturn</strong> bright, in the south-east, high (43°) at 21:00</li></ul></div><div class="sky-item"><div class="sky-label">Space station</div><p>No visible passes this week.</p></div><div class="sky-item"><div class="sky-label">Meteors</div><ul><li><strong>Orionids</strong> active; peaks 21 October: up to about 20 an hour at its peak from a dark site.</li></ul></div></div><div class="sky-item sky-coming"><div class="sky-label">Coming up</div><ul><li><strong>Sun 18 Oct</strong> First quarter moon.</li></ul></div>
       </div>
       <p class="sky-foot">Times are local to Amman. Away from city lights you’ll see much more.</p>
     </section>
     <section class="section picks" id="tonights-picks" data-sec="tonights-picks" data-name="Tonight’s picks">
       <div class="section-head"><h2 class="section-title">Tonight’s picks</h2><button class="hide-sec" type="button" data-sec="tonights-picks" aria-label="Hide Tonight’s picks">Hide</button></div>
       <div class="pick-grid">
-      <article class="story pick" data-k="https://www.quantamagazine.org/how-does-life-unfold-a-landscape-metaphor-comes-into-its-own-20261009">
-        <div class="thumb"><img src="https://www.quantamagazine.org/wp-content/uploads/2026/10/Waddington-cr.MarkBelan-Default.webp" alt="" loading="lazy" decoding="async"></div>
+      <article class="story pick" data-k="https://www.quantamagazine.org/he-wants-ai-benchmarking-to-be-a-science-not-a-dark-art-20261016">
+        <div class="thumb"><img src="https://www.quantamagazine.org/wp-content/uploads/2026/10/Moritz-Hardt-QA-cr.Jerrit-Peinelt-Default.webp" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           <div class="pick-label">Long Read</div>
-          <div class="meta"><span class="source">Quanta Magazine</span><time datetime="2026-10-09T14:03:07+00:00"></time><span class="mins">17 min read</span></div>
-          <h3><a href="https://www.quantamagazine.org/how-does-life-unfold-a-landscape-metaphor-comes-into-its-own-20261009/" target="_blank" rel="noopener">How Does Life Unfold? A Landscape Metaphor Comes Into Its Own.</a></h3>
-          <p>C.H. Waddington’s powerful image of embryonic stem cells specializing on a rolling landscape has captivated biologists since the 1950s. Experimental data is finally confirming, and complicating, his visionary ideas. The post How Does Life Unfold? A Landscape…</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">Quanta Magazine</span><time datetime="2026-10-16T13:25:08+00:00"></time><span class="mins">9 min read</span></div>
+          <h3><a href="https://www.quantamagazine.org/he-wants-ai-benchmarking-to-be-a-science-not-a-dark-art-20261016/" target="_blank" rel="noopener">He Wants AI Benchmarking To Be a Science, Not a Dark Art</a></h3>
+          <p>Moritz Hardt, author of a new book on benchmarks, believes these “standardized tests” for artificial intelligence are fundamentally broken — but not unfixable. The post He Wants AI Benchmarking To Be a Science, Not a Dark Art first appeared on Quanta Magazine</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
-      <article class="story pick no-image" data-k="https://bmjmedicine.bmj.com/cgi/content/short/5/1/e002780">
+      <article class="story pick no-image" data-k="https://journals.plos.org/plosmedicine/article">
         
         <div class="text">
           <div class="pick-label">From the Journals</div>
-          <div class="meta"><span class="source">BMJ Medicine</span><span class="badge">Open access</span><time datetime="2026-10-08T19:48:31-07:00"></time></div>
-          <h3><a href="https://bmjmedicine.bmj.com/cgi/content/short/5/1/e002780?rss=1" target="_blank" rel="noopener">Values, preferences, and treatment burden for initiation of GLP-1 receptor agonists, SGLT-2 inhibitors, tirzepatide, and finerenone in adults with type 2 diabetes: systematic review</a></h3>
-          
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">PLOS Medicine</span><span class="badge">Open access</span><time datetime="2026-10-16T14:00:00+00:00"></time><span class="mins">40 min read</span></div>
+          <h3><a href="https://journals.plos.org/plosmedicine/article?id=10.1371%2Fjournal.pmed.1005050" target="_blank" rel="noopener">Associations of major congenital anomalies, long-term health conditions, and socioeconomic deprivation with educational attainment in Wales: A population-based data linkage study</a></h3>
+          <p>by Ieuan Scanlon, Anna Rawlings, David Tucker, Daniel S. Thayer, Hywel T. Evans, Joanne Given, Sam Jones, Maria Loane, Chloe Morgan, Joan K. Morris, Sue Jordan Background Education outcomes are associated with life chances. However, deprivation, ill-health…</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
-      <article class="story pick" data-k="https://www.universetoday.com/articles/the-most-distant-frb-tells-the-story-of-its-origin">
-        <div class="thumb"><img src="https://www.universetoday.com/article_images/spectrum_20261009_170626.jpg" alt="" loading="lazy" decoding="async"></div>
+      <article class="story pick" data-k="https://www.universetoday.com/articles/in-the-search-for-exoplanets-some-failures-are-a-success">
+        <div class="thumb"><img src="https://www.universetoday.com/article_images/suns-set-on-hunt-for-giant-planets-in-nearby-binary-system-70_oph_ab_painted_stars_20261016_161708.jpg" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           <div class="pick-label">Space &amp; Stars</div>
-          <div class="meta"><span class="source">Universe Today</span><time datetime="2026-10-09T17:06:51+00:00"></time><span class="mins">2 min read</span></div>
-          <h3><a href="https://www.universetoday.com/articles/the-most-distant-frb-tells-the-story-of-its-origin" target="_blank" rel="noopener">The Most Distant FRB Tells The Story Of Its Origin</a></h3>
-          <p>Astronomers use the Webb to study a distant fast radio burst and reveal clues as to the origin of these mysterious events.</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">Universe Today</span><time datetime="2026-10-16T19:30:07+00:00"></time><span class="mins">5 min read</span></div>
+          <h3><a href="https://www.universetoday.com/articles/in-the-search-for-exoplanets-some-failures-are-a-success" target="_blank" rel="noopener">In the Search for Exoplanets, Some Failures Are A Success</a></h3>
+          <p>Astronomers used decades of archival data and new radial velocity measurements to search for exoplanets around a neaby binary star, 70 Oph AB. They didn&#x27;t find any, which can seem like a failure. But in this case, their work only ruled out large, Jupiter-mass…</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
       </div>
@@ -420,34 +485,43 @@
     <section class="section" id="space-stars" data-sec="space-stars" data-name="Space &amp; Stars">
       <div class="section-head"><h2 class="section-title">Space &amp; Stars</h2><button class="hide-sec" type="button" data-sec="space-stars" aria-label="Hide Space &amp; Stars">Hide</button></div>
       <div class="stories">
-      <article class="story" data-k="https://phys.org/news/2026-10-discovery-variable-clouds-solar.html">
-        <div class="thumb"><img src="https://scx1.b-cdn.net/csz/news/800a/2026/discovery-marks-the-fi.jpg" alt="" loading="lazy" decoding="async"></div>
+      <article class="story" data-k="https://phys.org/news/2026-10-salt-crystals-clues-life-beneath.html">
+        <div class="thumb"><img src="https://scx1.b-cdn.net/csz/news/800a/2018/enceladus.jpg" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">Phys.org</span><time datetime="2026-10-09T14:20:12-04:00"></time></div>
-          <h3><a href="https://phys.org/news/2026-10-discovery-variable-clouds-solar.html" target="_blank" rel="noopener">Discovery marks the first detection of variable water clouds outside of the solar system</a></h3>
-          <p>A Jupiter-sized world just 7.5 light-years away is cloudy, chemically complex and, it turns out, more like home than anyone expected. Using the James Webb Space Telescope, Brittany Miles, assistant astronomer at the University of Arizona&#x27;s Steward…</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">Phys.org</span><time datetime="2026-10-17T11:40:01-04:00"></time></div>
+          <h3><a href="https://phys.org/news/2026-10-salt-crystals-clues-life-beneath.html" target="_blank" rel="noopener">Salt crystals could hold clues to life beneath Enceladus&#x27;s ice</a></h3>
+          <p>The ocean beneath Saturn&#x27;s moon Enceladus lies under kilometers of ice, but some of its contents do reach the surface. Jets near the south pole spray out water vapor and icy particles, offering a way to investigate the hidden ocean without drilling down to it.</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
-      <article class="story" data-k="https://www.universetoday.com/articles/a-student-finds-three-galaxies-and-possibly-solves-a-mystery">
-        <div class="thumb"><img src="https://www.universetoday.com/article_images/backsplash_galaxies-768x512_20261009_055346.webp" alt="" loading="lazy" decoding="async"></div>
+      <article class="story" data-k="https://phys.org/news/2026-10-lone-starless-cloud-dark-galaxy.html">
+        <div class="thumb"><img src="https://scx1.b-cdn.net/csz/news/800a/2026/a-lone-starless-cloud.jpg" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">Universe Today</span><time datetime="2026-10-09T06:01:48+00:00"></time><span class="mins">5 min read</span></div>
-          <h3><a href="https://www.universetoday.com/articles/a-student-finds-three-galaxies-and-possibly-solves-a-mystery" target="_blank" rel="noopener">A Student Finds Three Galaxies and Possibly Solves a Mystery</a></h3>
-          <p>It&#x27;s not too often that a high school student-turned undergraduate gets three galaxies named after him, especially ones that are breaking the rules of star formation. Julian Shapiro, an astrophysics student at the University of California, Berkeley, found…</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">Phys.org</span><time datetime="2026-10-17T09:40:04-04:00"></time></div>
+          <h3><a href="https://phys.org/news/2026-10-lone-starless-cloud-dark-galaxy.html" target="_blank" rel="noopener">Lone, starless cloud may be a &#x27;dark&#x27; galaxy</a></h3>
+          <p>Astronomers using China&#x27;s FAST radio telescope have discovered a compact cloud of hydrogen with no visible stars or galaxy around it. This could be one of the strongest candidates yet for an isolated &quot;dark galaxy,&quot; containing nearly 500,000 times the sun&#x27;s…</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
-      <article class="story" data-k="https://www.theguardian.com/science/2026/oct/08/astronauts-return-iss-nasa-spacex">
-        <div class="thumb"><img src="https://i.guim.co.uk/img/media/43441ee3fe691036f4a629509f200d6cc9683a6c/233_0_1706_1365/master/1706.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=59008cd0ecc97dca6af6f9496ba45eb9" alt="" loading="lazy" decoding="async"></div>
+      <article class="story" data-k="https://www.universetoday.com/articles/the-flavor-of-neutrinos-could-determine-how-a-large-star-dies">
+        <div class="thumb"><img src="https://www.universetoday.com/article_images/collapse_20261016_155900.jpg" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">The Guardian</span><time datetime="2026-10-08T16:24:30+00:00"></time><span class="mins">1 min read</span></div>
-          <h3><a href="https://www.theguardian.com/science/2026/oct/08/astronauts-return-iss-nasa-spacex" target="_blank" rel="noopener">Four astronauts return to Earth from ISS after medical relief mission</a></h3>
-          <p>Crew hurried to International Space Station eight months ago after astronaut fell ill in space Four astronauts returned to Earth from the International Space Station on Thursday after hurrying there eight months ago to replace an ailing colleague and his…</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">Universe Today</span><time datetime="2026-10-16T16:00:15+00:00"></time><span class="mins">3 min read</span></div>
+          <h3><a href="https://www.universetoday.com/articles/the-flavor-of-neutrinos-could-determine-how-a-large-star-dies" target="_blank" rel="noopener">The Flavor of Neutrinos Could Determine How a Large Star Dies</a></h3>
+          <p>Neutrinos come in three different flavors. A new study finds that neutrino flavor could play a significant role in whether a dying star becomes a supernova or collapses directly into a black hole.</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
       </div>
@@ -455,54 +529,69 @@
     <section class="section" id="medicine" data-sec="medicine" data-name="Medicine">
       <div class="section-head"><h2 class="section-title">Medicine</h2><button class="hide-sec" type="button" data-sec="medicine" aria-label="Hide Medicine">Hide</button></div>
       <div class="stories">
-      <article class="story lead" data-k="https://www.sensible-med.com/p/a-reflection-on-glp-1s-in-the-clinic">
-        <div class="thumb"><img src="https://substackcdn.com/image/fetch/$s_!dIHu!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F11ea0f48-1b9a-4eaa-8d49-2f8f2ad7768b_1810x726.png" alt="" loading="lazy" decoding="async"></div>
+      <article class="story lead" data-k="https://www.sensible-med.com/p/the-murky-world-of-conflict-of-interest">
+        <div class="thumb"><img src="https://substack-post-media.s3.amazonaws.com/public/images/5df8e2b2-574c-4ff5-9590-1b89d1232d39_1536x2048.jpeg" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">Sensible Medicine</span><time datetime="2026-10-09T09:00:26+00:00"></time><span class="mins">5 min read</span></div>
-          <h3><a href="https://www.sensible-med.com/p/a-reflection-on-glp-1s-in-the-clinic" target="_blank" rel="noopener">A Reflection on GLP-1s in the Clinic</a></h3>
-          <p>What the use of these drugs look like in primary care</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">Sensible Medicine</span><time datetime="2026-10-17T09:04:33+00:00"></time><span class="mins">5 min read</span></div>
+          <h3><a href="https://www.sensible-med.com/p/the-murky-world-of-conflict-of-interest" target="_blank" rel="noopener">The Murky World of Conflict of Interest</a></h3>
+          <p>and what to do about it</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
-      <article class="story" data-k="https://medicalxpress.com/news/2026-10-blood-cancer-links-formation-bone.html">
-        <div class="thumb"><img src="https://scx1.b-cdn.net/csz/news/800a/2025/blood.jpg" alt="" loading="lazy" decoding="async"></div>
+      <article class="story" data-k="https://medicalxpress.com/news/2026-10-lab-molecule-amyloid-beta-protein.html">
+        <div class="thumb"><img src="https://scx1.b-cdn.net/csz/news/800a/2026/lab-designed-molecule-1.jpg" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">Medical Xpress</span><time datetime="2026-10-09T15:40:04-04:00"></time></div>
-          <h3><a href="https://medicalxpress.com/news/2026-10-blood-cancer-links-formation-bone.html" target="_blank" rel="noopener">Blood cancer study links blood formation and bone health</a></h3>
-          <p>Myelodysplastic syndromes (MDS) belong to the malignant diseases of the hematopoietic system that occur primarily in older adults. In patients with MDS, blood formation in bone marrow is impaired. Medical care therefore typically focuses on blood counts and…</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">Medical Xpress</span><time datetime="2026-10-17T10:40:01-04:00"></time></div>
+          <h3><a href="https://medicalxpress.com/news/2026-10-lab-molecule-amyloid-beta-protein.html" target="_blank" rel="noopener">Lab-designed molecule reduces amyloid beta, the protein linked to Alzheimer&#x27;s disease, in mice</a></h3>
+          <p>A research team led by the Molecular and Cellular Neurobiotechnology group at the Institute for Bioengineering of Catalonia (IBEC), in collaboration with Míriam Royo&#x27;s laboratory at the Institute for Advanced Chemistry of Catalonia (IQAC-CSIC), the University…</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
-      <article class="story no-image" data-k="https://retractionwatch.com/2026/10/09/iop-publishing-conference-proceedings-tortured-phrases">
+      <article class="story" data-k="https://www.theguardian.com/thefilter-us/2026/oct/17/ankle-weights-workout-fitness">
+        <div class="thumb"><img src="https://i.guim.co.uk/img/media/002a1eadbd0d4ab7893701cd41fd145a12d800f0/0_0_3000_2400/master/3000.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=e72dee8db607d31f5710b97dcd119abb" alt="" loading="lazy" decoding="async"></div>
+        <div class="text">
+          
+          <div class="meta"><span class="source">The Guardian</span><time datetime="2026-10-17T14:15:32+00:00"></time><span class="mins">6 min read</span></div>
+          <h3><a href="https://www.theguardian.com/thefilter-us/2026/oct/17/ankle-weights-workout-fitness" target="_blank" rel="noopener">My week wearing ankle weights: &#x27;I was helping kickstart my muscles&#x27;</a></h3>
+          <p>When a knee injury forced me to change my fitness routine, I added Sportneer ankle weights – and got a decent workout I’m a personal trainer. Here’s the equipment I use Sign up for the Filter US newsletter, your weekly guide to buying fewer, better things My…</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
+        </div>
+      </article>
+      <article class="story no-image" data-k="https://retractionwatch.com/2026/10/16/springer-agency-website-offering-authorship-for-sale-goes-down-following-retraction-watch-story">
         
         <div class="text">
           
-          <div class="meta"><span class="source">Retraction Watch</span><time datetime="2026-10-09T16:06:52+00:00"></time><span class="mins">2 min read</span></div>
-          <h3><a href="https://retractionwatch.com/2026/10/09/iop-publishing-conference-proceedings-tortured-phrases/" target="_blank" rel="noopener">‘Cerebral torment’: IOP retracts nearly 100 conference papers for tortured phrases</a></h3>
-          <p>IOP Publishing has retracted nearly 100 papers from three of its conference proceedings after the articles were flagged for containing tortured phrases. Tortured phrases are rephrasings and synonyms — often awkward and nonsensical — substituted in text to…</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">Retraction Watch</span><time datetime="2026-10-16T21:14:49+00:00"></time><span class="mins">1 min read</span></div>
+          <h3><a href="https://retractionwatch.com/2026/10/16/springer-agency-website-offering-authorship-for-sale-goes-down-following-retraction-watch-story/" target="_blank" rel="noopener">‘Springer’ agency website offering authorship for sale goes down following Retraction Watch story</a></h3>
+          <p>The website for Springer Journals Online, an agency offering authorship slots in articles in exchange for payment, has gone offline, four days after Retraction Watch published its investigation into its activities. As we reported on Monday, the agency was…</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
-      <article class="story" data-k="http://sciencebasedmedicine.org/the-ebm-gurus-andmaha">
-        <div class="thumb"><img src="http://sciencebasedmedicine.org/wp-content/uploads/2026/10/image-1-480x320.png" alt="" loading="lazy" decoding="async"></div>
+      <article class="story" data-k="https://www.thetransmitter.org/academia/university-probe-leads-to-retraction-of-four-neural-tube-studies">
+        <div class="thumb"><img src="https://www.thetransmitter.org/wp-content/uploads/2026/10/cropped-525_PubPeer.png" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">Science-Based Medicine</span><time datetime="2026-10-09T07:04:00+00:00"></time><span class="mins">4 min read</span></div>
-          <h3><a href="http://sciencebasedmedicine.org/the-ebm-gurus-andmaha/" target="_blank" rel="noopener">The EBM Gurus, RCT Zealots, &amp; “Sensible” Doctors Who Gave Us Kennedy’s Chemtrails, Wakefield’s Wins, Paxton’s Prosecutions, &amp; Schwartz’s Study</a></h3>
-          <p>Though these examples just scratch the surface, they are the end result of the doctors I&#x27;ve written about previously, as well as the academic and media ecosystems that promoted them. The post The EBM Gurus, RCT Zealots, &amp; “Sensible” Doctors Who Gave Us…</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
-        </div>
-      </article>
-      <article class="story" data-k="https://www.thetransmitter.org/what-if-nonhuman-primate-research-goes-away/u-s-national-primate-research-centers-face-an-uncertain-future">
-        <div class="thumb"><img src="https://www.thetransmitter.org/wp-content/uploads/2026/10/cropped-Primate-research-centers-525.png" alt="" loading="lazy" decoding="async"></div>
-        <div class="text">
-          
-          <div class="meta"><span class="source">The Transmitter</span><time datetime="2026-10-09T04:00:50+00:00"></time><span class="mins">9 min read</span></div>
-          <h3><a href="https://www.thetransmitter.org/what-if-nonhuman-primate-research-goes-away/u-s-national-primate-research-centers-face-an-uncertain-future/" target="_blank" rel="noopener">U.S. national primate research centers face an uncertain future</a></h3>
-          <p>The facilities were meant to last 100 years. Four decades shy of that mark, amid flatlined funds and mounting political pressure, their directors are trying to find a path forward.</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">The Transmitter</span><time datetime="2026-10-16T20:18:02+00:00"></time><span class="mins">5 min read</span></div>
+          <h3><a href="https://www.thetransmitter.org/academia/university-probe-leads-to-retraction-of-four-neural-tube-studies/" target="_blank" rel="noopener">University probe leads to retraction of four neural tube studies</a></h3>
+          <p>The University of Maryland conducted an internal investigation that identified image duplications and other data integrity issues in the studies, according to the retraction notices.</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
       </div>
@@ -510,34 +599,43 @@
     <section class="section" id="from-the-journals" data-sec="from-the-journals" data-name="From the Journals">
       <div class="section-head"><h2 class="section-title">From the Journals</h2><button class="hide-sec" type="button" data-sec="from-the-journals" aria-label="Hide From the Journals">Hide</button></div>
       <div class="stories">
-      <article class="story no-image" data-k="https://www.nature.com/articles/s41591-026-04736-5">
+      <article class="story no-image" data-k="https://www.nature.com/articles/s41591-026-04719-6">
         
         <div class="text">
           
-          <div class="meta"><span class="source">Nature Medicine</span><span class="badge">Open access</span><time datetime="2026-10-09T00:00:00+00:00"></time></div>
-          <h3><a href="https://www.nature.com/articles/s41591-026-04736-5" target="_blank" rel="noopener">Addendum: Aberrant epithelial GREM1 expression initiates colonic tumorigenesis from cells outside the stem cell niche</a></h3>
-          <p>Addendum: Aberrant epithelial GREM1 expression initiates colonic tumorigenesis from cells outside the stem cell niche</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">Nature Medicine</span><span class="badge">Open access</span><time datetime="2026-10-16T00:00:00+00:00"></time></div>
+          <h3><a href="https://www.nature.com/articles/s41591-026-04719-6" target="_blank" rel="noopener">Conversational brain AI for adaptive epilepsy care</a></h3>
+          <p>A small study shows that patients can help fine-tune their own seizure detectors by chatting with an AI agent. However, the more difficult challenge ahead is to build AI that responds appropriately.</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
-      <article class="story no-image" data-k="https://www.nature.com/articles/s41591-026-04691-1">
+      <article class="story no-image" data-k="https://www.nature.com/articles/s41591-026-04715-w">
         
         <div class="text">
           
-          <div class="meta"><span class="source">Nature Medicine</span><span class="badge">Open access</span><time datetime="2026-10-09T00:00:00+00:00"></time></div>
-          <h3><a href="https://www.nature.com/articles/s41591-026-04691-1" target="_blank" rel="noopener">AI-assisted scoping review of code sharing in clinical prediction model research</a></h3>
-          <p>An analysis of code availability in the open-access published literature shows that code sharing in clinical prediction models remains limited and reveals significant variability in practices and documentation quality.</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">Nature Medicine</span><span class="badge">Open access</span><time datetime="2026-10-16T00:00:00+00:00"></time></div>
+          <h3><a href="https://www.nature.com/articles/s41591-026-04715-w" target="_blank" rel="noopener">EGFR-targeted antibody−toxin conjugate in recurrent glioma: a phase 1 trial</a></h3>
+          <p>Results of a phase 1 trial of the antibody−toxin conjugate D2C7-ATC targeting EGFR/EGFRvIII in patients with recurrent malignant glioma show encouraging safety and efficacy signals, with translational analyses of patient samples indicating intratumoral and…</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
-      <article class="story no-image" data-k="https://bmjmedicine.bmj.com/cgi/content/short/5/1/e002429">
+      <article class="story no-image" data-k="https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2854616">
         
         <div class="text">
           
-          <div class="meta"><span class="source">BMJ Medicine</span><span class="badge">Open access</span><time datetime="2026-09-18T03:01:00-07:00"></time></div>
-          <h3><a href="https://bmjmedicine.bmj.com/cgi/content/short/5/1/e002429?rss=1" target="_blank" rel="noopener">Millennium Cohort Study: cohort profile and data resource update</a></h3>
-          <p>This cohort profile gives a comprehensive overview of the Millennium Cohort Study (MCS), a nationally representative study of children born in the UK during 2000-02. The study is for researchers in public health and other disciplines who seek a comprehensive…</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">JAMA Network Open</span><span class="badge">Open access</span><time datetime="2026-09-29T00:00:00+00:00"></time></div>
+          <h3><a href="https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2854616" target="_blank" rel="noopener">Adverse Health Outcomes of Psilocybin, LSD, MDMA, Ibogaine, and 5-MeO-DMT</a></h3>
+          <p>This cross-sectional study describes health outcomes attributed to recent use of psilocybin, lysergic acid diethylamide (LSD), 3,4-methylenedioxymethamphetamine (MDMA), ibogaine, and 5-methoxy-N,N-dimethyltryptamine (5-MeO-DMT) in a nationally representative survey of US adults.</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
       </div>
@@ -545,34 +643,43 @@
     <section class="section" id="physics" data-sec="physics" data-name="Physics">
       <div class="section-head"><h2 class="section-title">Physics</h2><button class="hide-sec" type="button" data-sec="physics" aria-label="Hide Physics">Hide</button></div>
       <div class="stories">
-      <article class="story" data-k="https://phys.org/news/2026-10-quantum-chip-multiple-photons-path.html">
-        <div class="thumb"><img src="https://scx1.b-cdn.net/csz/news/800a/2026/researchers-give-quant.jpg" alt="" loading="lazy" decoding="async"></div>
+      <article class="story" data-k="https://phys.org/news/2026-10-high-frequency-method-boosts-2d.html">
+        <div class="thumb"><img src="https://scx1.b-cdn.net/csz/news/800a/2026/new-high-frequency-met.jpg" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">Phys.org</span><time datetime="2026-10-09T13:00:10-04:00"></time></div>
-          <h3><a href="https://phys.org/news/2026-10-quantum-chip-multiple-photons-path.html" target="_blank" rel="noopener">Quantum chip holds multiple photons at once, opening path to scalable memory</a></h3>
-          <p>For highly fragile quantum information systems, the ability to store quantum information is vital—but also challenging. Quantum information is transported in particles of light called photons, which often must be temporarily paused (or &quot;stored&quot;) while other…</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">Phys.org</span><time datetime="2026-10-16T18:00:01-04:00"></time></div>
+          <h3><a href="https://phys.org/news/2026-10-high-frequency-method-boosts-2d.html" target="_blank" rel="noopener">New high-frequency method boosts 2D material readout for next-gen quantum computers</a></h3>
+          <p>Quantum computers represent a next step in the fast-paced evolution of technology. Using quantum bits (qubits), they have the potential to run certain calculations exponentially faster than conventional computers. However, developing and fine-tuning quantum…</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
-      <article class="story no-image" data-k="https://physicsworld.com/a/scottish-artist-marks-100-years-of-schrodinger-equation-with-new-installation">
+      <article class="story no-image" data-k="https://physicsworld.com/a/when-doi-met-peliti-physicists-celebrate-50-years-of-the-doi-peliti-theory">
         
         <div class="text">
           
-          <div class="meta"><span class="source">Physics World</span><time datetime="2026-10-09T14:30:20+00:00"></time><span class="mins">2 min read</span></div>
-          <h3><a href="https://physicsworld.com/a/scottish-artist-marks-100-years-of-schrodinger-equation-with-new-installation/" target="_blank" rel="noopener">Scottish artist marks 100 years of Schrödinger equation with new installation</a></h3>
-          <p>Work will go on display at the University of Strathclyde in Glasgow</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">Physics World</span><time datetime="2026-10-16T11:00:10+00:00"></time><span class="mins">2 min read</span></div>
+          <h3><a href="https://physicsworld.com/a/when-doi-met-peliti-physicists-celebrate-50-years-of-the-doi-peliti-theory/" target="_blank" rel="noopener">When Doi met Peliti: physicists celebrate 50 years of the Doi-Peliti theory</a></h3>
+          <p>A week-long meeting in Cambridge celebrated Masao Doi’s and Luca Peliti’s pioneering framework to study random processes</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
-      <article class="story" data-k="http://link.aps.org/doi/10.1103/physics.19.s139">
-        <div class="thumb"><img src="https://physics.aps.org/assets/10.1103/Physics.19.s139/figure/1/large" alt="" loading="lazy" decoding="async"></div>
+      <article class="story no-image" data-k="https://physicsworld.com/a/new-type-of-superionic-water-ice-observed-for-the-first-time">
+        
         <div class="text">
           
-          <div class="meta"><span class="source">APS Physics</span><time datetime="2026-10-08T10:00:00+00:00"></time></div>
-          <h3><a href="http://link.aps.org/doi/10.1103/Physics.19.s139" target="_blank" rel="noopener">Enzymes Strongly Affect Sequestered Biomolecules</a></h3>
-          <p>Author(s): David Ehrenstein Regions within a cell in which biomolecules are concentrated, called condensates, form different structures when enzymes are involved, according to experiments. [Physics 19, s139] Published Thu Oct 08, 2026</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">Physics World</span><time datetime="2026-10-16T08:00:50+00:00"></time><span class="mins">3 min read</span></div>
+          <h3><a href="https://physicsworld.com/a/new-type-of-superionic-water-ice-observed-for-the-first-time/" target="_blank" rel="noopener">New type of superionic water ice observed for the first time</a></h3>
+          <p>Hexagonal close-packed phase could exist deep within the planets Uranus and Neptune, contributing to their peculiar magnetic fields</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
       </div>
@@ -580,34 +687,43 @@
     <section class="section" id="technology" data-sec="technology" data-name="Technology">
       <div class="section-head"><h2 class="section-title">Technology</h2><button class="hide-sec" type="button" data-sec="technology" aria-label="Hide Technology">Hide</button></div>
       <div class="stories">
-      <article class="story lead" data-k="https://spectrum.ieee.org/master-ai-chip-principles-ieee">
-        <div class="thumb"><img src="https://spectrum.ieee.org/media-library/graphic-illustration-of-arrows-and-data-symbols-representing-a-neural-network.jpg?id=68060909&amp;width=980" alt="" loading="lazy" decoding="async"></div>
+      <article class="story lead" data-k="https://www.theguardian.com/business/2026/oct/17/why-britain-should-reject-the-lure-of-cheap-and-scary-chinese-ai">
+        <div class="thumb"><img src="https://i.guim.co.uk/img/media/ed76515ea4f9df6a0b170674679392f87ba2c9ea/531_0_4025_3221/master/4025.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=35728491fe1886f2a9d92cfed5ad0dac" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">IEEE Spectrum</span><time datetime="2026-10-09T18:00:02+00:00"></time><span class="mins">4 min read</span></div>
-          <h3><a href="https://spectrum.ieee.org/master-ai-chip-principles-ieee" target="_blank" rel="noopener">Master AI Chip Principles With New IEEE Design Program</a></h3>
-          <p>Today’s engineers face an unprecedented acceleration in AI hardware complexity, as explained in the recent research article “Revisiting Edge AI: Opportunities and Challenges.” The article examines the rapid growth of edge AI and the challenges it creates…</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">The Guardian</span><time datetime="2026-10-17T15:00:33+00:00"></time><span class="mins">4 min read</span></div>
+          <h3><a href="https://www.theguardian.com/business/2026/oct/17/why-britain-should-reject-the-lure-of-cheap-and-scary-chinese-ai" target="_blank" rel="noopener">Why Britain should reject the lure of cheap – and scary – Chinese AI</a></h3>
+          <p>In the west the technology comes with at least some effort to provide security and a benign intent – not so from China There is much to fear from artificial intelligence developed in China and handed to businesses and governments in the west almost free of…</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
-      <article class="story" data-k="https://www.bbc.co.uk/news/articles/cr86z33pdy9vo">
-        <div class="thumb"><img src="https://ichef.bbci.co.uk/ace/standard/976/cpsprodpb/b04d/live/ba559970-c3f2-11f1-bc2e-018d645d8d21.jpg" alt="" loading="lazy" decoding="async"></div>
+      <article class="story" data-k="https://spectrum.ieee.org/variable-frequency-drives">
+        <div class="thumb"><img src="https://spectrum.ieee.org/media-library/a-woman-in-a-uniform-presses-a-button-on-a-rectangular-machine.jpg?id=68442945&amp;width=980" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">BBC</span><time datetime="2026-10-09T15:32:30+00:00"></time><span class="mins">2 min read</span></div>
-          <h3><a href="https://www.bbc.co.uk/news/articles/cr86z33pdy9vo?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener">Prize-winning image which sparked backlash was AI-generated, Nikon rules</a></h3>
-          <p>The camera-maker says it is now re-evaluating the rules and procedures of its Small World in Motion contest.</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">IEEE Spectrum</span><time datetime="2026-10-17T13:00:02+00:00"></time><span class="mins">5 min read</span></div>
+          <h3><a href="https://spectrum.ieee.org/variable-frequency-drives" target="_blank" rel="noopener">This Hidden Device Could Free Up Gigawatts of Grid Power</a></h3>
+          <p>This article was originally published by Canary Media. America’s energy supply crunch is driving a surge of federal and private investment in new electricity generation — from polluting gas turbines to cleaner developments like solar farms and geothermal…</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
-      <article class="story" data-k="https://www.theguardian.com/thefilter/2026/oct/09/the-filter-uk-turns-two-favourite-products-tried-tested">
-        <div class="thumb"><img src="https://i.guim.co.uk/img/media/7dc6d1cdb7e5bd373301f56a6fd4e13a4cea569b/2_0_1996_1597/master/1996.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=8cd0c7af89f984371c9c6ac49beab1f4" alt="" loading="lazy" decoding="async"></div>
+      <article class="story" data-k="https://arstechnica.com/security/2026/10/openai-models-hacked-a-crypto-wallet-and-breached-more-websites">
+        <div class="thumb"><img src="https://cdn.arstechnica.net/wp-content/uploads/2026/10/ai-agents-1152x648.jpg" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">The Guardian</span><time datetime="2026-10-09T14:00:31+00:00"></time><span class="mins">12 min read</span></div>
-          <h3><a href="https://www.theguardian.com/thefilter/2026/oct/09/the-filter-uk-turns-two-favourite-products-tried-tested" target="_blank" rel="noopener">The Filter is two! 31 things we loved this year, from cloud-like duvets to the perfect running shoe</a></h3>
-          <p>Whether it’s a super-glowy serum or a cult gardening tool, here are our writers’ favourite buys from the past year • Don’t get the Filter delivered to your inbox? Sign up here The Filter is turning two! To celebrate, we asked our contributors for their…</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">Ars Technica</span><time datetime="2026-10-16T20:59:01+00:00"></time><span class="mins">4 min read</span></div>
+          <h3><a href="https://arstechnica.com/security/2026/10/openai-models-hacked-a-crypto-wallet-and-breached-more-websites/" target="_blank" rel="noopener">OpenAI models hacked a crypto wallet and breached more websites</a></h3>
+          <p>The actions could have resulted in criminal charges had humans been behind the keyboard.</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
       </div>
@@ -615,24 +731,30 @@
     <section class="section" id="long-read" data-sec="long-read" data-name="Long Read">
       <div class="section-head"><h2 class="section-title">Long Read</h2><button class="hide-sec" type="button" data-sec="long-read" aria-label="Hide Long Read">Hide</button></div>
       <div class="stories">
-      <article class="story lead" data-k="https://aeon.co/essays/why-we-should-heed-barbara-wards-vision-of-planetary-justice">
-        <div class="thumb"><img src="https://images.aeonmedia.co/images/41d8761c-df4f-4ee0-a580-d6bd64594340/essay-un-ward.jpg?width=1200&amp;quality=75&amp;format=auto" alt="" loading="lazy" decoding="async"></div>
+      <article class="story lead" data-k="https://aeon.co/essays/the-politics-of-masculinity-at-the-end-of-the-roman-republic">
+        <div class="thumb"><img src="https://images.aeonmedia.co/images/2ac1e107-fd3a-4df1-9ecf-c703c8eea898/v7-dp328509.jpg?width=1200&amp;quality=75&amp;format=auto" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">Aeon</span><time datetime="2026-10-09T10:00:00+00:00"></time><span class="mins">15 min read</span></div>
-          <h3><a href="https://aeon.co/essays/why-we-should-heed-barbara-wards-vision-of-planetary-justice" target="_blank" rel="noopener">Barbara Ward’s vision</a></h3>
-          <p>She was among the first to argue that prosperity, equality and the protection of nature are inseparable planetary goals - by Or Rosenboim Read on Aeon</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">Aeon</span><time datetime="2026-10-16T10:00:00+00:00"></time><span class="mins">15 min read</span></div>
+          <h3><a href="https://aeon.co/essays/the-politics-of-masculinity-at-the-end-of-the-roman-republic" target="_blank" rel="noopener">How to be a (Roman) man</a></h3>
+          <p>Cicero’s ideal of manly virtue stressed the performance of self-control and bravery, not boastful egotism and domination - by Catharine Edwards Read on Aeon</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
-      <article class="story" data-k="https://aeon.co/essays/habermass-theory-of-truth-meant-he-changed-his-mind">
-        <div class="thumb"><img src="https://images.aeonmedia.co/images/d19c6cf8-eddc-49ec-a4c1-4c20fb6cd93e/essay-v2-2a2b9x3.jpg?width=1200&amp;quality=75&amp;format=auto" alt="" loading="lazy" decoding="async"></div>
+      <article class="story" data-k="https://knowablemagazine.org/content/article/society/2026/can-science-save-meetings">
+        <div class="thumb"><img src="https://knowablemagazine.org/docserver/fulltext/meeting-science-500x288.jpg" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">Aeon</span><time datetime="2026-09-25T10:00:00+00:00"></time><span class="mins">15 min read</span></div>
-          <h3><a href="https://aeon.co/essays/habermass-theory-of-truth-meant-he-changed-his-mind" target="_blank" rel="noopener">Reasoning together</a></h3>
-          <p>Jürgen Habermas, the great defender of deliberative democracy, lived up to its demands: he never feared changing his mind - by Emilie Prattico Read on Aeon</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">Knowable Magazine</span><time datetime="2026-10-14T00:00:14+00:00"></time></div>
+          <h3><a href="https://knowablemagazine.org/content/article/society/2026/can-science-save-meetings" target="_blank" rel="noopener">Can science save meetings?</a></h3>
+          <p>The research is rolling in, and the answer is yes. It’s possible to turn tedious work gatherings into more effective and enjoyable experiences.</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
       </div>
@@ -640,34 +762,43 @@
     <section class="section" id="across-the-sciences" data-sec="across-the-sciences" data-name="Across the Sciences">
       <div class="section-head"><h2 class="section-title">Across the Sciences</h2><button class="hide-sec" type="button" data-sec="across-the-sciences" aria-label="Hide Across the Sciences">Hide</button></div>
       <div class="stories">
-      <article class="story lead" data-k="https://arstechnica.com/science/2026/10/winning-nikon-small-world-in-motion-video-disqualified-for-ai-use">
-        <div class="thumb"><img src="https://cdn.arstechnica.net/wp-content/uploads/2026/10/nikon1-1152x648.jpg" alt="" loading="lazy" decoding="async"></div>
+      <article class="story lead" data-k="https://arstechnica.com/science/2026/10/science-says-your-boss-should-talk-less-in-meetings">
+        <div class="thumb"><img src="https://cdn.arstechnica.net/wp-content/uploads/2026/10/meetingboredom-1152x648.jpg" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">Ars Technica</span><time datetime="2026-10-09T18:44:06+00:00"></time><span class="mins">2 min read</span></div>
-          <h3><a href="https://arstechnica.com/science/2026/10/winning-nikon-small-world-in-motion-video-disqualified-for-ai-use/" target="_blank" rel="noopener">AI disqualification yields new Nikon Small World in Motion winner</a></h3>
-          <p>New winner is Nguyen Nam Nhat of Vietnam for video of a roundworm and single-celled Dileptus.</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">Ars Technica</span><time datetime="2026-10-17T11:15:11+00:00"></time><span class="mins">9 min read</span></div>
+          <h3><a href="https://arstechnica.com/science/2026/10/science-says-your-boss-should-talk-less-in-meetings/" target="_blank" rel="noopener">Science says your boss should talk less in meetings</a></h3>
+          <p>Research suggests listening more while talking less. Killing aimless meetings can help, too.</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
-      <article class="story no-image" data-k="https://www.science.org/content/article/problems-22-scientific-fields-had-solutions-hiding-plain-sight-ai-has-found-them">
+      <article class="story" data-k="https://www.theguardian.com/media/2026/oct/17/robyn-williams-leaving-abc-the-science-show-after-51-years">
+        <div class="thumb"><img src="https://i.guim.co.uk/img/media/d0f68273a485626a283217c097916c917f02b5af/602_0_6015_4812/master/6015.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=8ce0e6276ece6d499b1c9d2529e45850" alt="" loading="lazy" decoding="async"></div>
+        <div class="text">
+          
+          <div class="meta"><span class="source">The Guardian</span><time datetime="2026-10-17T01:05:16+00:00"></time><span class="mins">2 min read</span></div>
+          <h3><a href="https://www.theguardian.com/media/2026/oct/17/robyn-williams-leaving-abc-the-science-show-after-51-years" target="_blank" rel="noopener">Long-serving ABC broadcaster Robyn Williams to leave The Science Show after 51 years</a></h3>
+          <p>No replacement has been named as the 82-year-old departs, with the media announcement referring only to ‘the next generation’ Sign up for Guardian Australia’s free weekly media newsletter here Long-serving broadcaster Robyn Williams is leaving the ABC’s The…</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
+        </div>
+      </article>
+      <article class="story no-image" data-k="https://www.science.org/content/article/how-scientists-domesticated-killer-bacterium">
         
         <div class="text">
           
-          <div class="meta"><span class="source">Science</span><time datetime="2026-10-09T11:35:00+00:00"></time></div>
-          <h3><a href="https://www.science.org/content/article/problems-22-scientific-fields-had-solutions-hiding-plain-sight-ai-has-found-them" target="_blank" rel="noopener">Problems in 22 scientific fields had solutions hiding in plain sight. An AI has found them</a></h3>
-          <p>Teams led by physicist used “BootLoops” software to produce 36 papers in weeks on everything from linguistics to health policy</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
-        </div>
-      </article>
-      <article class="story" data-k="https://www.theguardian.com/commentisfree/2026/oct/09/rise-cancer-young-people-mystery-early-onset">
-        <div class="thumb"><img src="https://i.guim.co.uk/img/media/42e44bc210ba436aced2d5637aec586059f9b5e7/610_0_6139_4912/master/6139.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=01a7cbf3c4b1cf80297c5d70f5a06965" alt="" loading="lazy" decoding="async"></div>
-        <div class="text">
-          
-          <div class="meta"><span class="source">The Guardian</span><time datetime="2026-10-09T07:00:42+00:00"></time><span class="mins">3 min read</span></div>
-          <h3><a href="https://www.theguardian.com/commentisfree/2026/oct/09/rise-cancer-young-people-mystery-early-onset" target="_blank" rel="noopener">You have a higher chance of getting cancer at a younger age than your parents. So what went wrong? | Devi Sridhar</a></h3>
-          <p>Some change in our lifestyles and environments over a generation has caused this increased risk. What, exactly, is a mystery Prof Devi Sridhar is chair of global public health at the University of Edinburgh In the field of global health, we often talk about…</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">Science</span><time datetime="2026-10-16T06:15:44+00:00"></time></div>
+          <h3><a href="https://www.science.org/content/article/how-scientists-domesticated-killer-bacterium" target="_blank" rel="noopener">How scientists domesticated a killer bacterium</a></h3>
+          <p>Genome analysis shows how decades of lab cultivation turned C. botulinum, the canned-food killer, into a potent tool for medicine and the beauty industry</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
       </div>
@@ -675,34 +806,43 @@
     <section class="section" id="nature" data-sec="nature" data-name="Nature">
       <div class="section-head"><h2 class="section-title">Nature</h2><button class="hide-sec" type="button" data-sec="nature" aria-label="Hide Nature">Hide</button></div>
       <div class="stories">
-      <article class="story lead" data-k="https://news.mongabay.com/short-article/2026/10/painted-wind-turbines-can-dramatically-reduce-bird-deaths-study-finds">
-        <div class="thumb"><img src="https://imgs.mongabay.com/wp-content/uploads/sites/20/2026/10/09193246/Painted-Blades_USGS-Image-768x512.png" alt="" loading="lazy" decoding="async"></div>
+      <article class="story lead" data-k="https://www.theguardian.com/us-news/2026/oct/17/alligator-attack-florida-fisher-killed">
+        <div class="thumb"><img src="https://i.guim.co.uk/img/media/3ef942dc588dbd5ebfddcd5ae43b4a6ae8884e8d/487_0_3748_3000/master/3748.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=59e3bc08cd3c7c9a0cd569e6859218a3" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">Mongabay</span><time datetime="2026-10-09T19:42:23+00:00"></time><span class="mins">2 min read</span></div>
-          <h3><a href="https://news.mongabay.com/short-article/2026/10/painted-wind-turbines-can-dramatically-reduce-bird-deaths-study-finds/" target="_blank" rel="noopener">Painted wind turbines can dramatically reduce bird deaths, study finds</a></h3>
-          <p>Wind energy is a valuable tool for addressing the climate crisis, but wind turbines can be deadly for birds. A recent study found that a low-tech, relatively inexpensive fix can dramatically reduce bird collisions with turbines: A can of paint. When wind…</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">The Guardian</span><time datetime="2026-10-17T15:23:32+00:00"></time><span class="mins">1 min read</span></div>
+          <h3><a href="https://www.theguardian.com/us-news/2026/oct/17/alligator-attack-florida-fisher-killed" target="_blank" rel="noopener">Florida fisher dragged into water and killed by 12ft alligator</a></h3>
+          <p>Steve Hamilton was fishing in Winter Garden when he was attacked by gator, which was later killed A man fishing at a pond in Florida was killed on Friday by an alligator that was almost 12ft long in a rare kind of animal attack, according to authorities and…</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
-      <article class="story" data-k="https://www.bbc.co.uk/news/articles/cqe8rn65yj2ko">
-        <div class="thumb"><img src="https://ichef.bbci.co.uk/ace/standard/976/cpsprodpb/8143/live/ed655970-c3c2-11f1-8fc5-335d62f6730b.jpg" alt="" loading="lazy" decoding="async"></div>
+      <article class="story" data-k="https://news.mongabay.com/2026/10/indonesian-women-cash-in-on-mangrove-restoration-interview-with-community-leader-wisye-sahambangung">
+        <div class="thumb"><img src="https://imgs.mongabay.com/wp-content/uploads/sites/20/2026/10/16144823/Photo-2-Wisye-Sahambangung-768x512.jpeg" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">BBC</span><time datetime="2026-10-09T19:11:27+00:00"></time><span class="mins">5 min read</span></div>
-          <h3><a href="https://www.bbc.co.uk/news/articles/cqe8rn65yj2ko?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener">&#x27;People don&#x27;t think recycling at work is part of their job description&#x27;</a></h3>
-          <p>Unclear labelling as well as a lack of recycling facilities at work or in public-facing businesses is an issue.</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">Mongabay</span><time datetime="2026-10-17T07:57:59+00:00"></time><span class="mins">5 min read</span></div>
+          <h3><a href="https://news.mongabay.com/2026/10/indonesian-women-cash-in-on-mangrove-restoration-interview-with-community-leader-wisye-sahambangung/" target="_blank" rel="noopener">Indonesian women cash in on mangrove restoration: Interview with community leader Wisye Sahambangung</a></h3>
+          <p>JAKARTA — Wisye Sahambangung is a fisher, community leader, and mangrove conservationist from Sarawet, a coastal Indonesian village in North Sulawesi province. Since 2022, the 45-year-old has led Rhizopora, a women’s group that restores mangroves and helps…</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
-      <article class="story" data-k="https://www.theguardian.com/environment/2026/oct/09/animals-crossing-simple-solution-roadkill-amazon-brazil-alternatives">
-        <div class="thumb"><img src="https://i.guim.co.uk/img/media/0098c0b7d63ac08c208a58a25d09e33b94b2d7f4/208_37_1700_1360/master/1700.jpg?width=700&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=61e8d076c5aaf41bee5705d17e4a3fc7" alt="" loading="lazy" decoding="async"></div>
+      <article class="story" data-k="https://www.bbc.co.uk/news/articles/c6m24e1ln130o">
+        <div class="thumb"><img src="https://ichef.bbci.co.uk/ace/standard/976/cpsprodpb/f584/live/ad66ed10-c9ea-11f1-bb2b-7517a3677781.jpg" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">The Guardian</span><time datetime="2026-10-09T09:00:44+00:00"></time><span class="mins">7 min read</span></div>
-          <h3><a href="https://www.theguardian.com/environment/2026/oct/09/animals-crossing-simple-solution-roadkill-amazon-brazil-alternatives" target="_blank" rel="noopener">Animals crossing: the simple solution to stop roadkill in the Amazon</a></h3>
-          <p>Installation of eight canopy bridges in Alta Floresta has enabled 15,000 safe crossings by animals including spider monkeys and marmosets – and more bridges are planned elsewhere By about 7am, with dense fog blanketing the landscape, Gabriel Falquetto had…</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">BBC</span><time datetime="2026-10-17T05:10:33+00:00"></time><span class="mins">4 min read</span></div>
+          <h3><a href="https://www.bbc.co.uk/news/articles/c6m24e1ln130o?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener">Avian flu and costs among reasons for loss of captive birds at Castle Espie</a></h3>
+          <p>Difficulties in transporting animals since Brexit has contributed to the decline in the number of captive birds.</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
       </div>
@@ -710,34 +850,43 @@
     <section class="section" id="tennis" data-sec="tennis" data-name="Tennis">
       <div class="section-head"><h2 class="section-title">Tennis</h2><button class="hide-sec" type="button" data-sec="tennis" aria-label="Hide Tennis">Hide</button></div>
       <div class="stories">
-      <article class="story lead" data-k="https://www.bbc.co.uk/sport/tennis/articles/cqlydnrperpko">
-        <div class="thumb"><img src="https://ichef.bbci.co.uk/ace/standard/976/cpsprodpb/8307/live/533bd400-c3db-11f1-95ba-dba767ffba7e.jpg" alt="" loading="lazy" decoding="async"></div>
+      <article class="story lead" data-k="https://www.bbc.co.uk/sport/tennis/articles/c9dr83p610vno">
+        <div class="thumb"><img src="https://ichef.bbci.co.uk/ace/standard/976/cpsprodpb/19d0/live/b391bef0-ca25-11f1-a718-8f4bc8d2cdf5.jpg" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">BBC Sport</span><time datetime="2026-10-09T12:50:28+00:00"></time><span class="mins">2 min read</span></div>
-          <h3><a href="https://www.bbc.co.uk/sport/tennis/articles/cqlydnrperpko?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener">Djokovic suffers surprise Hurkacz loss in Shanghai</a></h3>
-          <p>Novak Djokovic suffers a surprise second-round loss to Hubert Hurkacz at the Shanghai Masters, just three days after his triumph at the China Open in Beijing.</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">BBC Sport</span><time datetime="2026-10-17T14:34:06+00:00"></time><span class="mins">4 min read</span></div>
+          <h3><a href="https://www.bbc.co.uk/sport/tennis/articles/c9dr83p610vno?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener">Kartal reaches Wuhan final as dream week continues</a></h3>
+          <p>Britain&#x27;s Sonay Kartal beats former French Open winner Jelena Ostapenko to reach the Wuhan Open final in only her third event after a six-month injury lay-off.</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
-      <article class="story" data-k="https://www.skysports.com/tennis/news/12110/13596842/novak-djokovic-knocked-out-of-shanghai-masters-in-second-round-as-britains-arthur-fery-is-also-beaten">
-        <div class="thumb"><img src="https://e1.365dm.com/26/10/1920x1080/skysports-novak-djokovic-tennis_7372297.jpg?20261009160810" alt="" loading="lazy" decoding="async"></div>
-        <div class="text">
-          
-          <div class="meta"><span class="source">Sky Sports</span><time datetime="2026-10-09T12:30:00+00:00"></time><span class="mins">5 min read</span></div>
-          <h3><a href="https://www.skysports.com/tennis/news/12110/13596842/novak-djokovic-knocked-out-of-shanghai-masters-in-second-round-as-britains-arthur-fery-is-also-beaten" target="_blank" rel="noopener">Djokovic suffers shock second-round exit in Shanghai and Fery beaten</a></h3>
-          <p>Novak Djokovic suffered a shock second-round exit at the Shanghai Masters, losing in straight sets to Hubert Hurkacz on Friday.</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
-        </div>
-      </article>
-      <article class="story no-image" data-k="https://www.ubitennis.net/2026/10/alexander-zverev-shelton-off-to-a-winning-start-as-cobolli-crashes-out-of-shanghai-masters">
+      <article class="story no-image" data-k="https://www.ubitennis.net/2026/10/alexander-zverev-unsurprised-by-shanghai-semi-final-defeat">
         
         <div class="text">
           
-          <div class="meta"><span class="source">Ubitennis</span><time datetime="2026-10-09T08:36:56+00:00"></time><span class="mins">3 min read</span></div>
-          <h3><a href="https://www.ubitennis.net/2026/10/alexander-zverev-shelton-off-to-a-winning-start-as-cobolli-crashes-out-of-shanghai-masters/" target="_blank" rel="noopener">Alexander Zverev, Shelton Off To A Winning Start As Cobolli Crashes Out Of Shanghai Masters</a></h3>
-          <p>Alexander Zverev began his campaign at the Shanghai Masters with a hard-fought win over home favourite Wu Yibing on Friday. Zverev, who is ranked 111 places higher than his Chinese opponent, battled to a 6-4, 7-6(4) victory after spending more than one and a…</p>
-          <button class="save" type="button" aria-pressed="false">Save for later</button>
+          <div class="meta"><span class="source">Ubitennis</span><time datetime="2026-10-17T13:22:01+00:00"></time><span class="mins">2 min read</span></div>
+          <h3><a href="https://www.ubitennis.net/2026/10/alexander-zverev-unsurprised-by-shanghai-semi-final-defeat/" target="_blank" rel="noopener">Alexander Zverev Unsurprised By Shanghai Semi-Final Defeat</a></h3>
+          <p>Alexander Zverev is out of the Shanghai Masters.</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
+        </div>
+      </article>
+      <article class="story" data-k="https://www.skysports.com/tennis/news/12110/13600120/sonay-kartal-british-star-digs-deep-to-beat-jelena-ostapenko-and-secure-a-spot-in-her-first-ever-wta-1000-final">
+        <div class="thumb"><img src="https://e0.365dm.com/26/10/1920x1080/skysports-sonay-kartal-tennis_7378762.jpg?20261017153345" alt="" loading="lazy" decoding="async"></div>
+        <div class="text">
+          
+          <div class="meta"><span class="source">Sky Sports</span><time datetime="2026-10-17T12:28:00+00:00"></time><span class="mins">4 min read</span></div>
+          <h3><a href="https://www.skysports.com/tennis/news/12110/13600120/sonay-kartal-british-star-digs-deep-to-beat-jelena-ostapenko-and-secure-a-spot-in-her-first-ever-wta-1000-final" target="_blank" rel="noopener">&#x27;A huge milestone&#x27; - Kartal becomes second Brit ever to reach WTA 1000 final</a></h3>
+          <p>Britain&#x27;s Sonay Kartal was forced to dig deep to beat Jelena Ostapenko and secure a spot in her first-ever WTA 1000 final on Saturday.</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
         </div>
       </article>
       </div>
@@ -747,9 +896,10 @@
 
     <footer>
       <p class="goodnight">That’s all for tonight. Sleep well.</p>
-      <nav class="previous" id="nights" aria-label="Previous nights"><span class="nights-label">Previous nights</span><a href="../">Tonight</a><a href="2026-10-15.html">Thu 15 Oct</a><a href="2026-10-14.html">Wed 14 Oct</a><a href="2026-10-13.html">Tue 13 Oct</a><a href="2026-10-12.html">Mon 12 Oct</a><a href="2026-10-11.html">Sun 11 Oct</a><a href="2026-10-10.html">Sat 10 Oct</a><span class="current" aria-current="page">Fri 9 Oct</span></nav>
-      <p class="small">New stories every evening · <span id="built" data-built="2026-10-09T19:59:34.204920+00:00" data-live=""></span></p>
-      <p class="small">From APS Physics · Aeon · Ars Technica · BBC · BBC Sport · BMJ Medicine · ESA · IEEE Spectrum · In the Pipeline (Derek Lowe) · Knowable Magazine · Medical Xpress · Mongabay · NASA · Nature · Nature Medicine · PLOS Medicine · Phys.org · Physics World · Quanta Magazine · Retraction Watch · Science · Science-Based Medicine · Sensible Medicine · Sky Sports · Smithsonian · The Guardian · The Transmitter · Ubitennis · Undark · Universe Today · eClinicalMedicine</p>
+      <nav class="previous" id="nights" aria-label="Previous nights"><span class="nights-label">Previous nights</span><a href="../">Tonight</a><a href="2026-10-16.html">Fri 16 Oct</a><a href="2026-10-15.html">Thu 15 Oct</a><a href="2026-10-14.html">Wed 14 Oct</a><a href="2026-10-13.html">Tue 13 Oct</a><a href="2026-10-12.html">Mon 12 Oct</a><a href="2026-10-11.html">Sun 11 Oct</a><a href="2026-10-10.html">Sat 10 Oct</a></nav>
+      <p class="small">New stories every evening · <span id="built" data-built="2026-10-17T15:44:29.427689+00:00" data-live="" data-edition="2026-10-17"></span></p>
+      <p class="small">From APS Physics · Aeon · Ars Technica · BBC · BBC Sport · BMJ Medicine · ESA · IEEE Spectrum · In the Pipeline (Derek Lowe) · JAMA Network Open · Knowable Magazine · Medical Xpress · Mongabay · NASA · Nature · Nature Medicine · PLOS Medicine · Phys.org · Physics World · Quanta Magazine · Retraction Watch · Science · Science-Based Medicine · Sensible Medicine · Sky Sports · Smithsonian · The Guardian · The Transmitter · Ubitennis · Undark · Universe Today · eClinicalMedicine</p>
+      <p class="small"><button type="button" class="link-btn" id="welcome-again">How this page works</button></p>
     </footer>
   </div>
 
@@ -831,7 +981,7 @@
   document.getElementById("smaller").onclick = function () { setSize(size() - 2); };
   document.getElementById("bigger").onclick = function () { setSize(size() + 2); };
 
-  // ---- Saved for later & Continue reading (kept on this iPad, survives the daily update) ----
+  // ---- Saved for later & Continue reading (kept on each reader's own device, survives the daily update) ----
   function load(k) { try { return JSON.parse(localStorage.getItem(k)) || []; } catch (e) { return []; } }
   function store(k, v) { put(k, JSON.stringify(v)); }
 
@@ -869,7 +1019,7 @@
     return li;
   }
 
-  // Re-rendering the shelf changes its height; keep the page from jumping if he's further down.
+  // Re-rendering the shelf changes its height; keep the page from jumping for a reader further down.
   function renderShelf() {
     var shelf = document.getElementById("shelf");
     var before = shelf.offsetHeight, above = shelf.getBoundingClientRect().bottom < 0;
@@ -1003,7 +1153,7 @@
       toast("Saved for later", "View saved", openSaved);
       return;
     }
-    // Remember what he opens, for "Continue reading" next time.
+    // Remember what the reader opens, for "Continue reading" next time.
     var a = e.target.closest("a[href]");
     if (!a) return;
     var card2 = a.closest(".story[data-k]"), item = null;
@@ -1023,7 +1173,7 @@
     var v = {};
     try { v = JSON.parse(localStorage.getItem("br-layout")) || {}; } catch (e) {}
     var order = (v.order || []).filter(function (id) { return DEFAULT_ORDER.indexOf(id) >= 0; });
-    // Sections that are new since he arranged things go in at their usual place.
+    // Sections that are new since the reader arranged things go in at their usual place.
     DEFAULT_ORDER.forEach(function (id, n) { if (order.indexOf(id) < 0) order.splice(Math.min(n, order.length), 0, id); });
     return { order: order, hidden: (v.hidden || []).filter(function (id) { return DEFAULT_ORDER.indexOf(id) >= 0; }) };
   }
@@ -1095,6 +1245,67 @@
     });
   });
 
+  // ---- Previous nights: the same row of buttons on every edition, the one being viewed highlighted ----
+  // Each edition was built on its own night, so the row is refreshed from the always-current list.
+  (function () {
+    var nav = document.getElementById("nights"), info = document.getElementById("built").dataset;
+    var isArchive = info.live !== "1", here = info.edition;
+    var base = isArchive ? "" : "archive/";
+    fetch(base + "editions.json?t=" + Date.now(), { cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) {
+        if (!data || !data.editions) return;
+        if (!nav) {  // the first night had no row yet
+          nav = document.createElement("nav"); nav.className = "previous"; nav.id = "nights";
+          nav.setAttribute("aria-label", "Previous nights");
+          var foot = document.querySelector("footer .goodnight");
+          foot.parentNode.insertBefore(nav, foot.nextSibling);
+        }
+        nav.textContent = "";
+        var label = document.createElement("span"); label.className = "nights-label"; label.textContent = "Previous nights";
+        nav.appendChild(label);
+        function add(text, href, current) {
+          var el = document.createElement(current ? "span" : "a");
+          el.textContent = text;
+          if (current) { el.className = "current"; el.setAttribute("aria-current", "page"); } else el.href = href;
+          nav.appendChild(el);
+        }
+        add("Tonight", isArchive ? "../" : "./", !isArchive);
+        data.editions.forEach(function (iso) {
+          if (iso === data.latest) return;  // that's Tonight
+          var d = new Date(iso + "T12:00:00");
+          var text = d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }).replace(",", "");
+          add(text, (isArchive ? "" : "archive/") + iso + ".html", isArchive && iso === here);
+        });
+        nav.hidden = nav.children.length < 3;
+      })
+      .catch(function () {});
+  })();
+
+  // ---- Welcome card: shown once on each new reader's device ----
+  var welcome = document.getElementById("welcome");
+  var seenWelcome = false;
+  try { seenWelcome = localStorage.getItem("br-welcomed") === "1"; } catch (e) {}
+  if (!seenWelcome && document.getElementById("built").dataset.live === "1") welcome.hidden = false;
+  document.getElementById("welcome-ok").onclick = function () { welcome.hidden = true; put("br-welcomed", "1"); };
+  document.getElementById("welcome-again").onclick = function () {
+    welcome.hidden = false; welcome.scrollIntoView({ block: "start" });
+  };
+
+  // ---- Share a story: the device's share sheet, or copy the link ----
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest(".share");
+    if (!btn) return;
+    var a = btn.closest(".story").querySelector("h3 a");
+    var data = { title: a.textContent, url: a.href };
+    if (navigator.share) {
+      navigator.share(data).catch(function () {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(a.href).then(function () { toast("Link copied", "OK", function () {}); },
+                                                function () { toast("Couldn't copy the link", "OK", function () {}); });
+    }
+  });
+
   // ---- Pull to refresh in the home-screen app ----
   // iPadOS gives home-screen web apps no pull-down refresh, so the page provides one there.
   var standalone = window.navigator.standalone === true ||
@@ -1137,7 +1348,7 @@
   if (location.hash === "#saved") openSaved();
   if (location.hash === "#arrange") openArrange();
 
-  // ---- Auto-refresh: when he comes back to the page, load tonight's edition if a newer one is out ----
+  // ---- Auto-refresh: when the reader comes back to the page, load tonight's edition if a newer one is out ----
   // (Archive pages are meant to stay old, so only the live page does this.)
   var lastCheck = 0;
   function checkForNewEdition() {
