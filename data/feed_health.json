@@ -63,7 +63,7 @@
   "name": "PLOS Medicine",
   "fails": 0,
   "last_ok": "2026-10-21",
-  "newest": "2026-10-20"
+  "newest": "2026-10-21"
  },
  "https://knowablemagazine.org/rss": {
   "name": "Knowable Magazine",
@@ -97,7 +97,7 @@
  },
  "https://physicsworld.com/feed/": {
   "name": "Physics World",
-  "fails": 1,
+  "fails": 2,
   "last_ok": "2026-10-20",
   "newest": "2026-10-20",
   "last_error": "HTTPError: HTTP Error 403: Forbidden"
@@ -128,10 +128,9 @@
  },
  "https://www.esa.int/rssfeed/Our_Activities/Space_Science": {
   "name": "ESA",
-  "fails": 1,
-  "last_ok": "2026-10-20",
-  "newest": "2026-10-20",
-  "last_error": "ParseError: mismatched tag: line 146, column 2 | got: b'<!DOCTYPE html>\\n<html lang=\"en\">\\n<head>\\n  <meta charset=\"UTF-8\">\\n  <meta name=\"viewport\" content=\"width=device-width, in'"
+  "fails": 0,
+  "last_ok": "2026-10-21",
+  "newest": "2026-10-20"
  },
  "https://www.nasa.gov/feeds/iotd-feed/": {
   "name": "NASA",
@@ -167,7 +166,7 @@
   "name": "In the Pipeline (Derek Lowe)",
   "fails": 0,
   "last_ok": "2026-10-21",
-  "newest": "2026-10-20"
+  "newest": "2026-10-21"
  },
  "https://www.science.org/rss/news_current.xml": {
   "name": "Science",
