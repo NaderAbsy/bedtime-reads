@@ -15,7 +15,7 @@
   "name": "APS Physics",
   "fails": 0,
   "last_ok": "2026-10-26",
-  "newest": "2026-10-23"
+  "newest": "2026-10-26"
  },
  "https://feeds.arstechnica.com/arstechnica/science": {
   "name": "Ars Technica",
@@ -165,13 +165,13 @@
   "name": "In the Pipeline (Derek Lowe)",
   "fails": 0,
   "last_ok": "2026-10-26",
-  "newest": "2026-10-23"
+  "newest": "2026-10-26"
  },
  "https://www.science.org/rss/news_current.xml": {
   "name": "Science",
   "fails": 0,
   "last_ok": "2026-10-26",
-  "newest": "2026-10-23"
+  "newest": "2026-10-26"
  },
  "https://www.sensible-med.com/feed": {
   "name": "Sensible Medicine",
