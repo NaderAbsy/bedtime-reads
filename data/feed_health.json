@@ -15,7 +15,7 @@
   "name": "APS Physics",
   "fails": 0,
   "last_ok": "2026-10-28",
-  "newest": "2026-10-28"
+  "newest": "2026-10-27"
  },
  "https://feeds.arstechnica.com/arstechnica/science": {
   "name": "Ars Technica",
@@ -165,7 +165,7 @@
   "name": "In the Pipeline (Derek Lowe)",
   "fails": 0,
   "last_ok": "2026-10-28",
-  "newest": "2026-10-27"
+  "newest": "2026-10-28"
  },
  "https://www.science.org/rss/news_current.xml": {
   "name": "Science",
