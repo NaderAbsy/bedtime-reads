@@ -127,7 +127,7 @@
  },
  "https://www.esa.int/rssfeed/Our_Activities/Space_Science": {
   "name": "ESA",
-  "fails": 2,
+  "fails": 3,
   "last_ok": "2026-11-04",
   "newest": "2026-10-29",
   "last_error": "HTTPError: HTTP Error 404: Not Found"
