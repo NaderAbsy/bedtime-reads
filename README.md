@@ -42,6 +42,17 @@ Live at **https://naderabsy.github.io/bedtime-reads/**
   The BMJ, MIT Technology Review, Nautilus) are left out.
 - **Tonight's picks** takes the top story from Long Read, From the Journals and Space & Stars and
   puts them at the top (they aren't repeated further down).
+- **Pictures:** a story the feed gives no picture for borrows its article's own preview image, unless that
+  image is the site's default (a logo or share card, or the same on several stories, or the site's front-page
+  image), is under 400px wide, or doesn't load. Journals are skipped (their preview images are figures or
+  covers). A source can name where its pictures live (`image_pattern`; used for ESA).
+- **Long Read** shows four stories (one of them can move up to Tonight's picks). Picks prefer a story
+  within the section's age limit, and a real photo. Sources: Aeon, Quanta, Knowable, Undark, and Big Think's
+  *Starts With A Bang* science column (the feed also carries lifestyle posts, so only that column's links
+  are kept via `link_contains`). Checked and left out: Asimov Press (Substack-hosted, so GitHub's servers
+  are refused; half its posts are interviews), Ars Technica Features (mostly gadget reviews), Scientific
+  American (subscriber-only), Wired (metered), Noema (politics and philosophy), The Conversation's topic
+  feeds (stale or off-topic), Hakai (future dates).
 - **Reading time** comes from the publisher's own word count where available, otherwise from the
   article text.
 - **Journal stories** show the abstract's conclusion from PubMed when the feed has no summary or only a
@@ -90,12 +101,18 @@ Then open `site/index.html` in a browser. Running it locally also updates `data/
 
 ## Schedule
 
-It rebuilds every afternoon at 15:23 Amman time, with a backup run at 17:53. GitHub often starts
-scheduled runs late (it has been 3–7 hours on the hour), hence the odd minutes and the backup. A second
-run on the same evening keeps the stories the first one chose, and a run that starts after midnight still
-counts as the previous evening's edition, so no date is ever skipped. To change the times, edit the
-`cron` lines in `.github/workflows/daily.yml` (they're in UTC; Amman is UTC+3). For a manual refresh: **Actions** tab →
-*Build tonight's page* → **Run workflow**.
+It rebuilds every morning at 10:23 Amman time, with a backup run at 12:53. GitHub starts scheduled runs
+late: measured over 54 runs in October and November 2026, the median delay was 3.9 hours and the worst was
+8, and builds scheduled for the afternoon were landing between 20:00 and 23:30. Scheduling in the morning
+means even an 8-hour delay still finishes before the evening. A second run on the same day keeps the
+stories the first one chose, and a run that starts after midnight still counts as the previous day's
+edition, so no date is ever skipped. To change the times, edit the `cron` lines in
+`.github/workflows/daily.yml` (they're in UTC; Amman is UTC+3). Don't schedule earlier than 03:00 UTC.
+For a manual refresh: **Actions** tab → *Build tonight's page* → **Run workflow**.
+
+If an edition is late or a build fails, readers are told: after 20:00 in Amman with no edition for the day
+yet, or when the newest edition is older than yesterday's, a notice at the top says so (the page first
+checks whether a newer edition exists and reloads to it instead).
 
 ## For readers
 
@@ -113,6 +130,10 @@ for home-screen apps, so the page does).
   updates until the reader taps Done. The link `…/bedtime-reads/#saved` opens the list directly.
 - **Hide or reorder sections:** each section has a **Hide** button (with Undo), and **Arrange** at the
   end of the section buttons opens a list to show, hide and move sections up or down. Remembered on the device.
+- **New** tags mark stories this device hasn't had on screen before. A story counts as seen after it has
+  been at least half visible for a second. Tags are decided when the page loads and never disappear while
+  it's open; a device's first visit shows none (everything would be new). Works on previous nights too, so
+  it's a way to catch up on what was missed. Kept per device, for 30 days.
 - **Share** on any story opens the device's share sheet (Messages, WhatsApp, Mail), or copies the link.
 - **Continue reading** at the top shows the last few stories opened on that device in the past week.
 - **Previous nights** at the bottom: Tonight plus every kept night (about a week), the same row on every

@@ -33,7 +33,8 @@
         },
         {
           "name": "ESA",
-          "url": "https://www.esa.int/rssfeed/ESC"
+          "url": "https://www.esa.int/rssfeed/ESC",
+          "image_pattern": "https://media\\.esa\\.int/[^\\\"' )]+\\.(?:webp|jpe?g|png)"
         },
         {
           "name": "The Guardian",
@@ -201,7 +202,7 @@
     },
     {
       "name": "Long Read",
-      "count": 3,
+      "count": 4,
       "max_age_days": 10,
       "feeds": [
         {
@@ -219,6 +220,13 @@
         {
           "name": "Undark",
           "url": "https://undark.org/feed/"
+        },
+        {
+          "name": "Big Think",
+          "url": "https://bigthink.com/feed/",
+          "link_contains": [
+            "/starts-with-a-bang/"
+          ]
         }
       ]
     },

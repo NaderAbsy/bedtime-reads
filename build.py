@@ -227,6 +227,8 @@ def parse_feed(raw, feed):
         link = clean_link(link)
         if any(p in link for p in SKIP_LINK_PATTERNS):
             continue
+        if feed.get("link_contains") and not any(p in link for p in feed["link_contains"]):
+            continue  # a mixed feed where only some sections are wanted
         items.append({
             "title": title,
             "words": title_words(title),
@@ -237,6 +239,7 @@ def parse_feed(raw, feed):
             "date": parse_date(date_s),
             "source": feed["name"],
             "badge": feed.get("badge") or ("Subscriber" if feed.get("subscriber") else ""),
+            "image_pattern": feed.get("image_pattern"),    # where this site's article pictures live
             "low_priority": bool(feed.get("low_priority")),
             "featured": bool(feed.get("featured")),        # tried first in its section
             "max_age": feed.get("max_age_days"),           # per-feed override of the section's limit
@@ -392,12 +395,90 @@ def is_thin(item):
     return reliable and words < MIN_WORDS
 
 
+# A site-wide default picture (logo, share card, placeholder) is not a picture of the story.
+IMG_GENERIC = re.compile(r"(^|[-_/.])(logo|default|placeholder|fallback|favicon|sprite|avatar|share|social|"
+                         r"opengraph|og-image|site-image|brand)([-_/.]|$)", re.I)
+MIN_IMAGE_WIDTH = 400
+_home_image_cache = {}
+
+
+def meta_image(page, base_url):
+    """The article's own preview picture (og:image / twitter:image) and its declared width, if any."""
+    found, width = {}, None
+    for tag in re.findall(r"<meta\b[^>]*>", page[:200000], re.I):
+        attrs = {k.lower(): v for k, v in re.findall(r'([\w:-]+)\s*=\s*["\']([^"\']*)["\']', tag)}
+        key = (attrs.get("property") or attrs.get("name") or "").lower()
+        if key in ("og:image", "og:image:url", "og:image:secure_url", "twitter:image", "twitter:image:src"):
+            found.setdefault("url", attrs.get("content"))
+        elif key == "og:image:width":
+            try:
+                width = int(attrs.get("content", ""))
+            except ValueError:
+                pass
+    if not found.get("url"):
+        return None, None
+    return urllib.parse.urljoin(base_url, html.unescape(found["url"].strip())), width
+
+
+def home_image(url):
+    """The picture a site's own front page uses to represent itself (so we can recognise and skip it)."""
+    parts = urllib.parse.urlsplit(url)
+    origin = f"{parts.scheme}://{parts.netloc}/"
+    if origin not in _home_image_cache:
+        try:
+            _home_image_cache[origin] = meta_image(fetch(origin, timeout=15).decode("utf-8", "replace"), origin)[0]
+        except Exception:
+            _home_image_cache[origin] = None
+    return _home_image_cache[origin]
+
+
+def image_loads(url):
+    """True if the picture really downloads and is an image."""
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "image/*", "Range": "bytes=0-1023"})
+        with urllib.request.urlopen(req, timeout=15) as r:
+            r.read(1024)
+            return r.status in (200, 206) and (r.headers.get("Content-Type") or "").startswith("image")
+    except Exception:
+        return False
+
+
+def add_preview_images(stories):
+    """Give picture-less stories their article's own preview picture. Skipped for journals, whose
+    preview pictures tend to be figures or journal covers rather than anything about the paper."""
+    need = [i for i in stories if not i["image"] and i["page"] and not i["journal"] and not i["subscriber"]]
+    candidates = {}
+    for i in need:
+        url, width = meta_image(i["page"], i["link"])
+        if not url and i.get("image_pattern"):  # no preview tag: use the site's own picture host
+            m = re.search(i["image_pattern"], i["page"])
+            url, width = (urllib.parse.urljoin(i["link"], html.unescape(m.group(0))), None) if m else (None, None)
+        if url and not IMG_GENERIC.search(urllib.parse.urlsplit(url).path) and (width is None or width >= MIN_IMAGE_WIDTH):
+            candidates[i["key"]] = url
+    # The same picture on more than one story from a source is that source's default, not the story's.
+    uses = {}
+    for i in stories:
+        u = i["image"] or candidates.get(i["key"])
+        if u:
+            uses.setdefault((i["source"], u), []).append(i["key"])
+    added = []
+    for i in need:
+        url = candidates.get(i["key"])
+        if not url or len(uses.get((i["source"], url), [])) > 1 or url == home_image(i["link"]) or not image_loads(url):
+            continue
+        i["image"], i["image_from_page"] = url, True
+        added.append(i)
+    return added
+
+
 def finish(candidates, count):
     """Drop anything behind a sign-up wall or too slight to read; keep the best `count`, newest first, a photo on top."""
     with ThreadPoolExecutor(max_workers=8) as pool:
         locked = list(pool.map(is_paywalled, candidates))
     thin = [is_thin(i) for i in candidates]
     chosen = [i for i, lock, t in zip(candidates, locked, thin) if not lock and not t][:count]
+    for i in add_preview_images(chosen):
+        print(f"  picture taken from the article page: {i['source']}: {i['title'][:50]} -> {i['image']}")
     chosen.sort(key=lambda x: x["date"], reverse=True)
     # Lead with a real photo: prefer sources whose pictures aren't charts or figures.
     leads = [i for i in chosen if i["image"] and i["lead_ok"] and not i["low_priority"]] or \
@@ -698,6 +779,7 @@ def render(cfg, edition, built, potd, picks, sections, editions, base, is_archiv
         "{{BANNER}}": banner,
         "{{BUILT}}": built,
         "{{EDITION_ISO}}": edition.isoformat(),
+        "{{TZ}}": esc(cfg.get("timezone", "UTC")),
         "{{LIVE}}": "" if is_archive else "1",
         "{{NAV}}": nav,
         "{{HERO}}": hero,
@@ -843,7 +925,11 @@ def main():
     for name in cfg.get("picks", []):
         for s, stories in sections:
             if s["name"] == name and stories:
-                picks.append((name, stories.pop(0)))
+                recent = [i for i in stories if now - i["date"] <= timedelta(days=s.get("max_age_days", 4))]
+                pool = recent or stories  # a story inside the section's age limit, if there is one
+                best = next((i for i in pool if i["image"] and i["lead_ok"]), pool[0])
+                stories.remove(best)
+                picks.append((name, best))
 
     shown = [i for _, i in picks] + [i for _, stories in sections for i in stories]
     enrich(shown)
