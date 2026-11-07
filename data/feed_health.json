@@ -5,6 +5,12 @@
   "last_ok": "2026-11-07",
   "newest": "2026-11-06"
  },
+ "https://bigthink.com/feed/": {
+  "name": "Big Think",
+  "fails": 0,
+  "last_ok": "2026-11-07",
+  "newest": "2026-11-06"
+ },
  "https://bmjmedicine.bmj.com/rss/current.xml": {
   "name": "BMJ Medicine",
   "fails": 0,
@@ -15,13 +21,13 @@
   "name": "APS Physics",
   "fails": 0,
   "last_ok": "2026-11-07",
-  "newest": "2026-11-05"
+  "newest": "2026-11-06"
  },
  "https://feeds.arstechnica.com/arstechnica/science": {
   "name": "Ars Technica",
   "fails": 0,
   "last_ok": "2026-11-07",
-  "newest": "2026-11-06"
+  "newest": "2026-11-07"
  },
  "https://feeds.arstechnica.com/arstechnica/technology-lab": {
   "name": "Ars Technica",
@@ -93,7 +99,7 @@
   "name": "Phys.org",
   "fails": 0,
   "last_ok": "2026-11-07",
-  "newest": "2026-11-06"
+  "newest": "2026-11-07"
  },
  "https://physicsworld.com/feed/": {
   "name": "Physics World",

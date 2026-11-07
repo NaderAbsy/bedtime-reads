@@ -53,6 +53,11 @@
     border: 1px solid var(--rule); border-radius: 12px; padding: 12px 16px; margin: 0 0 24px;
   }
   .banner a { color: var(--accent); font-weight: 600; }
+  .banner.stale { border-color: color-mix(in srgb, var(--accent) 60%, var(--rule)); color: var(--ink); }
+  .new-tag {
+    font: 700 10px/1 var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--bg);
+    background: var(--accent); border-radius: 4px; padding: 3px 6px;
+  }
   .top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
   .date { font: 600 13px/1 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin: 0 0 10px; }
   h1 { font-size: 2.1em; line-height: 1.1; font-weight: 600; margin: 0; letter-spacing: -.01em; }
@@ -373,6 +378,7 @@
   <div class="wrap">
     <header>
       
+      <p class="banner stale" id="stale" role="status" hidden></p>
       <div class="top">
         <div>
           <p class="date">Saturday 7 November</p>
@@ -430,7 +436,7 @@
         <div class="sky-weather rating-fair">
           <div class="sky-label">Stargazing outlook</div>
           <strong>Partly cloudy: look for gaps</strong>
-          <div class="cloud-row" aria-label="Cloud cover by hour"><span class="cloud-chip" style="--c:49"><b>20:00</b>49%<span> cloud</span></span><span class="cloud-chip" style="--c:47"><b>21:00</b>47%<span> cloud</span></span><span class="cloud-chip" style="--c:59"><b>22:00</b>59%<span> cloud</span></span><span class="cloud-chip" style="--c:70"><b>23:00</b>70%<span> cloud</span></span><span class="cloud-chip" style="--c:69"><b>00:00</b>69%<span> cloud</span></span></div>
+          <div class="cloud-row" aria-label="Cloud cover by hour"><span class="cloud-chip" style="--c:47"><b>20:00</b>47%<span> cloud</span></span><span class="cloud-chip" style="--c:48"><b>21:00</b>48%<span> cloud</span></span><span class="cloud-chip" style="--c:54"><b>22:00</b>54%<span> cloud</span></span><span class="cloud-chip" style="--c:66"><b>23:00</b>66%<span> cloud</span></span><span class="cloud-chip" style="--c:66"><b>00:00</b>66%<span> cloud</span></span></div>
         </div>
         <div class="sky-moon"><svg class="moon" viewBox="-34 -34 68 68" role="img" aria-label="3% of the moon lit"><circle r="30" class="moon-dark"/><path d="M0,-30 A30,30 0 0 1 0,30 A28.47,30 0 0 0 0,-30 Z" class="moon-lit" transform="scale(-1,1)"/></svg>
           <div><div class="sky-label">Moon</div><strong>New moon</strong><span>3% lit</span></div>
@@ -498,8 +504,8 @@
           </div>
         </div>
       </article>
-      <article class="story no-image" data-k="https://www.esa.int/articles/about-us/directorates/science/juice/successful-earth-flyby-improves-juice-s-course-to-jupiter">
-        
+      <article class="story" data-k="https://www.esa.int/articles/about-us/directorates/science/juice/successful-earth-flyby-improves-juice-s-course-to-jupiter">
+        <div class="thumb"><img src="https://media.esa.int/global/public/common/image/2026/10/402120/image-thumb__402120__fit_large/juice-images-earth-during-earth-flyby~-~media--92aa2fb2--query.2eea1fcb.webp" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
           <div class="meta"><span class="source">ESA</span><time datetime="2026-11-06T08:46:40+00:00"></time><span class="mins">6 min read</span></div>
@@ -744,13 +750,26 @@
           </div>
         </div>
       </article>
-      <article class="story" data-k="https://knowablemagazine.org/content/article/living-world/2026/why-did-pregnancy-evolve-in-animals">
-        <div class="thumb"><img src="https://knowablemagazine.org/docserver/fulltext/evolution-of-pregnancy-500x288.jpg" alt="" loading="lazy" decoding="async"></div>
+      <article class="story" data-k="https://bigthink.com/starts-with-a-bang/explain-higgs-boson-in-depth">
+        <div class="thumb"><img src="https://bigthink.com/wp-content/uploads/2026/11/smcover.png?quality=80&amp;w=640" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">Knowable Magazine</span><time datetime="2026-11-05T00:00:05+00:00"></time></div>
-          <h3><a href="https://knowablemagazine.org/content/article/living-world/2026/why-did-pregnancy-evolve-in-animals" target="_blank" rel="noopener">Goodbye, eggshell: How pregnancy emerged in the animal world</a></h3>
-          <p>Mammals evolved live birth just once; lizards and snakes did it over and over. What set the stage for this drastic change and how was it orchestrated?</p>
+          <div class="meta"><span class="source">Big Think</span><time datetime="2026-11-06T07:00:00+00:00"></time><span class="mins">22 min read</span></div>
+          <h3><a href="https://bigthink.com/starts-with-a-bang/explain-higgs-boson-in-depth/" target="_blank" rel="noopener">Ask Ethan: Can you explain the Higgs boson in depth?</a></h3>
+          <p>One of the great quests in all of science is to discover, at a fundamental level, what the Universe is actually made of. If you took every amount of matter and energy that existed — or even could exist — and cut it up into its smallest possible chunks, until…</p>
+          <div class="story-actions">
+            <button class="save" type="button" aria-pressed="false">Save for later</button>
+            <button class="share" type="button">Share</button>
+          </div>
+        </div>
+      </article>
+      <article class="story" data-k="https://bigthink.com/starts-with-a-bang/how-far-away-stars">
+        <div class="thumb"><img src="https://bigthink.com/wp-content/uploads/2022/11/ESA_Gaia_DR2_AllSky_Brightness_Colour_black_bg_8k-e1707869317623.jpg?quality=85&amp;w=640" alt="" loading="lazy" decoding="async"></div>
+        <div class="text">
+          
+          <div class="meta"><span class="source">Big Think</span><time datetime="2026-11-05T07:00:00+00:00"></time><span class="mins">24 min read</span></div>
+          <h3><a href="https://bigthink.com/starts-with-a-bang/how-far-away-stars/" target="_blank" rel="noopener">3 original methods for measuring the distance to the stars</a></h3>
+          <p>Out there in space, blazing just a scant 150 million kilometers away lies the brightest and most massive object in our Solar System: the Sun. Shining hundreds of thousands of times as bright in Earth’s skies as the next brightest object, the full Moon, the…</p>
           <div class="story-actions">
             <button class="save" type="button" aria-pressed="false">Save for later</button>
             <button class="share" type="button">Share</button>
@@ -850,26 +869,26 @@
     <section class="section" id="tennis" data-sec="tennis" data-name="Tennis">
       <div class="section-head"><h2 class="section-title">Tennis</h2><button class="hide-sec" type="button" data-sec="tennis" aria-label="Hide Tennis">Hide</button></div>
       <div class="stories">
-      <article class="story lead" data-k="https://www.skysports.com/tennis/news/12110/13609128/wta-chair-apologises-to-jessica-pegula-after-airing-of-diva-comment-about-mirra-andreeva-confirms-audio-deactivated-on-practice-courts-at-indian-wells">
-        <div class="thumb"><img src="https://e1.365dm.com/26/11/1920x1080/skysports-jessica-pegula-wta-tour-tennis_7399659.jpg?20261106231950" alt="" loading="lazy" decoding="async"></div>
+      <article class="story lead" data-k="https://www.ubitennis.net/2026/11/carlos-alcaraz-saves-match-points-to-end-taylor-fritzs-atp-finals-hopes-in-paris">
+        <div class="thumb"><img src="https://www.ubitennis.net/wp-content/uploads/2026/11/D2D3C391-8E5D-46A5-959B-2BB16F51E713.jpeg" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">Sky Sports</span><time datetime="2026-11-06T23:25:00+00:00"></time><span class="mins">3 min read</span></div>
-          <h3><a href="https://www.skysports.com/tennis/news/12110/13609128/wta-chair-apologises-to-jessica-pegula-after-airing-of-diva-comment-about-mirra-andreeva-confirms-audio-deactivated-on-practice-courts-at-indian-wells" target="_blank" rel="noopener">WTA chair apologises to Pegula after &#x27;diva&#x27; comment broadcast</a></h3>
-          <p>Audio recording on practice courts will be deactivated at the WTA Finals after private comments made by Jessica Pegula about Mirra Andreeva were picked up, with the governing body&#x27;s chair apologising to the American for the &quot;regrettable&quot; incident.</p>
+          <div class="meta"><span class="source">Ubitennis</span><time datetime="2026-11-07T10:30:35+00:00"></time><span class="mins">2 min read</span></div>
+          <h3><a href="https://www.ubitennis.net/2026/11/carlos-alcaraz-saves-match-points-to-end-taylor-fritzs-atp-finals-hopes-in-paris/" target="_blank" rel="noopener">Carlos Alcaraz Saves Match Points To End Taylor Fritz’s ATP Finals Hopes In Paris</a></h3>
+          <p>Carlos Alcaraz will face Casper Ruud in the Paris semi-finals.</p>
           <div class="story-actions">
             <button class="save" type="button" aria-pressed="false">Save for later</button>
             <button class="share" type="button">Share</button>
           </div>
         </div>
       </article>
-      <article class="story no-image" data-k="https://www.ubitennis.net/2026/11/carlos-alcaraz-saves-match-points-to-end-taylor-fritzs-atp-finals-hopes-in-paris">
-        
+      <article class="story" data-k="https://www.skysports.com/tennis/news/12110/13609128/wta-chair-apologises-to-jessica-pegula-after-airing-of-diva-comment-about-mirra-andreeva-confirms-audio-deactivated-on-practice-courts-at-indian-wells">
+        <div class="thumb"><img src="https://e1.365dm.com/26/11/1920x1080/skysports-jessica-pegula-wta-tour-tennis_7399659.jpg?20261106231950" alt="" loading="lazy" decoding="async"></div>
         <div class="text">
           
-          <div class="meta"><span class="source">Ubitennis</span><time datetime="2026-11-07T10:30:35+00:00"></time><span class="mins">2 min read</span></div>
-          <h3><a href="https://www.ubitennis.net/2026/11/carlos-alcaraz-saves-match-points-to-end-taylor-fritzs-atp-finals-hopes-in-paris/" target="_blank" rel="noopener">Carlos Alcaraz Saves Match Points To End Taylor Fritz’s ATP Finals Hopes In Paris</a></h3>
-          <p>Carlos Alcaraz will face Casper Ruud in the Paris semi-finals.</p>
+          <div class="meta"><span class="source">Sky Sports</span><time datetime="2026-11-06T23:25:00+00:00"></time><span class="mins">3 min read</span></div>
+          <h3><a href="https://www.skysports.com/tennis/news/12110/13609128/wta-chair-apologises-to-jessica-pegula-after-airing-of-diva-comment-about-mirra-andreeva-confirms-audio-deactivated-on-practice-courts-at-indian-wells" target="_blank" rel="noopener">WTA chair apologises to Pegula after &#x27;diva&#x27; comment broadcast</a></h3>
+          <p>Audio recording on practice courts will be deactivated at the WTA Finals after private comments made by Jessica Pegula about Mirra Andreeva were picked up, with the governing body&#x27;s chair apologising to the American for the &quot;regrettable&quot; incident.</p>
           <div class="story-actions">
             <button class="save" type="button" aria-pressed="false">Save for later</button>
             <button class="share" type="button">Share</button>
@@ -897,8 +916,8 @@
     <footer>
       <p class="goodnight">That’s all for tonight. Sleep well.</p>
       <nav class="previous" id="nights" aria-label="Previous nights"><span class="nights-label">Previous nights</span><span class="current" aria-current="page">Tonight</span><a href="archive/2026-11-06.html">Fri 6 Nov</a><a href="archive/2026-11-05.html">Thu 5 Nov</a><a href="archive/2026-11-04.html">Wed 4 Nov</a><a href="archive/2026-11-03.html">Tue 3 Nov</a><a href="archive/2026-11-02.html">Mon 2 Nov</a><a href="archive/2026-11-01.html">Sun 1 Nov</a><a href="archive/2026-10-31.html">Sat 31 Oct</a></nav>
-      <p class="small">New stories every evening · <span id="built" data-built="2026-11-07T11:16:36.889618+00:00" data-live="1" data-edition="2026-11-07"></span></p>
-      <p class="small">From APS Physics · Aeon · Ars Technica · BBC · BBC Sport · BMJ Medicine · ESA · IEEE Spectrum · In the Pipeline (Derek Lowe) · JAMA Network Open · Knowable Magazine · Medical Xpress · Mongabay · NASA · Nature · Nature Medicine · PLOS Medicine · Phys.org · Physics World · Quanta Magazine · Retraction Watch · Science · Science-Based Medicine · Sensible Medicine · Sky Sports · Smithsonian · The Guardian · The Transmitter · Ubitennis · Undark · Universe Today · eClinicalMedicine</p>
+      <p class="small">New stories every evening · <span id="built" data-built="2026-11-07T12:34:25.986933+00:00" data-live="1" data-edition="2026-11-07" data-tz="Asia/Amman"></span></p>
+      <p class="small">From APS Physics · Aeon · Ars Technica · BBC · BBC Sport · BMJ Medicine · Big Think · ESA · IEEE Spectrum · In the Pipeline (Derek Lowe) · JAMA Network Open · Knowable Magazine · Medical Xpress · Mongabay · NASA · Nature · Nature Medicine · PLOS Medicine · Phys.org · Physics World · Quanta Magazine · Retraction Watch · Science · Science-Based Medicine · Sensible Medicine · Sky Sports · Smithsonian · The Guardian · The Transmitter · Ubitennis · Undark · Universe Today · eClinicalMedicine</p>
       <p class="small"><button type="button" class="link-btn" id="welcome-again">How this page works</button></p>
     </footer>
   </div>
@@ -1282,6 +1301,61 @@
       .catch(function () {});
   })();
 
+  // ---- "New" tags: stories this device has not had on screen before ----
+  // Which stories were seen is kept on this device only. The tags are decided once, when the page
+  // loads, so a tag never vanishes while it is being read. A story counts as seen after it has been
+  // at least half on screen for a second. A device's first visit shows no tags (everything would be new).
+  (function () {
+    var KEEP = 30 * DAY;
+    function hash(str) {                       // short stand-in for a link, to keep storage small
+      var h = 5381; for (var n = 0; n < str.length; n++) h = ((h * 33) ^ str.charCodeAt(n)) >>> 0;
+      return h.toString(36);
+    }
+    var seen = {}, first = true;
+    try {
+      seen = JSON.parse(localStorage.getItem("br-seen")) || {};
+      first = localStorage.getItem("br-seen-since") === null;
+    } catch (e) { return; }                    // no storage (private browsing): no tags at all
+    var cutoff = Date.now() - KEEP;
+    Object.keys(seen).forEach(function (k) { if (seen[k] < cutoff) delete seen[k]; });
+    if (first) put("br-seen-since", String(Date.now()));
+
+    var cards = document.querySelectorAll(".story[data-k]");
+    cards.forEach(function (card) {
+      card.dataset.h = hash(card.dataset.k);
+      var meta = card.querySelector(".meta .source");
+      if (!first && !seen[card.dataset.h] && meta) {
+        var tag = document.createElement("span");
+        tag.className = "new-tag"; tag.textContent = "New";
+        meta.insertAdjacentElement("afterend", tag);
+      }
+    });
+
+    var dirty = false, saveTimer = null;
+    function save() {
+      dirty = false; clearTimeout(saveTimer);
+      put("br-seen", JSON.stringify(seen));
+    }
+    function later() { dirty = true; if (!saveTimer) saveTimer = setTimeout(function () { saveTimer = null; save(); }, 1500); }
+    document.addEventListener("visibilitychange", function () { if (document.hidden && dirty) save(); });
+    window.addEventListener("pagehide", function () { if (dirty) save(); });
+
+    if (!("IntersectionObserver" in window)) return;
+    var timers = new WeakMap();
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        var card = en.target;
+        if (en.isIntersecting) {
+          timers.set(card, setTimeout(function () {
+            if (!seen[card.dataset.h]) { seen[card.dataset.h] = Date.now(); later(); }
+            io.unobserve(card);
+          }, 1000));
+        } else if (timers.has(card)) { clearTimeout(timers.get(card)); timers.delete(card); }
+      });
+    }, { threshold: 0.5 });
+    cards.forEach(function (card) { io.observe(card); });   // cards in hidden sections never intersect
+  })();
+
   // ---- Welcome card: shown once on each new reader's device ----
   var welcome = document.getElementById("welcome");
   var seenWelcome = false;
@@ -1357,15 +1431,42 @@
     fetch("edition.json?t=" + Date.now(), { cache: "no-store" })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (info) {
-        if (!info || !info.built || isNaN(built) || new Date(info.built) <= built) return;
-        // Guard against a reload loop if a cache still serves the old page for a few minutes.
-        try {
-          if (sessionStorage.getItem("br-reloaded-for") === info.built) return;
-          sessionStorage.setItem("br-reloaded-for", info.built);
-        } catch (e) {}
-        location.replace(location.pathname + "?edition=" + encodeURIComponent(info.built));
+        if (!info || !info.built) return;                      // couldn't tell (offline): say nothing
+        if (!isNaN(built) && new Date(info.built) > built) {
+          // Guard against a reload loop if a cache still serves the old page for a few minutes.
+          try {
+            if (sessionStorage.getItem("br-reloaded-for") === info.built) { checkStale(); return; }
+            sessionStorage.setItem("br-reloaded-for", info.built);
+          } catch (e) {}
+          location.replace(location.pathname + "?edition=" + encodeURIComponent(info.built));
+          return;
+        }
+        checkStale();                                          // this is the newest edition there is
       })
       .catch(function () {});
+  }
+
+  // ---- Warn when the newest edition is older than it should be (a build was late or failed) ----
+  // Builds normally land well before the evening. If it is past 20:00 where the page is made and
+  // there is still no edition for today, or the newest edition is older than yesterday's, say so.
+  function checkStale() {
+    var d = document.getElementById("built").dataset, box = document.getElementById("stale");
+    if (!d.edition) return;
+    var now = {};
+    try {
+      new Intl.DateTimeFormat("en-CA", { timeZone: d.tz || "UTC", year: "numeric", month: "2-digit",
+        day: "2-digit", hour: "2-digit", hourCycle: "h23" })
+        .formatToParts(new Date()).forEach(function (x) { now[x.type] = x.value; });
+    } catch (e) { return; }
+    var today = now.year + "-" + now.month + "-" + now.day;
+    function shift(iso, n) { var t = new Date(iso + "T12:00:00Z"); t.setUTCDate(t.getUTCDate() + n); return t.toISOString().slice(0, 10); }
+    var expected = +now.hour >= 20 ? today : shift(today, -1);
+    if (d.edition >= expected) { box.hidden = true; return; }
+    var made = new Date(d.edition + "T12:00:00Z").toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
+    box.textContent = d.edition === shift(today, -1)
+      ? "Tonight’s edition hasn’t arrived yet, so this is the one from " + made + ". Pull down to refresh in a little while."
+      : "This edition is from " + made + ". Newer ones should have arrived, so something may be wrong. Pull down to refresh.";
+    box.hidden = false;
   }
   checkForNewEdition();
   document.addEventListener("visibilitychange", function () { if (!document.hidden) checkForNewEdition(); });
