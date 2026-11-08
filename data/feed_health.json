@@ -81,13 +81,13 @@
   "name": "Medical Xpress",
   "fails": 0,
   "last_ok": "2026-11-08",
-  "newest": "2026-11-07"
+  "newest": "2026-11-08"
  },
  "https://news.mongabay.com/feed/": {
   "name": "Mongabay",
   "fails": 0,
   "last_ok": "2026-11-08",
-  "newest": "2026-11-07"
+  "newest": "2026-11-08"
  },
  "https://phys.org/rss-feed/physics-news/": {
   "name": "Phys.org",
@@ -153,7 +153,7 @@
   "name": "Nature Medicine",
   "fails": 0,
   "last_ok": "2026-11-08",
-  "newest": "2026-11-06"
+  "newest": "2026-11-08"
  },
  "https://www.quantamagazine.org/feed/": {
   "name": "Quanta Magazine",
@@ -247,9 +247,10 @@
  },
  "https://www.ubitennis.net/feed/": {
   "name": "Ubitennis",
-  "fails": 0,
+  "fails": 1,
   "last_ok": "2026-11-08",
-  "newest": "2026-11-07"
+  "newest": "2026-11-07",
+  "last_error": "URLError: <urlopen error timed out>"
  },
  "https://www.universetoday.com/feed/": {
   "name": "Universe Today",
