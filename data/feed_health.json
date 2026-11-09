@@ -103,10 +103,10 @@
  },
  "https://physicsworld.com/feed/": {
   "name": "Physics World",
-  "fails": 1,
+  "fails": 2,
   "last_ok": "2026-11-08",
   "newest": "2026-11-04",
-  "last_error": "ParseError: not well-formed (invalid token): line 128, column 20 | got: b'<rss version=\"2.0\"\\n\\txmlns:content=\"http://purl.org/rss/1.0/modules/content/\"\\n\\txmlns:wfw=\"http://wellformedweb.org/Commen'"
+  "last_error": "ParseError: not well-formed (invalid token): line 147, column 20 | got: b'<rss version=\"2.0\"\\n\\txmlns:content=\"http://purl.org/rss/1.0/modules/content/\"\\n\\txmlns:wfw=\"http://wellformedweb.org/Commen'"
  },
  "https://retractionwatch.com/feed/": {
   "name": "Retraction Watch",
@@ -124,7 +124,7 @@
   "name": "IEEE Spectrum",
   "fails": 0,
   "last_ok": "2026-11-09",
-  "newest": "2026-11-06"
+  "newest": "2026-11-09"
  },
  "https://undark.org/feed/": {
   "name": "Undark",
