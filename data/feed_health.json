@@ -27,7 +27,7 @@
   "name": "Ars Technica",
   "fails": 0,
   "last_ok": "2026-11-10",
-  "newest": "2026-11-09"
+  "newest": "2026-11-10"
  },
  "https://feeds.arstechnica.com/arstechnica/technology-lab": {
   "name": "Ars Technica",
@@ -103,7 +103,7 @@
  },
  "https://physicsworld.com/feed/": {
   "name": "Physics World",
-  "fails": 3,
+  "fails": 4,
   "last_ok": "2026-11-08",
   "newest": "2026-11-04",
   "last_error": "ParseError: not well-formed (invalid token): line 204, column 20 | got: b'<rss version=\"2.0\"\\n\\txmlns:content=\"http://purl.org/rss/1.0/modules/content/\"\\n\\txmlns:wfw=\"http://wellformedweb.org/Commen'"
@@ -142,7 +142,7 @@
   "name": "NASA",
   "fails": 0,
   "last_ok": "2026-11-10",
-  "newest": "2026-11-09"
+  "newest": "2026-11-10"
  },
  "https://www.nature.com/nature.rss": {
   "name": "Nature",
@@ -178,7 +178,7 @@
   "name": "Science",
   "fails": 0,
   "last_ok": "2026-11-10",
-  "newest": "2026-11-09"
+  "newest": "2026-11-10"
  },
  "https://www.sensible-med.com/feed": {
   "name": "Sensible Medicine",
