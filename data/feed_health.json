@@ -27,7 +27,7 @@
   "name": "Ars Technica",
   "fails": 0,
   "last_ok": "2026-11-12",
-  "newest": "2026-11-11"
+  "newest": "2026-11-12"
  },
  "https://feeds.arstechnica.com/arstechnica/technology-lab": {
   "name": "Ars Technica",
@@ -171,7 +171,7 @@
   "name": "In the Pipeline (Derek Lowe)",
   "fails": 0,
   "last_ok": "2026-11-12",
-  "newest": "2026-11-10"
+  "newest": "2026-10-12"
  },
  "https://www.science.org/rss/news_current.xml": {
   "name": "Science",
@@ -255,6 +255,6 @@
   "name": "Universe Today",
   "fails": 0,
   "last_ok": "2026-11-12",
-  "newest": "2026-11-11"
+  "newest": "2026-11-12"
  }
 }
