@@ -150,8 +150,16 @@ New Scientist is switched off. Its feeds are still in `sources.json`; setting
 ## Notes
 
 - A feed that's down is retried once, then skipped for that day; the rest of the page still builds.
-- If a source fails 3 nights in a row, or publishes nothing new for 30 days, the workflow opens an issue
-  titled *Some reading sources need attention* on the repository, which emails the owner. It closes
-  itself once every source works again.
+- If a source fails 3 nights in a row, or publishes nothing new for 60 days (`stale_days` on a feed
+  overrides this), the workflow opens an issue titled *Some reading sources need attention*, which emails
+  the owner. It closes itself once every source works again, without a comment (a comment is a second email).
+  Three false alarms in November led to these rules: the freshness check never moves backwards (two
+  science.org feeds were once served an old cached copy), a feed with no usable dates is not called stale,
+  and quiet sources get 60 days rather than 30 (Undark and a blogger on holiday both went quiet for ~5 weeks).
+- Broken feeds are read leniently: a stray control character or bare `&` is repaired and the feed retried
+  (Physics World was out for six nights over this). An HTML "access denied" page still counts as a failure.
+- Science's news feed writes the literal text `TZ` where each date belongs, so its dates are read from the
+  image file names instead (`date_from_filename` in `sources.json`). Before this, nine of its ten stories
+  were treated as undated and never shown.
 - When a reader comes back to the page, it checks `edition.json` and reloads itself if a newer edition is out,
   so nobody has to pull down to refresh. Archive pages don't do this.

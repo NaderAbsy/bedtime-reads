@@ -35,6 +35,7 @@ SITE = ROOT / "site"
 ARCHIVE = SITE / "archive"
 HISTORY = ROOT / "data" / "history.json"
 HEALTH = ROOT / "data" / "feed_health.json"
+STALE_DAYS = 60   # a source with nothing new for this long is reported (Undark and a blogger on holiday both go quiet for ~5 weeks)
 PROBLEMS = ROOT / "data" / "source_problems.md"
 TEMPLATE = ROOT / "template.html"
 STATIC = ROOT / "static"
@@ -85,7 +86,8 @@ def fetch(url, timeout=20):
     """Fetch a URL. Some hosts (Substack, for one) refuse unfamiliar clients from data centres,
     so a refusal is retried once with an ordinary browser identity."""
     for ua in (UA, BROWSER_UA):
-        req = urllib.request.Request(url, headers={"User-Agent": ua, "Accept": "*/*"})
+        req = urllib.request.Request(url, headers={"User-Agent": ua, "Accept": "*/*",
+                                                   "Cache-Control": "no-cache", "Pragma": "no-cache"})
         try:
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 return r.read()
@@ -116,6 +118,7 @@ class _Text(HTMLParser):
 def strip_html(s):
     p = _Text()
     p.feed(s or "")
+    p.close()  # without this, text ending in something like "R&D" or "AT&T" is held back and lost
     text = re.sub(r"\s+", " ", html.unescape("".join(p.parts))).strip()
     return text, p.img
 
@@ -174,8 +177,39 @@ def first_image(el):
     return best
 
 
+BAD_XML_CHARS = re.compile("[\x00-\x08\x0b\x0c\x0e-\x1f\ufffe\uffff]")
+BARE_AMPERSAND = re.compile(r"&(?!(?:amp|lt|gt|quot|apos|#\d+|#x[0-9a-fA-F]+);)")
+
+
+def parse_xml(raw):
+    """Read a feed. Publishers sometimes ship slightly broken XML (a stray control character or an
+    unescaped &); that once took Physics World out for six nights, so retry once with those repaired."""
+    try:
+        return ET.fromstring(raw)
+    except ET.ParseError:
+        text = raw.decode("utf-8", "replace").lstrip("\ufeff \t\r\n")
+        text = BARE_AMPERSAND.sub("&amp;", BAD_XML_CHARS.sub("", text))
+        text = re.sub(r"^<\?xml[^>]*encoding=[^>]*\?>", "<?xml version='1.0'?>", text)  # already decoded
+        return ET.fromstring(text)  # still broken: let the error through
+
+
+def filename_date(el, link=""):
+    """For feeds whose date field is broken: the date inside an image file name (".../_20261113_x.jpg").
+    Only accepted if it is a recent, plausible date."""
+    blob = " ".join([link] + [v for e in el.iter() for v in e.attrib.values()])
+    m = re.search(r"[_/-](20\d\d)(\d\d)(\d\d)[_-]", blob)
+    if not m:
+        return None
+    try:
+        when = datetime(int(m.group(1)), int(m.group(2)), int(m.group(3)), 12, tzinfo=timezone.utc)
+    except ValueError:
+        return None
+    now = datetime.now(timezone.utc)
+    return when if now - timedelta(days=60) <= when <= now + timedelta(days=1) else None
+
+
 def parse_feed(raw, feed):
-    root = ET.fromstring(raw)
+    root = parse_xml(raw)
     items = []
     entries = (root.findall("./channel/item") or root.findall("atom:entry", NS)
                or root.findall("rss1:item", NS))
@@ -236,7 +270,7 @@ def parse_feed(raw, feed):
             "key": link_key(link),
             "summary": shorten(summary),
             "image": first_image(el) or body_img,
-            "date": parse_date(date_s),
+            "date": parse_date(date_s) or (filename_date(el, link) if feed.get("date_from_filename") else None),
             "source": feed["name"],
             "badge": feed.get("badge") or ("Subscriber" if feed.get("subscriber") else ""),
             "image_pattern": feed.get("image_pattern"),    # where this site's article pictures live
@@ -840,11 +874,12 @@ def track_health(jobs, results, edition):
             h.pop("last_error", None)
             dates = [i["date"] for i in items if i["date"]]
             if dates:
-                h["newest"] = max(dates).date().isoformat()
+                # Never move backwards: one stale cached copy of a feed must not look like months of silence.
+                h["newest"] = max(filter(None, [h.get("newest"), max(dates).date().isoformat()]))
         if h["fails"] >= 3:
             broken.append(h | {"url": f["url"]})
-        elif h["newest"] and (edition - date.fromisoformat(h["newest"])).days > 30:
-            stale.append(h | {"url": f["url"]})
+        elif h["newest"] and (edition - date.fromisoformat(h["newest"])).days > f.get("stale_days", STALE_DAYS):
+            stale.append(h | {"url": f["url"], "limit": f.get("stale_days", STALE_DAYS)})
     active = {f["url"] for f in jobs}
     health = {u: h for u, h in sorted(health.items()) if u in active}
     HEALTH.write_text(json.dumps(health, indent=1) + "\n")
@@ -859,8 +894,8 @@ def track_health(jobs, results, edition):
                   f"`{h['url']}`  \n  Error: `{h.get('last_error', '')[:140]}`" for h in broken]
         lines.append("")
     if stale:
-        lines += ["**Nothing new for over 30 days** (the feed may have moved or stopped)", ""]
-        lines += [f"- **{h['name']}** (newest story {h['newest']}): `{h['url']}`" for h in stale]
+        lines += ["**Nothing new for a long time** (the feed may have moved or stopped)", ""]
+        lines += [f"- **{h['name']}** (newest story {h['newest']}, over {h['limit']} days ago): `{h['url']}`" for h in stale]
         lines.append("")
     lines.append("Fix or replace them in `sources.json`. This issue closes itself once every source works again.")
     PROBLEMS.write_text("\n".join(lines) + "\n")

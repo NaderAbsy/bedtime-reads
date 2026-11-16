@@ -62,7 +62,7 @@ jobs:
       - id: deploy
         uses: actions/deploy-pages@v5
 
-      # If a source has failed 3 nights running (or gone quiet for a month), open an issue on the
+      # If a source has failed 3 nights running (or gone quiet for two months), open an issue on the
       # repository; GitHub emails the owner. The issue is updated while problems last and closed
       # automatically once every source works again.
       - name: Report sources that need attention
@@ -76,5 +76,5 @@ jobs:
             if [ -n "$open" ]; then gh issue edit "$open" --body-file /tmp/body.md
             else gh issue create --title "$title" --body-file /tmp/body.md; fi
           elif [ -n "$open" ]; then
-            gh issue close "$open" --comment "All sources are working again."
+            gh issue close "$open" --reason completed   # no comment: it would send a second email
           fi
