@@ -3,7 +3,7 @@
   "name": "Aeon",
   "fails": 0,
   "last_ok": "2026-11-16",
-  "newest": "2026-11-13"
+  "newest": "2026-11-16"
  },
  "https://bigthink.com/feed/": {
   "name": "Big Think",
@@ -57,7 +57,7 @@
   "name": "BBC Sport",
   "fails": 0,
   "last_ok": "2026-11-16",
-  "newest": "2026-11-15"
+  "newest": "2026-11-16"
  },
  "https://jamanetwork.com/rss/site_214/mostReadArticles.xml": {
   "name": "JAMA Network Open",
@@ -93,25 +93,25 @@
   "name": "Phys.org",
   "fails": 0,
   "last_ok": "2026-11-16",
-  "newest": "2026-11-15"
+  "newest": "2026-11-16"
  },
  "https://phys.org/rss-feed/space-news/": {
   "name": "Phys.org",
   "fails": 0,
   "last_ok": "2026-11-16",
-  "newest": "2026-11-15"
+  "newest": "2026-11-16"
  },
  "https://physicsworld.com/feed/": {
   "name": "Physics World",
   "fails": 0,
   "last_ok": "2026-11-16",
-  "newest": "2026-11-11"
+  "newest": "2026-11-16"
  },
  "https://retractionwatch.com/feed/": {
   "name": "Retraction Watch",
   "fails": 0,
   "last_ok": "2026-11-16",
-  "newest": "2026-11-11"
+  "newest": "2026-11-16"
  },
  "https://sciencebasedmedicine.org/feed/": {
   "name": "Science-Based Medicine",
@@ -123,7 +123,7 @@
   "name": "IEEE Spectrum",
   "fails": 0,
   "last_ok": "2026-11-16",
-  "newest": "2026-11-13"
+  "newest": "2026-11-16"
  },
  "https://undark.org/feed/": {
   "name": "Undark",
@@ -147,7 +147,7 @@
   "name": "Nature",
   "fails": 0,
   "last_ok": "2026-11-16",
-  "newest": "2026-11-13"
+  "newest": "2026-11-16"
  },
  "https://www.nature.com/nm.rss": {
   "name": "Nature Medicine",
@@ -159,13 +159,13 @@
   "name": "Quanta Magazine",
   "fails": 0,
   "last_ok": "2026-11-16",
-  "newest": "2026-11-12"
+  "newest": "2026-11-16"
  },
  "https://www.quantamagazine.org/physics/feed/": {
   "name": "Quanta Magazine",
   "fails": 0,
   "last_ok": "2026-11-16",
-  "newest": "2026-11-06"
+  "newest": "2026-11-16"
  },
  "https://www.science.org/blogs/pipeline/feed": {
   "name": "In the Pipeline (Derek Lowe)",
@@ -183,7 +183,7 @@
   "name": "Sensible Medicine",
   "fails": 0,
   "last_ok": "2026-11-16",
-  "newest": "2026-11-14"
+  "newest": "2026-11-16"
  },
  "https://www.skysports.com/rss/12110": {
   "name": "Sky Sports",
@@ -195,7 +195,7 @@
   "name": "Smithsonian",
   "fails": 0,
   "last_ok": "2026-11-16",
-  "newest": "2026-11-13"
+  "newest": "2026-11-16"
  },
  "https://www.theguardian.com/environment/wildlife/rss": {
   "name": "The Guardian",
@@ -249,7 +249,7 @@
   "name": "Ubitennis",
   "fails": 0,
   "last_ok": "2026-11-16",
-  "newest": "2026-11-15"
+  "newest": "2026-11-16"
  },
  "https://www.universetoday.com/feed/": {
   "name": "Universe Today",
