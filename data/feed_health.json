@@ -69,7 +69,7 @@
   "name": "PLOS Medicine",
   "fails": 0,
   "last_ok": "2026-11-16",
-  "newest": "2026-11-13"
+  "newest": "2026-11-16"
  },
  "https://knowablemagazine.org/rss": {
   "name": "Knowable Magazine",
@@ -141,7 +141,7 @@
   "name": "NASA",
   "fails": 0,
   "last_ok": "2026-11-16",
-  "newest": "2026-11-13"
+  "newest": "2026-11-16"
  },
  "https://www.nature.com/nature.rss": {
   "name": "Nature",
@@ -153,7 +153,7 @@
   "name": "Nature Medicine",
   "fails": 0,
   "last_ok": "2026-11-16",
-  "newest": "2026-11-13"
+  "newest": "2026-11-16"
  },
  "https://www.quantamagazine.org/feed/": {
   "name": "Quanta Magazine",
@@ -189,7 +189,7 @@
   "name": "Sky Sports",
   "fails": 0,
   "last_ok": "2026-11-16",
-  "newest": "2026-11-15"
+  "newest": "2026-11-16"
  },
  "https://www.smithsonianmag.com/rss/science-nature/": {
   "name": "Smithsonian",
@@ -255,6 +255,6 @@
   "name": "Universe Today",
   "fails": 0,
   "last_ok": "2026-11-16",
-  "newest": "2026-11-15"
+  "newest": "2026-11-16"
  }
 }
