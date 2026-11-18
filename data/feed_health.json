@@ -123,7 +123,7 @@
   "name": "IEEE Spectrum",
   "fails": 0,
   "last_ok": "2026-11-18",
-  "newest": "2026-11-17"
+  "newest": "2026-11-18"
  },
  "https://undark.org/feed/": {
   "name": "Undark",
@@ -141,7 +141,7 @@
   "name": "NASA",
   "fails": 0,
   "last_ok": "2026-11-18",
-  "newest": "2026-11-17"
+  "newest": "2026-11-18"
  },
  "https://www.nature.com/nature.rss": {
   "name": "Nature",
@@ -189,7 +189,7 @@
   "name": "Sky Sports",
   "fails": 0,
   "last_ok": "2026-11-18",
-  "newest": "2026-11-17"
+  "newest": "2026-11-18"
  },
  "https://www.smithsonianmag.com/rss/science-nature/": {
   "name": "Smithsonian",
@@ -225,7 +225,7 @@
   "name": "The Guardian",
   "fails": 0,
   "last_ok": "2026-11-18",
-  "newest": "2026-11-15"
+  "newest": "2026-11-18"
  },
  "https://www.theguardian.com/technology/rss": {
   "name": "The Guardian",
