@@ -189,7 +189,7 @@
   "name": "Sky Sports",
   "fails": 0,
   "last_ok": "2026-11-21",
-  "newest": "2026-11-20"
+  "newest": "2026-11-21"
  },
  "https://www.smithsonianmag.com/rss/science-nature/": {
   "name": "Smithsonian",
@@ -225,7 +225,7 @@
   "name": "The Guardian",
   "fails": 0,
   "last_ok": "2026-11-21",
-  "newest": "2026-11-20"
+  "newest": "2026-11-21"
  },
  "https://www.theguardian.com/technology/rss": {
   "name": "The Guardian",
@@ -249,7 +249,7 @@
   "name": "Ubitennis",
   "fails": 0,
   "last_ok": "2026-11-21",
-  "newest": "2026-11-20"
+  "newest": "2026-11-21"
  },
  "https://www.universetoday.com/feed/": {
   "name": "Universe Today",
