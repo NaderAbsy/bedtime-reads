@@ -69,7 +69,7 @@
   "name": "PLOS Medicine",
   "fails": 0,
   "last_ok": "2026-11-24",
-  "newest": "2026-11-19"
+  "newest": "2026-11-24"
  },
  "https://knowablemagazine.org/rss": {
   "name": "Knowable Magazine",
@@ -123,7 +123,7 @@
   "name": "IEEE Spectrum",
   "fails": 0,
   "last_ok": "2026-11-24",
-  "newest": "2026-11-20"
+  "newest": "2026-11-24"
  },
  "https://undark.org/feed/": {
   "name": "Undark",
@@ -171,7 +171,7 @@
   "name": "In the Pipeline (Derek Lowe)",
   "fails": 0,
   "last_ok": "2026-11-24",
-  "newest": "2026-11-20"
+  "newest": "2026-11-24"
  },
  "https://www.science.org/rss/news_current.xml": {
   "name": "Science",
