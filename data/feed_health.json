@@ -33,7 +33,7 @@
   "name": "Ars Technica",
   "fails": 0,
   "last_ok": "2026-11-25",
-  "newest": "2026-11-24"
+  "newest": "2026-11-25"
  },
  "https://feeds.bbci.co.uk/news/health/rss.xml": {
   "name": "BBC",
@@ -69,7 +69,7 @@
   "name": "PLOS Medicine",
   "fails": 0,
   "last_ok": "2026-11-25",
-  "newest": "2026-11-24"
+  "newest": "2026-11-25"
  },
  "https://knowablemagazine.org/rss": {
   "name": "Knowable Magazine",
